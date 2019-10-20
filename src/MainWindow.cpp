@@ -7,7 +7,7 @@ MainWindow::MainWindow() : QMainWindow() {
   auto menu = new MenuBar(this);
   this->setMenuBar(menu);
 
-  open_welcome_dialog();
+  open_new_graph_dialog();
 }
 
 void MainWindow::open_new_graph_dialog() {

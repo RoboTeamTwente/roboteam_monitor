@@ -6,17 +6,22 @@
 #define RTT_CHARTVIEW_H
 
 #include <QWidget>
-#include "ChartSeries.h"
+#include <QCheckBox>
+#include <QtCharts/QtCharts>
 
+class ChartSeries;
 class ChartView : public QWidget {
  public:
   explicit ChartView(QWidget * parent = nullptr);
  public slots:
   void add_new_series();
   void delete_series(ChartSeries * series_to_delete);
+  void set_theme(bool dark_theme);
  private:
-  std::vector<std::shared_ptr<ChartSeries>> all_series;
+  std::vector<ChartSeries *> all_series;
   QVBoxLayout * series_overview_layout;
+  QChartView * chart;
+  QCheckBox * theme_checkbox;
 };
 
 #endif //RTT_CHARTVIEW_H

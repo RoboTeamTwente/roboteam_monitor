@@ -1,7 +1,3 @@
-//
-// Created by Lukas Bos on 21/10/2019.
-//
-
 #ifndef RTT_CHARTSERIESDIALOG_H
 #define RTT_CHARTSERIESDIALOG_H
 
@@ -17,6 +13,8 @@ class ChartSeriesDialog : public QDialog {
 
  public slots:
   void update_filters_layout(const QString & topic_name);
+  void clearLayout(QLayout* layout);
+
 };
 
 #endif //RTT_CHARTSERIESDIALOG_H

@@ -23,10 +23,10 @@ class ChartSeries : public QGroupBox {
   void * proto_subscriber = nullptr;
 
   void init_subscriber_for_channel_type(const roboteam_utils::ChannelType & channel_type);
-  void handle_robot_command_input(roboteam_proto::RobotCommand & robot_command);
-  void handle_world_input(roboteam_proto::World & world);
-  void handle_feedback_input(roboteam_proto::RobotFeedback & feedback);
-  void handle_setting_input(roboteam_proto::Setting & setting);
+  void handle_robot_command_input(proto::RobotCommand & robot_command);
+  void handle_world_input(proto::World & world);
+  void handle_feedback_input(proto::RobotFeedback & feedback);
+  void handle_setting_input(proto::Setting & setting);
 
   template <class T>
   void handle_incoming_message(T message, const google::protobuf::Reflection & reflection);

@@ -104,28 +104,28 @@ void ChartSeries::set_change_color_button_background(const QColor & color) const
 
 void ChartSeries::init_subscriber_for_channel_type(const roboteam_utils::ChannelType & channel_type) {
 
-    proto_subscriber = new roboteam_proto::Subscriber<roboteam_proto::RobotCommand>
+    proto_subscriber = new proto::Subscriber<proto::RobotCommand>
         (roboteam_utils::ROBOT_COMMANDS_PRIMARY_CHANNEL, &ChartSeries::handle_robot_command_input, this);
 
 }
 
-void ChartSeries::handle_robot_command_input(roboteam_proto::RobotCommand &robot_command) {
-  auto reflection = roboteam_proto::RobotCommand::GetReflection();
+void ChartSeries::handle_robot_command_input(proto::RobotCommand &robot_command) {
+  auto reflection = proto::RobotCommand::GetReflection();
   this->handle_incoming_message(robot_command, *reflection);
 }
 
-void ChartSeries::handle_world_input(roboteam_proto::World &world) {
-  auto reflection = roboteam_proto::World::GetReflection();
+void ChartSeries::handle_world_input(proto::World &world) {
+  auto reflection = proto::World::GetReflection();
   this->handle_incoming_message(world, *reflection);
 }
 
-void ChartSeries::handle_feedback_input(roboteam_proto::RobotFeedback &feedback) {
-  auto reflection = roboteam_proto::RobotFeedback::GetReflection();
+void ChartSeries::handle_feedback_input(proto::RobotFeedback &feedback) {
+  auto reflection = proto::RobotFeedback::GetReflection();
   this->handle_incoming_message(feedback, *reflection);
 }
 
-void ChartSeries::handle_setting_input(roboteam_proto::Setting &setting) {
-  auto reflection = roboteam_proto::Setting::GetReflection();
+void ChartSeries::handle_setting_input(proto::Setting &setting) {
+  auto reflection = proto::Setting::GetReflection();
   this->handle_incoming_message(setting, *reflection);
 }
 

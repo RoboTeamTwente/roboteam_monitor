@@ -1,5 +1,6 @@
 #include <include/ChartSeries.h>
 #include <roboteam_utils/constants.h>
+#include <include/Helpers.h>
 #include "ChartSeriesDialog.h"
 
 ChartSeriesDialog::ChartSeriesDialog(ChartSeries * series) : QDialog(series) {
@@ -9,13 +10,11 @@ ChartSeriesDialog::ChartSeriesDialog(ChartSeries * series) : QDialog(series) {
   dialog_layout->addWidget(tab_widget);
 
   QWidget * network_settings_tab = create_network_settings_tab(series);
-
-  tab_widget->addTab(network_settings_tab, "Network");
+  tab_widget->addTab(network_settings_tab, "Data");
 }
 
 QWidget * ChartSeriesDialog::create_network_settings_tab(ChartSeries * series) {
-  QWidget * network_settings_tab = new QWidget();
-
+  auto network_settings_tab = new QWidget();
   auto network_settings_layout = new QVBoxLayout();
   network_settings_tab->setLayout(network_settings_layout);
 
@@ -63,6 +62,35 @@ QWidget * ChartSeriesDialog::create_network_settings_tab(ChartSeries * series) {
 }
 
 void ChartSeriesDialog::update_filters_layout(const QString & topic_name) {
+    clearLayout(filters_layout);
+    auto descriptor = Helpers::get_descriptor_for_topic(topic_name);
+    for (int i = 0; i < descriptor->field_count(); ++i) {
+        auto field_descriptor = descriptor->field(i);
+        auto text_filter = new QLineEdit();
 
+        filters_layout->addRow(QString::fromStdString(field_descriptor->name()), text_filter);
+
+        auto type = field_descriptor->message_type();
+        if (type) {
+            for (int j = 0; j < type->field_count(); ++j) {
+                auto text_filter_2 = new QLineEdit();
+                filters_layout->addRow(QString::fromStdString(type->field(j)->name()), text_filter_2);
+            }
+        }
+    }
 }
 
+/// delete a layout and its children
+void ChartSeriesDialog::clearLayout(QLayout* layout) {
+    QLayoutItem* item;
+    while ((item = layout->takeAt(0))) {
+        if (item->layout()) {
+            clearLayout(item->layout());
+            delete item->layout();
+        }
+        if (item->widget()) {
+            delete item->widget();
+        }
+        delete item;
+    }
+}

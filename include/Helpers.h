@@ -9,7 +9,9 @@
 #include <QString>
 
 class Helpers {
-//  static google::protobuf::Reflection * get_reflection_for_topic(const QString & topic_name);
+ public:
+  static const google::protobuf::Descriptor * get_descriptor_for_topic(const QString & topic_name);
+  static roboteam_utils::ChannelType getChannelTypeByName(const QString & topic_name);
 };
 
 

@@ -1,13 +1,14 @@
-#include "include/ChartSeries.h"
+#include "ChartSeries.h"
 #include <roboteam_proto/RobotCommand.pb.h>
-#include <include/ChartView.h>
-#include <stdlib.h>     /* srand, rand */
+#include <ChartView.h>
+#include <functional>
+#include <roboteam_utils/constants.h>
+#include <ChartSeriesDialog.h>
 
 using namespace google::protobuf;
 
 ChartSeries::ChartSeries(const QString & default_name, ChartView * chart_view) : QGroupBox("", chart_view) {
   this->setCheckable(false);
-
   qt_series = new QSplineSeries();
 
 
@@ -19,7 +20,7 @@ ChartSeries::ChartSeries(const QString & default_name, ChartView * chart_view) :
   qt_series->append(4, rand() % 20 + 1);
   qt_series->append(16, rand() % 20 + 1);
 
-  setMaximumHeight(160);
+  setMaximumHeight(260);
 
   connect(qt_series, &QXYSeries::colorChanged, this, &ChartSeries::set_change_color_button_background);
 
@@ -69,51 +70,14 @@ ChartSeries::ChartSeries(const QString & default_name, ChartView * chart_view) :
   });
 
 
+  auto series_settings_button = new QPushButton();
+  series_settings_button->setText("Configuration");
+  series_layout->addWidget(series_settings_button);
 
-
-
-
-
-
-  roboteam_proto::RobotCommand robot_command;
-
-  /*
-   * Getting a list of all members of a class is called 'Reflection'.
-   * For more info, see: https://en.wikipedia.org/wiki/Reflection_(computer_programming)
-   */
-  auto reflection = roboteam_proto::RobotCommand::GetReflection();
-  auto fieldDescriptors = new std::vector<const FieldDescriptor *>();
-  reflection->ListFields(robot_command, fieldDescriptors);
-
-  // I need the message to subscribe to.
-  // and I need to get values for a specific type and name.
-  // or a set of types and names.
-  // A topic is always linked to a type
-  // So we need to have a map of topics and their respective type.
-
-  // list through all known fields
-  for (auto field_descriptor : *fieldDescriptors) {
-    auto cpp_type = field_descriptor->cpp_type();
-
-    switch(cpp_type) {
-      case FieldDescriptor::CppType::CPPTYPE_FLOAT: {
-        reflection->GetFloat(robot_command, field_descriptor);
-        break;
-      }
-      case FieldDescriptor::CppType::CPPTYPE_INT32: {
-        reflection->GetInt64(robot_command, field_descriptor);
-        break;
-      }
-      case FieldDescriptor::CPPTYPE_BOOL: {
-        reflection->GetBool(robot_command, field_descriptor);
-        break;
-      }
-      default: {
-        // Do nothing if not float, int or bool
-        break;
-      }
-    }
-  }
+  ChartSeriesDialog * series_dialog = new ChartSeriesDialog(this);
+  connect(series_settings_button, &QPushButton::clicked, [this, series_dialog]() {
+    series_dialog->exec();
+  });
 }
 
 void ChartSeries::set_name(const QString &name) {
@@ -137,3 +101,53 @@ void ChartSeries::set_change_color_button_background(const QColor & color) const
   QString change_color_button_stylesheet = "background-color: " + color.name() +";";
   change_color_button->setStyleSheet(change_color_button_stylesheet);
 }
+
+void ChartSeries::init_subscriber_for_channel_type(const roboteam_utils::ChannelType & channel_type) {
+
+    proto_subscriber = new roboteam_proto::Subscriber<roboteam_proto::RobotCommand>
+        (roboteam_utils::ROBOT_COMMANDS_PRIMARY_CHANNEL, &ChartSeries::handle_robot_command_input, this);
+
+}
+
+void ChartSeries::handle_robot_command_input(roboteam_proto::RobotCommand &robot_command) {
+  auto reflection = roboteam_proto::RobotCommand::GetReflection();
+  this->handle_incoming_message(robot_command, *reflection);
+}
+
+void ChartSeries::handle_world_input(roboteam_proto::World &world) {
+  auto reflection = roboteam_proto::World::GetReflection();
+  this->handle_incoming_message(world, *reflection);
+}
+
+void ChartSeries::handle_feedback_input(roboteam_proto::RobotFeedback &feedback) {
+  auto reflection = roboteam_proto::RobotFeedback::GetReflection();
+  this->handle_incoming_message(feedback, *reflection);
+}
+
+void ChartSeries::handle_setting_input(roboteam_proto::Setting &setting) {
+  auto reflection = roboteam_proto::Setting::GetReflection();
+  this->handle_incoming_message(setting, *reflection);
+}
+
+void ChartSeries::update_channel(const roboteam_utils::ChannelType & channel_type) {
+  if (this->channel_type != channel_type) {
+    this->channel_type = channel_type;
+    init_subscriber_for_channel_type(channel_type);
+  }
+}
+
+template<class T>
+void ChartSeries::handle_incoming_message(T message, const Reflection &reflection) {
+  auto current_time = roboteam_utils::Timer::getCurrentTime();
+  auto field_descriptors = std::vector<const google::protobuf::FieldDescriptor *>();
+  reflection.ListFields(message, &field_descriptors);
+
+  for (auto field_descriptor : field_descriptors) {
+    switch(field_descriptor->cpp_type()) {
+      case FieldDescriptor::CPPTYPE_FLOAT: break;
+      case FieldDescriptor::CPPTYPE_INT32: break;
+      default: break;
+    }
+  }
+}
+

@@ -2,11 +2,11 @@
 // Created by Lukas Bos on 18/10/2019.
 //
 
-#include "include/WelcomeDialog.h"
+#include "WelcomeDialog.h"
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
-#include <include/MainWindow.h>
+#include "MainWindow.h"
 
 WelcomeDialog::WelcomeDialog(MainWindow * main_window) : QDialog(main_window) {
   connect(this, &QDialog::rejected, main_window, &MainWindow::close);

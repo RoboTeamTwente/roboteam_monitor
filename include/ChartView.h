@@ -1,7 +1,3 @@
-//
-// Created by Lukas Bos on 18/10/2019.
-//
-
 #ifndef RTT_CHARTVIEW_H
 #define RTT_CHARTVIEW_H
 
@@ -22,6 +18,8 @@ class ChartView : public QWidget {
   QVBoxLayout * series_overview_layout;
   QChartView * chart;
   QCheckBox * theme_checkbox;
+  QWidget * create_series_overview_widget(QHBoxLayout *dialog_horizontal_layout);
+  void initialize_layout();
 };
 
 #endif //RTT_CHARTVIEW_H

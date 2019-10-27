@@ -3,7 +3,6 @@
 //
 
 #include <QApplication>
-#include <memory>
 #include <QStyleFactory>
 #include "include/MenuBar.h"
 #include "include/MainWindow.h"

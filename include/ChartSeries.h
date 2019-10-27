@@ -4,21 +4,38 @@
 #include <string>
 #include <QtCharts/QtCharts>
 #include <QWidget>
+#include <roboteam_proto/Subscriber.h>
+#include <roboteam_proto/RobotFeedback.pb.h>
+#include <roboteam_proto/RobotCommand.pb.h>
+#include <roboteam_proto/World.pb.h>
+#include <roboteam_proto/Setting.pb.h>
+#include <roboteam_utils/Timer.h>
 
 class MainWindow;
 class ChartView;
 class QLineEdit;
 class QPushButton;
 class ChartSeries : public QGroupBox {
-  Q_OBJECT
  private:
-  QXYSeries * qt_series;
-  QPushButton * change_color_button;
+  QXYSeries * qt_series = nullptr;
+  QPushButton * change_color_button = nullptr;
+  roboteam_utils::ChannelType channel_type;
+  void * proto_subscriber = nullptr;
+
+  void init_subscriber_for_channel_type(const roboteam_utils::ChannelType & channel_type);
+  void handle_robot_command_input(roboteam_proto::RobotCommand & robot_command);
+  void handle_world_input(roboteam_proto::World & world);
+  void handle_feedback_input(roboteam_proto::RobotFeedback & feedback);
+  void handle_setting_input(roboteam_proto::Setting & setting);
+
+  template <class T>
+  void handle_incoming_message(T message, const google::protobuf::Reflection & reflection);
 
  public:
   explicit ChartSeries(const QString & default_name, ChartView * chart_view);
   QXYSeries * get_qt_series();
   void set_name(const QString &name);
+  void update_channel(const roboteam_utils::ChannelType & channel_type);
 
  public slots:
   void set_color(const QColor & color);

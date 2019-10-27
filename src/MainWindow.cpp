@@ -1,7 +1,7 @@
-#include <include/WelcomeDialog.h>
-#include <include/NewGraphDialog.h>
-#include <include/MenuBar.h>
-#include "include/MainWindow.h"
+#include <WelcomeDialog.h>
+#include <NewGraphDialog.h>
+#include <MenuBar.h>
+#include "MainWindow.h"
 
 MainWindow::MainWindow() : QMainWindow() {
   auto menu = new MenuBar(this);

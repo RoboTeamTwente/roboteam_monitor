@@ -7,10 +7,8 @@
 
 #include <QMainWindow>
 class MainWindow : public QMainWindow {
-  Q_OBJECT
  public:
   explicit MainWindow();
-
  public slots:
   void open_new_graph_dialog();
   void open_welcome_dialog();

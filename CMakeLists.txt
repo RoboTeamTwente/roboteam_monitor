@@ -35,18 +35,26 @@ find_package(Qt5Widgets REQUIRED)
 
 # Add an executable
 add_executable(roboteam_monitor
-        src/main.cpp src/ChartView.cpp include/ChartView.h src/WelcomeDialog.cpp include/WelcomeDialog.h src/MenuBar.cpp include/MenuBar.h src/NewGraphDialog.cpp include/NewGraphDialog.h src/MainWindow.cpp include/MainWindow.h src/ChartSeries.cpp include/ChartSeries.h)
+        src/main.cpp
+        src/ChartView.cpp
+        src/WelcomeDialog.cpp
+        src/MenuBar.cpp
+        src/NewGraphDialog.cpp
+        src/MainWindow.cpp
+        src/ChartSeries.cpp
+        src/ChartSeriesDialog.cpp
+        src/Helpers.cpp include/Helpers.h)
 
 # link the exe against the libraries
 target_link_libraries(roboteam_monitor
         PUBLIC roboteam_proto
+        PUBLIC roboteam_utils
         PRIVATE Qt5::Widgets
         PRIVATE Qt5::Gui
         PRIVATE Qt5::Charts
-        PRIVATE roboteam_utils
         )
 
 target_include_directories(roboteam_monitor
         INTERFACE include
-        PRIVATE include/roboteam_monitor
+        PRIVATE include
         PRIVATE src )

@@ -102,10 +102,10 @@ void ChartSeries::set_change_color_button_background(const QColor & color) const
   change_color_button->setStyleSheet(change_color_button_stylesheet);
 }
 
-void ChartSeries::init_subscriber_for_channel_type(const roboteam_utils::ChannelType & channel_type) {
+void ChartSeries::init_subscriber_for_channel_type(const proto::ChannelType & channel_type) {
 
     proto_subscriber = new proto::Subscriber<proto::RobotCommand>
-        (roboteam_utils::ROBOT_COMMANDS_PRIMARY_CHANNEL, &ChartSeries::handle_robot_command_input, this);
+        (proto::ROBOT_COMMANDS_PRIMARY_CHANNEL, &ChartSeries::handle_robot_command_input, this);
 
 }
 
@@ -129,7 +129,7 @@ void ChartSeries::handle_setting_input(proto::Setting &setting) {
   this->handle_incoming_message(setting, *reflection);
 }
 
-void ChartSeries::update_channel(const roboteam_utils::ChannelType & channel_type) {
+void ChartSeries::update_channel(const proto::ChannelType & channel_type) {
   if (this->channel_type != channel_type) {
     this->channel_type = channel_type;
     init_subscriber_for_channel_type(channel_type);

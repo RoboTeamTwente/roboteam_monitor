@@ -19,10 +19,10 @@ class ChartSeries : public QGroupBox {
  private:
   QXYSeries * qt_series = nullptr;
   QPushButton * change_color_button = nullptr;
-  roboteam_utils::ChannelType channel_type;
+  proto::ChannelType channel_type;
   void * proto_subscriber = nullptr;
 
-  void init_subscriber_for_channel_type(const roboteam_utils::ChannelType & channel_type);
+  void init_subscriber_for_channel_type(const proto::ChannelType & channel_type);
   void handle_robot_command_input(proto::RobotCommand & robot_command);
   void handle_world_input(proto::World & world);
   void handle_feedback_input(proto::RobotFeedback & feedback);
@@ -35,7 +35,7 @@ class ChartSeries : public QGroupBox {
   explicit ChartSeries(const QString & default_name, ChartView * chart_view);
   QXYSeries * get_qt_series();
   void set_name(const QString &name);
-  void update_channel(const roboteam_utils::ChannelType & channel_type);
+  void update_channel(const proto::ChannelType & channel_type);
 
  public slots:
   void set_color(const QColor & color);

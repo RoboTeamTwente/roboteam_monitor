@@ -10,6 +10,7 @@
 #include <roboteam_proto/World.pb.h>
 #include <roboteam_proto/Setting.pb.h>
 #include <roboteam_utils/Timer.h>
+#include <src/Filter.h>
 
 class MainWindow;
 class ChartView;
@@ -21,6 +22,7 @@ class ChartSeries : public QGroupBox {
   QPushButton * change_color_button = nullptr;
   proto::ChannelType channel_type;
   void * proto_subscriber = nullptr;
+  std::vector<Filter> filters;
 
   void init_subscriber_for_channel_type(const proto::ChannelType & channel_type);
   void handle_robot_command_input(proto::RobotCommand & robot_command);
@@ -41,6 +43,8 @@ class ChartSeries : public QGroupBox {
   void set_color(const QColor & color);
   void set_change_color_button_background(const QColor & color) const;
   void set_visible(bool visible);
+  const Filter * add_new_filter();
+  const std::vector<Filter> & get_filters();
 };
 
 #endif //RTT_CHARTSERIES_H

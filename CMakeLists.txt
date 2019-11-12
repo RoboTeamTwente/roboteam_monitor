@@ -43,7 +43,9 @@ add_executable(roboteam_monitor
         src/MainWindow.cpp
         src/ChartSeries.cpp
         src/ChartSeriesDialog.cpp
-        src/Helpers.cpp include/Helpers.h)
+        src/Helpers.cpp
+        src/SelectTypeWidget.cpp
+        src/AddFilterDialog.cpp include/AddFilterDialog.h)
 
 # link the exe against the libraries
 target_link_libraries(roboteam_monitor

@@ -1,9 +1,11 @@
 #include <include/ChartSeries.h>
 #include <roboteam_utils/constants.h>
 #include <include/Helpers.h>
+#include <include/AddFilterDialog.h>
 #include "ChartSeriesDialog.h"
 
 ChartSeriesDialog::ChartSeriesDialog(ChartSeries * series) : QDialog(series) {
+  setMinimumWidth(600);
   auto dialog_layout = new QVBoxLayout(this);
   setLayout(dialog_layout);
   auto tab_widget = new QTabWidget();
@@ -19,33 +21,38 @@ QWidget * ChartSeriesDialog::create_network_settings_tab(ChartSeries * series) {
 
   // communication layout
   auto comm_layout = new QHBoxLayout();
-  auto channel_combo_box = new QComboBox();
+  channel_combo_box = new QComboBox();
   comm_layout->addWidget(channel_combo_box);
   for (auto const &channel : proto::CHANNELS) {
       channel_combo_box->addItem(QString::fromStdString(channel.second.name));
   }
-  network_settings_layout->addLayout(comm_layout);
-  connect(channel_combo_box, &QComboBox::currentTextChanged, this, &ChartSeriesDialog::update_filters_layout);
+    connect(channel_combo_box, &QComboBox::currentTextChanged, [this](QString text) {
+        selected_topic_name = text;
+    });
 
-  // Filters layout
+    network_settings_layout->addLayout(comm_layout);
 
-    auto tree_layout = new QVBoxLayout();
-    filters_tree_widget = new QTreeWidget();
-    top_level_tree_item = new QTreeWidgetItem();
 
-    filters_tree_widget->addTopLevelItem(top_level_tree_item);
-    top_level_tree_item->setText(0, "Filters");
+  auto current_filters_label = new QLabel();
+  current_filters_label->setText("Active filters");
+  network_settings_layout->addWidget(current_filters_label);
 
-    tree_layout->addWidget(filters_tree_widget);
-    auto scroll = new QScrollArea();
-    scroll->setWidgetResizable(true);
-    auto inner = new QFrame(scroll);
-    inner->setLayout(tree_layout);
-    scroll->setWidget(inner);
-    network_settings_layout->addWidget(scroll);
+  auto current_filters_layout = new QVBoxLayout();
+  for (auto filter : series->get_filters()) {
+      create_filter_view(current_filters_layout, filter);
+  }
 
-    auto topic = proto::CHANNELS.at(proto::ChannelType::GEOMETRY_CHANNEL).name;
-    update_filters_layout(QString::fromStdString(topic));
+
+    network_settings_layout->addLayout(current_filters_layout);
+
+    auto add_new_filter_button = new QPushButton();
+    add_new_filter_button->setText("Add new filter");
+    connect(add_new_filter_button, &QPushButton::clicked, [this, series, current_filters_layout]() {
+        auto new_filter = series->add_new_filter();
+        create_filter_view(current_filters_layout, *new_filter);
+    });
+    network_settings_layout->addWidget(add_new_filter_button);
+
 
   auto buttons_layout = new QHBoxLayout();
   network_settings_layout->addLayout(buttons_layout);
@@ -64,7 +71,7 @@ QWidget * ChartSeriesDialog::create_network_settings_tab(ChartSeries * series) {
   apply_network_settings_button->setStyleSheet("background-color: green;");
   buttons_layout->addWidget(apply_network_settings_button);
 
-  connect(apply_network_settings_button, &QPushButton::clicked, [this, series, channel_combo_box]() {
+  connect(apply_network_settings_button, &QPushButton::clicked, [this, series]() {
     for (auto const &channel : proto::CHANNELS) {
         if (channel_combo_box->currentText() == QString::fromStdString(channel.second.name)) {
             series->update_channel(channel.first);
@@ -72,50 +79,30 @@ QWidget * ChartSeriesDialog::create_network_settings_tab(ChartSeries * series) {
         }
     }
   });
-
   return network_settings_tab;
 }
 
-void ChartSeriesDialog::update_filters_layout(const QString & topic_name) {
-    top_level_tree_item->takeChildren();
-
-    filters_tree_widget->setMinimumWidth(400);
-    filters_tree_widget->setColumnCount(2);
-    filters_tree_widget->setColumnWidth(0, 150);
-    filters_tree_widget->setColumnWidth(1, 200);
-
-    QTreeWidgetItem* header = filters_tree_widget->headerItem();
-    header->setText(0, "item");
-    header->setText(1, "type");
-    header->setText(2, "value");
-
-    top_level_tree_item->setExpanded(true);
-    auto descriptor = Helpers::get_descriptor_for_topic(topic_name);
-    add_filter_descriptor(descriptor, 0, top_level_tree_item);
-}
-
-void ChartSeriesDialog::add_filter_descriptor(const google::protobuf::Descriptor * descriptor, int depth, QTreeWidgetItem * parent) {
-    for (int i = 0; i < descriptor->field_count(); ++i) {
-        auto field_descriptor = descriptor->field(i);
-        auto row_widget = new QTreeWidgetItem();
-        parent->addChild(row_widget);
-
-        // set the name in the first column
-        row_widget->setText(0, QString::fromStdString(field_descriptor->name()));
-
-        // put the type in the second column
-        row_widget->setText(1, Helpers::get_actual_typename(field_descriptor));
-
-        // put a lineEdit in the third column
-        auto text_edit = new QLineEdit();
-        filters_tree_widget->setItemWidget(row_widget, 2 , text_edit);
-
-        // do some nice recursion for the children of this item
-        auto child_descriptor = field_descriptor->message_type();
-        if (child_descriptor) {
-            add_filter_descriptor(child_descriptor, ++depth, row_widget);
-        }
+void ChartSeriesDialog::create_filter_view(QVBoxLayout *current_filters_layout, const Filter &filter) const {
+    auto filter_layout = new QHBoxLayout();
+    auto add_filter_dialog = new AddFilterDialog((QWidget *) this);
+    auto add_filter_button = new QPushButton();
+    if (filter.field_descriptor) {
+        add_filter_button->setText(QString::fromStdString(filter.field_descriptor->name()));
+    } else {
+        add_filter_button->setText("Select...");
     }
+    connect(add_filter_button, &QPushButton::clicked, add_filter_dialog, &QDialog::open);
+    connect(add_filter_dialog, &AddFilterDialog::finished, [=]() {
+      add_filter_button->setText(QString::fromStdString(add_filter_dialog->get_selected_field_descriptor()->name()));
+    });
+    connect(channel_combo_box, &QComboBox::currentTextChanged, add_filter_dialog, &AddFilterDialog::update_filters_layout);
+    if (selected_topic_name != "") {
+        add_filter_dialog->update_filters_layout(selected_topic_name);
+    }
+    filter_layout->addWidget(add_filter_button);
+    auto filter_value_edit = new QLineEdit();
+    filter_layout->addWidget(filter_value_edit);
+    current_filters_layout->addLayout(filter_layout);
 }
 
 

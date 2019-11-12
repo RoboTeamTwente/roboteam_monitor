@@ -9,7 +9,7 @@
 #include <QPushButton>
 #include <QDialog>
 
-SelectTypeWidget::SelectTypeWidget(QDialog * parent) : QTreeWidget(static_cast<QWidget *>(parent)), parent_widget(parent) {
+SelectTypeWidget::SelectTypeWidget(AddFilterDialog * parent) : QTreeWidget((QWidget *)parent), parent_widget(parent) {
     top_level_tree_item = new QTreeWidgetItem();
     addTopLevelItem(top_level_tree_item);
     top_level_tree_item->setText(0, "Filters");
@@ -17,12 +17,11 @@ SelectTypeWidget::SelectTypeWidget(QDialog * parent) : QTreeWidget(static_cast<Q
     setMinimumWidth(FILTER_TREE_VIEW_WIDTH);
     setColumnCount(2);
     setColumnWidth(0, 150);
-    setColumnWidth(1, 200);
+    setColumnWidth(1, 100);
 
     auto header = headerItem();
     header->setText(0, "Item");
     header->setText(1, "Type");
-    header->setText(2, "Value");
 }
 
 void SelectTypeWidget::update_filters_layout(const QString & topic_name) {
@@ -48,14 +47,19 @@ void SelectTypeWidget::add_filter_descriptor(const google::protobuf::Descriptor 
         // put the type in the second column
         row_widget->setText(1, Helpers::get_actual_typename(field_descriptor));
 
-        // put a lineEdit in the third column
-        auto select_button = new QPushButton();
-        select_button->setText("Select");
-        connect(select_button, &QPushButton::clicked, [=]() {
-            emit fieldSelected(field_descriptor);
-            parent_widget->close();
+        // Select the item and close the dialog on double click
+        connect(this, &QTreeWidget::itemActivated, [this, row_widget, field_descriptor](QTreeWidgetItem *item, int column) {
+            if (item == row_widget) {
+                emit fieldSelectedAndClose(field_descriptor);
+            }
         });
-        setItemWidget(row_widget, 2, select_button);
+
+        connect(this, &QTreeWidget::currentItemChanged, [this, row_widget, field_descriptor](QTreeWidgetItem *item) {
+          if (item == row_widget) {
+              emit fieldSelected(field_descriptor);
+          }
+        });
+
 
         // do some nice recursion for the children of this item
         auto child_descriptor = field_descriptor->message_type();

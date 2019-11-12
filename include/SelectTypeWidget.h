@@ -8,12 +8,13 @@
 #include <QTreeWidget>
 #include <google/protobuf/descriptor.h>
 
+class AddFilterDialog;
 class SelectTypeWidget : public QTreeWidget {
   Q_OBJECT
  public:
-    explicit SelectTypeWidget(QDialog * parent);
+    explicit SelectTypeWidget(AddFilterDialog * parent);
  private:
-  QDialog * parent_widget = nullptr;
+  AddFilterDialog * parent_widget = nullptr;
   QTreeWidgetItem * top_level_tree_item;
   void add_filter_descriptor(const google::protobuf::Descriptor * descriptor, int depth, QTreeWidgetItem * parent);
  public slots:
@@ -21,6 +22,8 @@ class SelectTypeWidget : public QTreeWidget {
 
   signals:
     void fieldSelected(const google::protobuf::FieldDescriptor * field_descriptor);
+  void fieldSelectedAndClose(const google::protobuf::FieldDescriptor * field_descriptor);
+
 };
 
 #endif //RTT_SELECTTYPEWIDGET_H

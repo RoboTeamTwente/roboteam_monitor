@@ -151,13 +151,17 @@ void ChartSeries::handle_incoming_message(T message, const Reflection &reflectio
   }
 }
 
-const std::vector<Filter> &ChartSeries::get_filters() {
+const std::vector<Filter *> &ChartSeries::get_filters() {
     return filters;
 }
 
-const Filter * ChartSeries::add_new_filter() {
+Filter * ChartSeries::add_new_filter() {
     auto empty_filter = new Filter();
-    filters.push_back(* empty_filter);
+    filters.push_back(empty_filter);
     return empty_filter;
+}
+
+void ChartSeries::removeFilter(Filter *filter_to_remove) {
+    filters.erase(std::remove(filters.begin(), filters.end(), filter_to_remove), filters.end());
 }
 

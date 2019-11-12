@@ -15,48 +15,10 @@ ChartSeriesDialog::ChartSeriesDialog(ChartSeries *series) : QDialog(series) {
 
     QWidget * visualization_tab = create_visualization_settings_tab(series);
     tab_widget->addTab(visualization_tab, "Visualization");
-}
 
-QWidget *ChartSeriesDialog::create_network_settings_tab(ChartSeries *series) {
-    auto network_settings_tab = new QWidget();
-    network_settings_layout = new QVBoxLayout();
-    network_settings_tab->setLayout(network_settings_layout);
-
-    // communication layout
-    auto comm_layout = new QHBoxLayout();
-    channel_combo_box = new QComboBox();
-    comm_layout->addWidget(channel_combo_box);
-    for (auto const &channel : proto::CHANNELS) {
-        channel_combo_box->addItem(QString::fromStdString(channel.second.name));
-    }
-    connect(channel_combo_box, &QComboBox::currentTextChanged, [this](const QString &text) {
-      selected_topic_name = text;
-    });
-
-    network_settings_layout->addLayout(comm_layout);
-
-    auto current_filters_label = new QLabel();
-    current_filters_label->setText("Active filters");
-    network_settings_layout->addWidget(current_filters_label);
-
-    auto current_filters_layout = new QVBoxLayout();
-    for (auto filter : series->get_filters()) {
-        auto filter_widget = create_filter_widget(current_filters_layout, filter);
-        current_filters_layout->addWidget(filter_widget);
-    }
-    network_settings_layout->addLayout(current_filters_layout);
-
-    auto add_new_filter_button = new QPushButton();
-    add_new_filter_button->setText("Add new filter");
-    connect(add_new_filter_button, &QPushButton::clicked, [this, series, current_filters_layout]() {
-      auto new_filter = series->add_new_filter();
-      auto filter_widget = create_filter_widget(current_filters_layout, *new_filter);
-      current_filters_layout->addWidget(filter_widget);
-    });
-    network_settings_layout->addWidget(add_new_filter_button);
 
     auto buttons_layout = new QHBoxLayout();
-    network_settings_layout->addLayout(buttons_layout);
+    dialog_layout->addLayout(buttons_layout);
 
     // Cancel button
     auto cancel_button = new QPushButton();
@@ -80,28 +42,70 @@ QWidget *ChartSeriesDialog::create_network_settings_tab(ChartSeries *series) {
           }
       }
     });
+
+}
+
+QWidget *ChartSeriesDialog::create_network_settings_tab(ChartSeries *series) {
+    auto network_settings_tab = new QWidget();
+    network_settings_layout = new QVBoxLayout();
+    network_settings_tab->setLayout(network_settings_layout);
+
+    // communication layout
+    auto comm_layout = new QHBoxLayout();
+    channel_combo_box = new QComboBox();
+    comm_layout->addWidget(channel_combo_box);
+    for (auto const &channel : proto::CHANNELS) {
+        channel_combo_box->addItem(QString::fromStdString(channel.second.name));
+    }
+    connect(channel_combo_box, &QComboBox::currentTextChanged, [this](const QString &text) {
+      selected_topic_name = text;
+    });
+
+    network_settings_layout->addLayout(comm_layout);
+
+    network_settings_layout->setAlignment(Qt::AlignTop);
+
+    auto current_filters_label = new QLabel();
+    current_filters_label->setText("Active filters");
+    network_settings_layout->addWidget(current_filters_label);
+
+    auto current_filters_layout = new QVBoxLayout();
+    for (auto filter : series->get_filters()) {
+        auto filter_widget = create_filter_widget(current_filters_layout, filter, series);
+        current_filters_layout->addWidget(filter_widget);
+    }
+    network_settings_layout->addLayout(current_filters_layout);
+
+    auto add_new_filter_button = new QPushButton();
+    add_new_filter_button->setText("Add new filter");
+    connect(add_new_filter_button, &QPushButton::clicked, [this, series, current_filters_layout]() {
+      auto new_filter = series->add_new_filter();
+      auto filter_widget = create_filter_widget(current_filters_layout, new_filter, series);
+      current_filters_layout->addWidget(filter_widget);
+    });
+    network_settings_layout->addWidget(add_new_filter_button);
+
+
     return network_settings_tab;
 }
 
-QWidget *ChartSeriesDialog::create_filter_widget(QLayout *parent, const Filter &filter) const {
+QWidget *ChartSeriesDialog::create_filter_widget(QLayout *parent, Filter * filter, ChartSeries * series) const {
     auto filter_widget = new QWidget();
     auto filter_layout = new QHBoxLayout();
     filter_widget->setLayout(filter_layout);
     auto add_filter_dialog = new AddFilterDialog((QWidget *) this);
     auto add_filter_button = new QPushButton();
-    if (filter.field_descriptor) {
-        add_filter_button->setText(QString::fromStdString(filter.field_descriptor->name()));
+    if (filter->field_descriptor) {
+        add_filter_button->setText(QString::fromStdString(filter->field_descriptor->name()));
     } else {
         add_filter_button->setText("Select...");
     }
     connect(add_filter_button, &QPushButton::clicked, add_filter_dialog, &QDialog::open);
-    connect(add_filter_dialog, &AddFilterDialog::finished, [=]() {
-      add_filter_button->setText(QString::fromStdString(add_filter_dialog->get_selected_field_descriptor()->name()));
+    connect(add_filter_dialog, &AddFilterDialog::valueChanged, [add_filter_button, filter](const google::protobuf::FieldDescriptor * field_descriptor) {
+      add_filter_button->setText(QString::fromStdString(field_descriptor->name()));
+      filter->field_descriptor = const_cast<google::protobuf::FieldDescriptor *>(field_descriptor);
     });
-    connect(channel_combo_box,
-            &QComboBox::currentTextChanged,
-            add_filter_dialog,
-            &AddFilterDialog::update_filters_layout);
+
     if (selected_topic_name!="") {
         add_filter_dialog->update_filters_layout(selected_topic_name);
     }
@@ -111,7 +115,17 @@ QWidget *ChartSeriesDialog::create_filter_widget(QLayout *parent, const Filter &
     filter_layout->addWidget(filter_value_edit);
 
     auto rm_filter_button = new QPushButton();
-    rm_filter_button->setText("Remove...");
+    rm_filter_button->setText("Remove");
+    rm_filter_button->setStyleSheet("background-color: red;");
+    filter_layout->addWidget(rm_filter_button);
+
+    connect(rm_filter_button, &QPushButton::clicked, [parent, filter_widget, series, filter]() {
+        filter_widget->hide();
+        parent->removeWidget(filter_widget);
+        series->removeFilter(filter);
+        std::cerr << "WARNING NOT REALLY REMOVING FILTER" << std::endl;
+    });
+
     return filter_widget;
 }
 

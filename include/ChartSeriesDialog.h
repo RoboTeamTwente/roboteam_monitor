@@ -15,7 +15,7 @@ class ChartSeriesDialog : public QDialog {
  public:
   explicit ChartSeriesDialog(ChartSeries * series);
  public slots:
-  QWidget * create_filter_widget(QLayout * parent, const Filter &filter) const;
+  QWidget * create_filter_widget(QLayout * parent, Filter * filter,  ChartSeries * series) const;
 };
 
 #endif //RTT_CHARTSERIESDIALOG_H

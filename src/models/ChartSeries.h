@@ -10,7 +10,7 @@
 #include <roboteam_proto/World.pb.h>
 #include <roboteam_proto/Setting.pb.h>
 #include <roboteam_utils/Timer.h>
-#include <src/Filter.h>
+#include <src/models/Filter.h>
 
 class MainWindow;
 class ChartView;

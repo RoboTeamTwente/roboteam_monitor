@@ -1,9 +1,9 @@
 #include "ChartSeries.h"
 #include <roboteam_proto/RobotCommand.pb.h>
-#include <ChartView.h>
+#include <src/views/components/ChartView.h>
 #include <functional>
 #include <roboteam_utils/constants.h>
-#include <ChartSeriesDialog.h>
+#include <src/views/dialogs/ChartSeriesDialog.h>
 
 using namespace google::protobuf;
 

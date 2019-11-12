@@ -6,7 +6,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
-#include "MainWindow.h"
+#include "src/views/MainWindow.h"
 
 WelcomeDialog::WelcomeDialog(MainWindow * main_window) : QDialog(main_window) {
   connect(this, &QDialog::rejected, main_window, &MainWindow::close);

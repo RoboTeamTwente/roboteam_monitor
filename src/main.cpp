@@ -4,8 +4,9 @@
 
 #include <QApplication>
 #include <QStyleFactory>
-#include "include/MenuBar.h"
-#include "include/MainWindow.h"
+#include <src/models/FilterListModel.h>
+#include "src/views/components/MenuBar.h"
+#include "src/views/MainWindow.h"
 
 
 void setDarkTheme() {
@@ -31,7 +32,8 @@ void setDarkTheme() {
 int main(int argc, char** argv) {
   QApplication a(argc, argv);
   setDarkTheme();
-  MainWindow window;
+    MainWindow window;
+
   window.setWindowState(Qt::WindowMaximized);
   window.show();
   return a.exec();

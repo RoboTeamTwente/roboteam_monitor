@@ -36,16 +36,26 @@ find_package(Qt5Widgets REQUIRED)
 # Add an executable
 add_executable(roboteam_monitor
         src/main.cpp
-        src/ChartView.cpp
-        src/WelcomeDialog.cpp
-        src/MenuBar.cpp
-        src/NewGraphDialog.cpp
-        src/MainWindow.cpp
-        src/ChartSeries.cpp
-        src/ChartSeriesDialog.cpp
-        src/Helpers.cpp
-        src/SelectTypeWidget.cpp
-        src/AddFilterDialog.cpp include/AddFilterDialog.h)
+        src/views/components/ChartView.h
+        src/views/components/ChartView.cpp
+        src/views/dialogs/WelcomeDialog.h
+        src/views/dialogs/WelcomeDialog.cpp
+        src/views/components/MenuBar.h
+        src/views/components/MenuBar.cpp
+        src/views/dialogs/NewGraphDialog.h
+        src/views/dialogs/NewGraphDialog.cpp
+        src/views/MainWindow.h
+        src/views/MainWindow.cpp
+        src/models/ChartSeries.h
+        src/models/ChartSeries.cpp
+        src/views/dialogs/ChartSeriesDialog.h
+        src/views/dialogs/ChartSeriesDialog.cpp
+        src/utilities/Helpers.h
+        src/utilities/Helpers.cpp
+        src/views/components/SelectTypeWidget.h
+        src/views/components/SelectTypeWidget.cpp
+        src/views/dialogs/AddFilterDialog.h
+        src/views/dialogs/AddFilterDialog.cpp src/models/FilterListModel.cpp src/models/FilterListModel.h src/models/Filter.cpp)
 
 # link the exe against the libraries
 target_link_libraries(roboteam_monitor
@@ -57,6 +67,4 @@ target_link_libraries(roboteam_monitor
         )
 
 target_include_directories(roboteam_monitor
-        INTERFACE include
-        PRIVATE include
         PRIVATE src )

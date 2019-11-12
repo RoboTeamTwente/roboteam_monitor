@@ -1,7 +1,7 @@
-#include <include/ChartSeries.h>
+#include <src/models/ChartSeries.h>
 #include <roboteam_utils/constants.h>
-#include <include/Helpers.h>
-#include <include/AddFilterDialog.h>
+#include <src/utilities/Helpers.h>
+#include <src/views/dialogs/AddFilterDialog.h>
 #include "ChartSeriesDialog.h"
 
 ChartSeriesDialog::ChartSeriesDialog(ChartSeries *series) : QDialog(series) {
@@ -96,15 +96,15 @@ QWidget *ChartSeriesDialog::create_filter_widget(QLayout *parent, Filter * filte
     filter_widget->setLayout(filter_layout);
     auto add_filter_dialog = new AddFilterDialog((QWidget *) this);
     auto add_filter_button = new QPushButton();
-    if (filter->field_descriptor) {
-        add_filter_button->setText(QString::fromStdString(filter->field_descriptor->name()));
+    if (filter->get_field_descriptor()) {
+        add_filter_button->setText(QString::fromStdString(filter->get_field_descriptor()->name()));
     } else {
         add_filter_button->setText("Select...");
     }
     connect(add_filter_button, &QPushButton::clicked, add_filter_dialog, &QDialog::open);
     connect(add_filter_dialog, &AddFilterDialog::valueChanged, [add_filter_button, filter](const google::protobuf::FieldDescriptor * field_descriptor) {
       add_filter_button->setText(QString::fromStdString(field_descriptor->name()));
-      filter->field_descriptor = const_cast<google::protobuf::FieldDescriptor *>(field_descriptor);
+      filter->set_field_descriptor(const_cast<google::protobuf::FieldDescriptor *>(field_descriptor));
     });
 
     if (selected_topic_name!="") {

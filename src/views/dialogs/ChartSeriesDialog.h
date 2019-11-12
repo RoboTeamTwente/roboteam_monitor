@@ -1,7 +1,7 @@
 #ifndef RTT_CHARTSERIESDIALOG_H
 #define RTT_CHARTSERIESDIALOG_H
 
-#include "MainWindow.h"
+#include "src/views/MainWindow.h"
 
 class ChartSeries;
 class AddFilterDialog;

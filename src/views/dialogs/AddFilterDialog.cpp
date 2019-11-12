@@ -71,4 +71,4 @@ void AddFilterDialog::update_filters_layout(const QString & topic_name) {
 }
 
 // compile signals
-#include "include/moc_AddFilterDialog.cpp"
+#include "moc_AddFilterDialog.cpp"

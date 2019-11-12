@@ -2,8 +2,8 @@
 // Created by Lukas Bos on 11/11/2019.
 //
 
-#include <include/Constants.h>
-#include <include/Helpers.h>
+#include <src/utilities/Constants.h>
+#include <src/utilities/Helpers.h>
 #include "SelectTypeWidget.h"
 #include <QLineEdit>
 #include <QPushButton>
@@ -69,4 +69,4 @@ void SelectTypeWidget::add_filter_descriptor(const google::protobuf::Descriptor 
     }
 }
 
-#include "include/moc_SelectTypeWidget.cpp"
+#include "moc_SelectTypeWidget.cpp"

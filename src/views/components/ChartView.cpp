@@ -2,7 +2,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include "ChartView.h"
-#include "ChartSeries.h"
+#include "src/models/ChartSeries.h"
 
 ChartView::ChartView(QWidget *parent) : QWidget(parent) {
     setMinimumWidth(800);

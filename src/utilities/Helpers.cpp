@@ -47,9 +47,12 @@ proto::ChannelType Helpers::getChannelTypeByName(const QString &topic_name) {
 }
 
 QString Helpers::get_actual_typename(const google::protobuf::FieldDescriptor * field_descriptor) {
-    auto cpp_type_name = field_descriptor->cpp_type_name();
-    if (QString::fromStdString(cpp_type_name) == "message") {
-        return QString::fromStdString(field_descriptor->message_type()->name());
+    if (field_descriptor) {
+        auto cpp_type_name = field_descriptor->cpp_type_name();
+        if (QString::fromStdString(cpp_type_name)=="message") {
+            return QString::fromStdString(field_descriptor->message_type()->name());
+        }
+        return cpp_type_name;
     }
-    return cpp_type_name;
+    return "Empty Filter";
 }

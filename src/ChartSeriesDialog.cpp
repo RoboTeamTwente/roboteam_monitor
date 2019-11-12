@@ -59,6 +59,7 @@ QWidget *ChartSeriesDialog::create_network_settings_tab(ChartSeries *series) {
     }
     connect(channel_combo_box, &QComboBox::currentTextChanged, [this](const QString &text) {
       selected_topic_name = text;
+      select_field_dialog->update_filters_layout(text);
     });
 
     network_settings_layout->addLayout(comm_layout);
@@ -146,6 +147,34 @@ QWidget *ChartSeriesDialog::create_visualization_settings_tab(ChartSeries *serie
     groupBox->setLayout(vbox);
 
     visualization_layout->addWidget(groupBox);
+
+    auto filter_widget = new QWidget();
+    auto filter_layout = new QHBoxLayout();
+    filter_widget->setLayout(filter_layout);
+    select_field_dialog = new AddFilterDialog((QWidget *) this);
+    auto select_field_button = new QPushButton();
+    select_field_button->setText("Select...");
+    select_field_button->setStyleSheet("background-color: gray");
+
+    connect(select_field_button, &QPushButton::clicked, select_field_dialog, &QDialog::open);
+    connect(select_field_dialog, &AddFilterDialog::valueChanged, [select_field_button](const google::protobuf::FieldDescriptor * field_descriptor) {
+      select_field_button->setText(QString::fromStdString(field_descriptor->name()));
+    });
+    connect(radio_field, &QRadioButton::toggled, [select_field_button](bool checked) {
+        select_field_button->setDisabled(!checked);
+        if (checked) {
+            select_field_button->setStyleSheet("background-color: none");
+        } else {
+            select_field_button->setStyleSheet("background-color: gray");
+        }
+    });
+
+    if (selected_topic_name!="") {
+        select_field_dialog->update_filters_layout(selected_topic_name);
+    }
+    visualization_layout->addWidget(select_field_button);
+
+
 
     return visualization_widget;
 }

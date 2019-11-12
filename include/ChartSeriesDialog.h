@@ -4,6 +4,7 @@
 #include "MainWindow.h"
 
 class ChartSeries;
+class AddFilterDialog;
 class ChartSeriesDialog : public QDialog {
  private:
   QString selected_topic_name;
@@ -11,6 +12,8 @@ class ChartSeriesDialog : public QDialog {
   QComboBox * channel_combo_box;
   QWidget * create_network_settings_tab(ChartSeries * series);
   QWidget * create_visualization_settings_tab(ChartSeries * series);
+
+  AddFilterDialog * select_field_dialog;
 
  public:
   explicit ChartSeriesDialog(ChartSeries * series);

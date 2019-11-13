@@ -13,7 +13,7 @@
 #include <src/Filter.h>
 
 class MainWindow;
-class ChartView;
+class Chart;
 class QLineEdit;
 class QPushButton;
 class ChartSeries : public QGroupBox {
@@ -34,7 +34,7 @@ class ChartSeries : public QGroupBox {
   void handle_incoming_message(T message, const google::protobuf::Reflection & reflection);
 
  public:
-  explicit ChartSeries(const QString & default_name, ChartView * chart_view);
+  explicit ChartSeries(const QString & default_name, Chart * chart_view);
   QXYSeries * get_qt_series();
   void set_name(const QString &name);
   void update_channel(const proto::ChannelType & channel_type);

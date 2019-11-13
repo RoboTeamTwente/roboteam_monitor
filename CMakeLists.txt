@@ -36,7 +36,7 @@ find_package(Qt5Widgets REQUIRED)
 # Add an executable
 add_executable(roboteam_monitor
         src/main.cpp
-        src/ChartView.cpp
+        src/Chart.cpp
         src/WelcomeDialog.cpp
         src/MenuBar.cpp
         src/NewGraphDialog.cpp

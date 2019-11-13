@@ -1,13 +1,13 @@
 #include "ChartSeries.h"
 #include <roboteam_proto/RobotCommand.pb.h>
-#include <ChartView.h>
+#include <Chart.h>
 #include <functional>
 #include <roboteam_utils/constants.h>
 #include <ChartSeriesDialog.h>
 
 using namespace google::protobuf;
 
-ChartSeries::ChartSeries(const QString & default_name, ChartView * chart_view) : QGroupBox("", chart_view) {
+ChartSeries::ChartSeries(const QString & default_name, Chart * chart_view) : QGroupBox("", chart_view) {
   this->setCheckable(false);
   qt_series = new QSplineSeries();
 

@@ -8,6 +8,7 @@
 #include <QString>
 #include <roboteam_proto/Channels.h>
 #include <google/protobuf/descriptor.h>
+#include <QLayout>
 
 class Helpers {
  public:
@@ -19,6 +20,8 @@ class Helpers {
    * This function also translates the 'message' types to their real ones, for example float2f
    */
   static QString get_actual_typename(const google::protobuf::FieldDescriptor * field_descriptor);
+
+  static void clearLayout(QLayout *layout);
 };
 
 

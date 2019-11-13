@@ -66,7 +66,7 @@ ChartSeries::ChartSeries(const QString & default_name, ChartView * chart_view) :
   series_layout->addWidget(delete_series_button);
 
   connect(delete_series_button, &QPushButton::clicked, [this, chart_view]() {
-    chart_view->delete_series(this);
+//    chart_view->delete_series(this);
   });
 
 

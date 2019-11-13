@@ -1,4 +1,4 @@
-#include "ChartView.h"
+#include "include/views/ChartView.h"
 #include "ChartSeries.h"
 
 ChartView::ChartView(ChartModel *model, QWidget  * parent) : QWidget(parent), model(model) {

@@ -1,6 +1,6 @@
 #include "ChartSeries.h"
 #include <roboteam_proto/RobotCommand.pb.h>
-#include <ChartModel.h>
+#include <include/models/ChartModel.h>
 #include <functional>
 #include <roboteam_utils/constants.h>
 #include <ChartSeriesDialog.h>

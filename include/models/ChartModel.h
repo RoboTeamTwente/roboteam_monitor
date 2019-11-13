@@ -1,9 +1,7 @@
 #ifndef RTT_CHARTMODEL_H
 #define RTT_CHARTMODEL_H
 
-#include <QWidget>
-#include <QCheckBox>
-#include <QtCharts/QtCharts>
+#include <QObject>
 
 class ChartSeries;
 class ChartModel : public QObject {

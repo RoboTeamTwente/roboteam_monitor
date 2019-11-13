@@ -6,7 +6,7 @@
 #define RTT_CHARTVIEW_H
 
 #include <QWidget>
-#include "ChartModel.h"
+#include "include/models/ChartModel.h"
 class ChartView : public QWidget {
  private:
   ChartModel * model;

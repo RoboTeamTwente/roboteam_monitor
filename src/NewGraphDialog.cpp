@@ -1,8 +1,8 @@
 #include "NewGraphDialog.h"
 #include "MainWindow.h"
 #include <QVBoxLayout>
-#include <ChartModel.h>
-#include <include/ChartView.h>
+#include <include/models/ChartModel.h>
+#include <include/views/ChartView.h>
 
 NewGraphDialog::NewGraphDialog(MainWindow * main_window) : QDialog(main_window) {
   auto new_graph_layout = new QVBoxLayout();

@@ -1,4 +1,4 @@
-#include "ChartModel.h"
+#include "models/ChartModel.h"
 #include "ChartSeries.h"
 
 ChartModel::ChartModel() : QObject(nullptr) { }
@@ -23,4 +23,4 @@ void ChartModel::set_theme(bool dark_theme) {
 }
 
 
-#include "include/moc_ChartModel.cpp"
+#include "include/models/moc_ChartModel.cpp"

@@ -1,20 +1,19 @@
-#ifndef RTT_CHART_H
-#define RTT_CHART_H
+#ifndef RTT_CHARTMODEL_H
+#define RTT_CHARTMODEL_H
 
 #include <QWidget>
 #include <QCheckBox>
 #include <QtCharts/QtCharts>
 
 class ChartSeries;
-class Chart : public QWidget {
+class ChartModel : public QObject {
   Q_OBJECT
  private:
   std::vector<ChartSeries *> seriesList;
   bool darkTheme = true;
 
  public:
-  explicit Chart(QWidget * parent = nullptr);
-  void drawView();
+  explicit ChartModel();
 
  public slots:
   void add_new_series();
@@ -27,4 +26,4 @@ class Chart : public QWidget {
     void themeChanged(bool darkTheme);
 };
 
-#endif //RTT_CHART_H
+#endif //RTT_CHARTMODEL_H

@@ -1,37 +1,11 @@
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QPushButton>
-#include "Chart.h"
+#include "ChartView.h"
 #include "ChartSeries.h"
 
-Chart::Chart(QWidget *parent) : QWidget(parent) {
+ChartView::ChartView(ChartModel *model, QWidget  * parent) : QWidget(parent), model(model) {
+
     setMinimumWidth(800);
     setMinimumHeight(600);
-    drawView();
-    set_theme(true);
-}
 
-// Add a new series to the list of series
-void Chart::add_new_series() {
-    auto series = new ChartSeries("Series " + QString::number(seriesList.size(), 10), this);
-    seriesList.push_back(series);
-    emit seriesAdded(series);
-}
-
-// Remove the series from the list of series
-void Chart::delete_series(ChartSeries *series_to_delete) {
-    emit seriesRemoved(series_to_delete);
-    seriesList.erase(std::remove(seriesList.begin(), seriesList.end(), series_to_delete), seriesList.end());
-}
-
-// Allow switching between light and dark theme
-void Chart::set_theme(bool dark_theme) {
-    this->darkTheme = dark_theme;
-    emit themeChanged(dark_theme);
-}
-
-// Create all the widgets
-void Chart::drawView() {
     auto dialog_horizontal_layout = new QHBoxLayout();
     auto dialog_splitter = new QSplitter();
     setLayout(dialog_horizontal_layout);
@@ -70,24 +44,26 @@ void Chart::drawView() {
     chart->chart()->createDefaultAxes();
     chart->chart()->setMinimumHeight(300);
     dialog_splitter->addWidget(chart);
+    chart->chart()->setTheme(QChart::ChartThemeDark);
+    chart->chart()->setBackgroundBrush(QColor(33, 33, 33));
 
     //////// VIEW --> MODEL CONNECTIONS //////////
-    connect(add_series_button, &QPushButton::clicked, this, &Chart::add_new_series);
-    connect(theme_checkbox, &QCheckBox::toggled, this, &Chart::set_theme);
+    connect(add_series_button, &QPushButton::clicked, model, &ChartModel::add_new_series);
+    connect(theme_checkbox, &QCheckBox::toggled, model, &ChartModel::set_theme);
 
     //////// MODEL --> VIEW CONNECTIONS //////////
-    connect(this, &Chart::seriesAdded, [series_overview_layout, chart](ChartSeries * series) {
+    connect(model, &ChartModel::seriesAdded, [series_overview_layout, chart](ChartSeries * series) {
       series_overview_layout->addWidget(series);
       chart->chart()->addSeries(series->get_qt_series());
     });
 
-    connect(this, &Chart::seriesRemoved, [series_overview_layout, chart](ChartSeries * series) {
-       series->hide();
-       series_overview_layout->removeWidget(series);
-       chart->chart()->removeSeries(series->get_qt_series());
+    connect(model, &ChartModel::seriesRemoved, [series_overview_layout, chart](ChartSeries * series) {
+      series->hide();
+      series_overview_layout->removeWidget(series);
+      chart->chart()->removeSeries(series->get_qt_series());
     });
 
-    connect(this, &Chart::themeChanged, [chart](bool darkTheme) {
+    connect(model, &ChartModel::themeChanged, [chart](bool darkTheme) {
       if (darkTheme) {
           chart->chart()->setTheme(QChart::ChartThemeDark);
           chart->chart()->setBackgroundBrush(QColor(33, 33, 33));
@@ -96,5 +72,5 @@ void Chart::drawView() {
           chart->chart()->setBackgroundBrush(QColor(255, 255, 255));
       }
     });
+
 }
-#include "include/moc_Chart.cpp"

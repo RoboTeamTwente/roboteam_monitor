@@ -36,7 +36,7 @@ find_package(Qt5Widgets REQUIRED)
 # Add an executable
 add_executable(roboteam_monitor
         src/main.cpp
-        src/Chart.cpp
+        src/ChartModel.cpp
         src/WelcomeDialog.cpp
         src/MenuBar.cpp
         src/NewGraphDialog.cpp
@@ -45,7 +45,7 @@ add_executable(roboteam_monitor
         src/ChartSeriesDialog.cpp
         src/Helpers.cpp
         src/SelectTypeWidget.cpp
-        src/AddFilterDialog.cpp include/AddFilterDialog.h)
+        src/AddFilterDialog.cpp include/AddFilterDialog.h src/ChartView.cpp include/ChartView.h)
 
 # link the exe against the libraries
 target_link_libraries(roboteam_monitor

@@ -14,9 +14,6 @@ class SeriesView : public QWidget {
   SeriesModel* model;
  public:
   explicit SeriesView(SeriesModel*, QWidget * parent = nullptr);
- public:
-  SeriesModel*get_model() const;
-  void set_model(SeriesModel*);
 };
 
 #endif //RTT_SERIESVIEW_H

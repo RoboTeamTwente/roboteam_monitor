@@ -10,13 +10,11 @@ ChartView::ChartView(ChartModel * model, QWidget *parent) : QWidget(parent) {
     setMinimumHeight(600);
 
     auto dialog_horizontal_layout = new QHBoxLayout();
-    auto dialog_splitter = new QSplitter();
     setLayout(dialog_horizontal_layout);
+
+
+    auto dialog_splitter = new QSplitter();
     dialog_horizontal_layout->addWidget(dialog_splitter);
-
-
-//    dialog_splitter->addWidget(series_overview_widget);
-//    series_overview_widget->setMaximumWidth(300);
 
     auto series_list_widget = new QWidget();
     auto series_list_layout = new QVBoxLayout();
@@ -31,22 +29,28 @@ ChartView::ChartView(ChartModel * model, QWidget *parent) : QWidget(parent) {
     series_list_layout->addLayout(series_list_container);
     series_list_layout->setAlignment(Qt::AlignTop);
 
+    auto chart = new QChartView();
+    chart->chart()->createDefaultAxes();
+    chart->chart()->setMinimumHeight(300);
+    dialog_splitter->addWidget(chart);
 
     // when the series change reload the views:
-    connect(model, &ChartModel::seriesChanged, [model, series_list_container]() {
+    connect(model, &ChartModel::seriesChanged, [model, series_list_container, chart]() {
         Helpers::clearLayout(series_list_container);
 
         for (auto series : model->get_series_list()) {
             auto seriesView = new SeriesView(series);
             series_list_container->addWidget(seriesView);
         }
+
+
+        chart->chart()->removeAllSeries();
+        for (auto series : model->get_series_list()) {
+        //    chart->chart()->addSeries(series->getQtSeries());
+            chart->chart()->createDefaultAxes();
+        }
     });
     dialog_splitter->addWidget(series_list_widget);
-
-    auto chart = new QChartView();
-    chart->chart()->createDefaultAxes();
-    chart->chart()->setMinimumHeight(300);
-    dialog_splitter->addWidget(chart);
 }
 
 

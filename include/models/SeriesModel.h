@@ -16,14 +16,12 @@
 class ChartModel;
 class SeriesModel : public QObject {
  private:
-
-  // relations
-  SeriesView * view;
-
+  ChartModel * parent = nullptr;
  public:
-  SeriesView *get_view() const;
-  void set_view(SeriesView *view);
+  ChartModel *get_parent() const;
+  void set_parent(ChartModel *parent);
  private:
+
   QXYSeries * qt_series = nullptr;
   proto::ChannelType channel_type;
   void * proto_subscriber = nullptr;
@@ -46,7 +44,6 @@ class SeriesModel : public QObject {
 
  public slots:
   void set_color(const QColor & color);
-  void set_change_color_button_background(const QColor & color) const;
   void set_visible(bool visible);
   Filter * add_new_filter();
   void removeFilter(Filter * filter_to_remove);

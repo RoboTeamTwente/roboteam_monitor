@@ -7,7 +7,7 @@
 
 using namespace google::protobuf;
 
-SeriesModel::SeriesModel(ChartModel * chartModel) : QObject(nullptr) {
+SeriesModel::SeriesModel(ChartModel * chartModel) : QObject(nullptr), parent(chartModel) {
   qt_series = new QSplineSeries();
   srand (time(nullptr));
   qt_series->append(0, rand() % 20 + 1);
@@ -94,12 +94,12 @@ Filter * SeriesModel::add_new_filter() {
 void SeriesModel::removeFilter(Filter *filter_to_remove) {
     filters.erase(std::remove(filters.begin(), filters.end(), filter_to_remove), filters.end());
 }
+ChartModel *SeriesModel::get_parent() const {
+    return parent;
+}
+void SeriesModel::set_parent(ChartModel *parent) {
+    SeriesModel::parent = parent;
+}
 
-SeriesView *SeriesModel::get_view() const {
-    return view;
-}
-void SeriesModel::set_view(SeriesView *view) {
-    SeriesModel::view = view;
-}
 
 

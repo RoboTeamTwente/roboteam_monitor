@@ -7,9 +7,14 @@
 
 #include <QWidget>
 #include "include/models/ChartModel.h"
+#include "SeriesView.h"
+#include <map>
+
 class ChartView : public QWidget {
  private:
   ChartModel * model;
+  std::map<SeriesModel *, SeriesView *> seriesMap;
+
  public:
   ChartView(ChartModel *model, QWidget  * parent = nullptr);
 };

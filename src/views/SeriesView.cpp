@@ -7,8 +7,6 @@
 #include <QtCharts/QtCharts>
 
 SeriesView::SeriesView(SeriesModel * seriesModel) : QGroupBox("", nullptr), seriesModel(seriesModel) {
-    seriesModel->set_view(this);
-
     this->setCheckable(false);
     setMaximumHeight(260);
     auto series_layout = new QVBoxLayout();
@@ -64,7 +62,7 @@ SeriesView::SeriesView(SeriesModel * seriesModel) : QGroupBox("", nullptr), seri
     });
 
     connect(delete_series_button, &QPushButton::clicked, [seriesModel]() {
-      // seriesModel->get_parent_model()->delete_series(seriesModel);
+       seriesModel->get_parent()->delete_series(seriesModel);
     });
 
     //////// MODEL --> VIEW CONNECTIONS //////////

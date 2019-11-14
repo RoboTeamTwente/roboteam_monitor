@@ -51,18 +51,26 @@ ChartView::ChartView(ChartModel *model, QWidget  * parent) : QWidget(parent), mo
     connect(theme_checkbox, &QCheckBox::toggled, model, &ChartModel::set_theme);
 
     //////// MODEL --> VIEW CONNECTIONS //////////
-    connect(model, &ChartModel::seriesAdded, [series_overview_layout, chart](SeriesModel * series) {
+    connect(model, &ChartModel::seriesAdded, [this, series_overview_layout, chart](SeriesModel * series) {
+
         auto seriesView = new SeriesView(series);
+        seriesMap.insert(std::make_pair(series, seriesView));
+
         series_overview_layout->addWidget(seriesView);
         chart->chart()->addSeries(series->get_qt_series());
         chart->chart()->createDefaultAxes();
     });
 
-    connect(model, &ChartModel::seriesRemoved, [series_overview_layout, chart](SeriesModel * series) {
-      series->get_view()->hide();
-      series_overview_layout->removeWidget(series->get_view());
-      chart->chart()->removeSeries(series->get_qt_series());
-      chart->chart()->createDefaultAxes();
+    connect(model, &ChartModel::seriesRemoved, [this, series_overview_layout, chart](SeriesModel * series) {
+       if (auto view = seriesMap.at(series)) {
+
+           view->hide();
+           series_overview_layout->removeWidget(view);
+           chart->chart()->removeSeries(series->get_qt_series());
+           chart->chart()->createDefaultAxes();
+
+           seriesMap.erase(series);
+       }
     });
 
     connect(model, &ChartModel::themeChanged, [chart](bool darkTheme) {

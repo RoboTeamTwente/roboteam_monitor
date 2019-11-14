@@ -1,10 +1,10 @@
-#include <include/ChartSeries.h>
+#include <include/models/SeriesModel.h>
 #include <roboteam_utils/constants.h>
 #include <include/Helpers.h>
 #include <include/AddFilterDialog.h>
 #include "ChartSeriesDialog.h"
 
-ChartSeriesDialog::ChartSeriesDialog(ChartSeries *series) : QDialog(series) {
+ChartSeriesDialog::ChartSeriesDialog(SeriesModel *series, QWidget * parent) : QDialog(parent) {
     setMinimumWidth(600);
     auto dialog_layout = new QVBoxLayout(this);
     setLayout(dialog_layout);
@@ -45,7 +45,7 @@ ChartSeriesDialog::ChartSeriesDialog(ChartSeries *series) : QDialog(series) {
 
 }
 
-QWidget *ChartSeriesDialog::create_network_settings_tab(ChartSeries *series) {
+QWidget *ChartSeriesDialog::create_network_settings_tab(SeriesModel *series) {
     auto network_settings_tab = new QWidget();
     network_settings_layout = new QVBoxLayout();
     network_settings_tab->setLayout(network_settings_layout);
@@ -90,7 +90,7 @@ QWidget *ChartSeriesDialog::create_network_settings_tab(ChartSeries *series) {
     return network_settings_tab;
 }
 
-QWidget *ChartSeriesDialog::create_filter_widget(QLayout *parent, Filter * filter, ChartSeries * series) const {
+QWidget *ChartSeriesDialog::create_filter_widget(QLayout *parent, Filter * filter, SeriesModel * series) const {
     auto filter_widget = new QWidget();
     auto filter_layout = new QHBoxLayout();
     filter_widget->setLayout(filter_layout);
@@ -130,7 +130,7 @@ QWidget *ChartSeriesDialog::create_filter_widget(QLayout *parent, Filter * filte
     return filter_widget;
 }
 
-QWidget *ChartSeriesDialog::create_visualization_settings_tab(ChartSeries *series) {
+QWidget *ChartSeriesDialog::create_visualization_settings_tab(SeriesModel *series) {
     auto visualization_widget = new QWidget();
     auto visualization_layout = new QHBoxLayout();
     visualization_widget->setLayout(visualization_layout);

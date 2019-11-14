@@ -3,11 +3,11 @@
 
 #include <QObject>
 
-class ChartSeries;
+class SeriesModel;
 class ChartModel : public QObject {
   Q_OBJECT
  private:
-  std::vector<ChartSeries *> seriesList;
+  std::vector<SeriesModel *> seriesList;
   bool darkTheme = true;
 
  public:
@@ -15,12 +15,12 @@ class ChartModel : public QObject {
 
  public slots:
   void add_new_series();
-  void delete_series(ChartSeries * series_to_delete);
+  void delete_series(SeriesModel * series_to_delete);
   void set_theme(bool dark_theme);
 
   signals:
-    void seriesAdded(ChartSeries * series);
-    void seriesRemoved(ChartSeries * series);
+    void seriesAdded(SeriesModel * series);
+    void seriesRemoved(SeriesModel * series);
     void themeChanged(bool darkTheme);
 };
 

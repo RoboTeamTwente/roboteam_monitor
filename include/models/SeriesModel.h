@@ -1,5 +1,5 @@
-#ifndef RTT_CHARTSERIES_H
-#define RTT_CHARTSERIES_H
+#ifndef RTT_SERIESMODEL_H
+#define RTT_SERIESMODEL_H
 
 #include <string>
 #include <QtCharts/QtCharts>
@@ -11,15 +11,20 @@
 #include <roboteam_proto/Setting.pb.h>
 #include <roboteam_utils/Timer.h>
 #include <src/Filter.h>
+#include <include/views/SeriesView.h>
 
-class MainWindow;
 class ChartModel;
-class QLineEdit;
-class QPushButton;
-class ChartSeries : public QGroupBox {
+class SeriesModel : public QObject {
+ private:
+
+  // relations
+  SeriesView * view;
+
+ public:
+  SeriesView *get_view() const;
+  void set_view(SeriesView *view);
  private:
   QXYSeries * qt_series = nullptr;
-  QPushButton * change_color_button = nullptr;
   proto::ChannelType channel_type;
   void * proto_subscriber = nullptr;
   std::vector<Filter *> filters;
@@ -34,7 +39,7 @@ class ChartSeries : public QGroupBox {
   void handle_incoming_message(T message, const google::protobuf::Reflection & reflection);
 
  public:
-  explicit ChartSeries(const QString & default_name, ChartModel * chart_view);
+  explicit SeriesModel(ChartModel * chartModel);
   QXYSeries * get_qt_series();
   void set_name(const QString &name);
   void update_channel(const proto::ChannelType & channel_type);
@@ -48,4 +53,4 @@ class ChartSeries : public QGroupBox {
   const std::vector<Filter *> & get_filters();
 };
 
-#endif //RTT_CHARTSERIES_H
+#endif //RTT_SERIESMODEL_H

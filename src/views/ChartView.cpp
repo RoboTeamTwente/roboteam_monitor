@@ -1,5 +1,5 @@
-#include "include/views/ChartView.h"
-#include "include/models/SeriesModel.h"
+#include "ChartView.h"
+#include "src/models/SeriesModel.h"
 
 ChartView::ChartView(ChartModel *model, QWidget  * parent) : QWidget(parent), model(model) {
     setMinimumWidth(800);

@@ -1,14 +1,17 @@
-#include "include/models/SeriesModel.h"
+#include "SeriesModel.h"
 #include <roboteam_proto/RobotCommand.pb.h>
-#include <include/models/ChartModel.h>
+#include <src/models/ChartModel.h>
 #include <functional>
 #include <roboteam_utils/constants.h>
-#include <ChartSeriesDialog.h>
+#include <src/views/ChartSeriesDialog.h>
 
 using namespace google::protobuf;
 
-SeriesModel::SeriesModel(ChartModel * chartModel) : QObject(nullptr), parent(chartModel) {
+SeriesModel::SeriesModel(ChartModel * chartModel, const QString & title) : QObject(nullptr), parent(chartModel) {
   qt_series = new QSplineSeries();
+  settingsModel = new SeriesInputSettingsModel();
+
+  set_name(title);
   srand (time(nullptr));
   qt_series->append(0, rand() % 20 + 1);
   qt_series->append(2, rand() % 20 + 1);
@@ -59,12 +62,7 @@ void SeriesModel::handle_setting_input(proto::Setting &setting) {
   this->handle_incoming_message(setting, *reflection);
 }
 
-void SeriesModel::update_channel(const proto::ChannelType & channel_type) {
-  if (this->channel_type != channel_type) {
-    this->channel_type = channel_type;
-    init_subscriber_for_channel_type(channel_type);
-  }
-}
+
 
 template<class T>
 void SeriesModel::handle_incoming_message(T message, const Reflection &reflection) {
@@ -72,33 +70,23 @@ void SeriesModel::handle_incoming_message(T message, const Reflection &reflectio
   auto field_descriptors = std::vector<const google::protobuf::FieldDescriptor *>();
   reflection.ListFields(message, &field_descriptors);
 
-  for (auto field_descriptor : field_descriptors) {
-    switch(field_descriptor->cpp_type()) {
-      case FieldDescriptor::CPPTYPE_FLOAT: break;
-      case FieldDescriptor::CPPTYPE_INT32: break;
-      default: break;
-    }
-  }
+
 }
 
-const std::vector<Filter *> &SeriesModel::get_filters() {
-    return filters;
-}
-
-Filter * SeriesModel::add_new_filter() {
-    auto empty_filter = new Filter();
-    filters.push_back(empty_filter);
-    return empty_filter;
-}
-
-void SeriesModel::removeFilter(Filter *filter_to_remove) {
-    filters.erase(std::remove(filters.begin(), filters.end(), filter_to_remove), filters.end());
-}
 ChartModel *SeriesModel::get_parent() const {
     return parent;
 }
+
 void SeriesModel::set_parent(ChartModel *parent) {
     SeriesModel::parent = parent;
+}
+
+SeriesInputSettingsModel *SeriesModel::get_settings_model() const {
+    return settingsModel;
+}
+
+void SeriesModel::set_settings_model(SeriesInputSettingsModel *settings_model) {
+    settingsModel = settings_model;
 }
 
 

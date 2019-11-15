@@ -4,8 +4,8 @@
 
 #include <QApplication>
 #include <QStyleFactory>
-#include "include/MenuBar.h"
-#include "include/MainWindow.h"
+#include "src/views/components/MenuBar.h"
+#include "src/views/MainWindow.h"
 
 
 void setDarkTheme() {

@@ -2,8 +2,8 @@
 // Created by Lukas Bos on 11/11/2019.
 //
 
-#include <include/Constants.h>
-#include <include/Helpers.h>
+#include <src/utils/Constants.h>
+#include <src/utils/Helpers.h>
 #include "SelectTypeWidget.h"
 #include <QLineEdit>
 #include <QPushButton>
@@ -30,33 +30,35 @@ void SelectTypeWidget::update_filters_layout(const QString & topic_name) {
     top_level_tree_item->setExpanded(true);
     auto descriptor = Helpers::get_descriptor_for_topic(topic_name);
     if (descriptor) {
-        add_filter_descriptor(descriptor, 0, top_level_tree_item);
+        add_filter_descriptor(descriptor, {}, top_level_tree_item);
     }
 }
 
 
-void SelectTypeWidget::add_filter_descriptor(const google::protobuf::Descriptor * descriptor, int depth, QTreeWidgetItem * parent) {
+void SelectTypeWidget::add_filter_descriptor(const google::protobuf::Descriptor * descriptor, const std::vector<int> & field_numbers, QTreeWidgetItem * parent) {
     for (int i = 0; i < descriptor->field_count(); ++i) {
+
+        std::vector<int> fieldNumbersToHere = field_numbers;
+        fieldNumbersToHere.push_back(i);
+
         auto field_descriptor = descriptor->field(i);
         auto row_widget = new QTreeWidgetItem();
         parent->addChild(row_widget);
 
-        // set the name in the first column
+        // set the name in the first column and type in the second column
         row_widget->setText(0, QString::fromStdString(field_descriptor->name()));
-
-        // put the type in the second column
         row_widget->setText(1, Helpers::get_actual_typename(field_descriptor));
 
         // Select the item and close the dialog on double click
-        connect(this, &QTreeWidget::itemActivated, [this, row_widget, field_descriptor](QTreeWidgetItem *item, int column) {
+        connect(this, &QTreeWidget::itemActivated, [this, row_widget, field_descriptor, fieldNumbersToHere](QTreeWidgetItem *item, int column) {
             if (item == row_widget) {
-                emit fieldSelectedAndClose(field_descriptor);
+                emit fieldSelectedAndClose(field_descriptor, fieldNumbersToHere);
             }
         });
 
-        connect(this, &QTreeWidget::currentItemChanged, [this, row_widget, field_descriptor](QTreeWidgetItem *item) {
+        connect(this, &QTreeWidget::currentItemChanged, [this, row_widget, field_descriptor, fieldNumbersToHere](QTreeWidgetItem *item) {
           if (item == row_widget) {
-              emit fieldSelected(field_descriptor);
+              emit fieldSelected(field_descriptor, fieldNumbersToHere);
           }
         });
 
@@ -64,9 +66,7 @@ void SelectTypeWidget::add_filter_descriptor(const google::protobuf::Descriptor 
         // do some nice recursion for the children of this item
         auto child_descriptor = field_descriptor->message_type();
         if (child_descriptor) {
-            add_filter_descriptor(child_descriptor, ++depth, row_widget);
+            add_filter_descriptor(child_descriptor, fieldNumbersToHere, row_widget);
         }
     }
 }
-
-#include "include/moc_SelectTypeWidget.cpp"

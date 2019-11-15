@@ -1,7 +1,7 @@
 #include <QVBoxLayout>
 #include <QLineEdit>
 #include <QPushButton>
-#include <include/ChartSeriesDialog.h>
+#include <src/views/ChartSeriesDialog.h>
 #include "views/SeriesView.h"
 #include "models/SeriesModel.h"
 #include <QtCharts/QtCharts>
@@ -21,46 +21,34 @@ SeriesView::SeriesView(SeriesModel * seriesModel) : QGroupBox("", nullptr), seri
     title_and_color_layout->addWidget(change_color_button);
 
     auto color_dialog = new QColorDialog();
-
-
     auto visible_checkbox = new QCheckBox("visible");
     visible_checkbox->setChecked(true);
     title_and_color_layout->addWidget(visible_checkbox);
-
     series_layout->addLayout(title_and_color_layout);
 
     auto delete_series_button = new QPushButton();
     delete_series_button->setText("Remove series");
-
     delete_series_button->setAutoFillBackground(true);
     delete_series_button->setStyleSheet("background-color: red");
-
     series_layout->addWidget(delete_series_button);
-
-
 
     auto series_settings_button = new QPushButton();
     series_settings_button->setText("Configuration");
     series_layout->addWidget(series_settings_button);
-
     auto series_dialog = new ChartSeriesDialog(seriesModel, this);
 
 
     //////// VIEW --> MODEL CONNECTIONS //////////
-
     connect(color_dialog, &QColorDialog::colorSelected, seriesModel, &SeriesModel::set_color);
     connect(color_dialog, &QColorDialog::currentColorChanged, seriesModel, &SeriesModel::set_color);
     connect(visible_checkbox, &QCheckBox::toggled, seriesModel, &SeriesModel::set_visible);
-
     connect(change_color_button, &QPushButton::clicked, [color_dialog]() {
       color_dialog->exec();
     });
-
     connect(series_title_line_edit, &QLineEdit::textChanged, seriesModel->get_qt_series(), &QXYSeries::setName);
     connect(series_settings_button, &QPushButton::clicked, [series_dialog]() {
       series_dialog->exec();
     });
-
     connect(delete_series_button, &QPushButton::clicked, [seriesModel]() {
        seriesModel->get_parent()->delete_series(seriesModel);
     });
@@ -70,5 +58,4 @@ SeriesView::SeriesView(SeriesModel * seriesModel) : QGroupBox("", nullptr), seri
       QString change_color_button_stylesheet = "background-color: " + newColor.name() +";";
       change_color_button->setStyleSheet(change_color_button_stylesheet);
     });
-
 }

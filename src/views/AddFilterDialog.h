@@ -6,7 +6,7 @@
 #define RTT_ADDFILTERDIALOG_H
 
 #include <QDialog>
-#include <include/SelectTypeWidget.h>
+#include <src/views/components/SelectTypeWidget.h>
 
 class AddFilterDialog : public QDialog {
  Q_OBJECT

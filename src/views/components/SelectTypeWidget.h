@@ -16,13 +16,13 @@ class SelectTypeWidget : public QTreeWidget {
  private:
   AddFilterDialog * parent_widget = nullptr;
   QTreeWidgetItem * top_level_tree_item;
-  void add_filter_descriptor(const google::protobuf::Descriptor * descriptor, int depth, QTreeWidgetItem * parent);
+  void add_filter_descriptor(const google::protobuf::Descriptor * descriptor, const std::vector<int> & field_numbers, QTreeWidgetItem * parent);
  public slots:
   void update_filters_layout(const QString & topic_name);
 
   signals:
-    void fieldSelected(const google::protobuf::FieldDescriptor * field_descriptor);
-  void fieldSelectedAndClose(const google::protobuf::FieldDescriptor * field_descriptor);
+    void fieldSelected(const google::protobuf::FieldDescriptor * field_descriptor, const std::vector<int> & field_numbers);
+    void fieldSelectedAndClose(const google::protobuf::FieldDescriptor * field_descriptor, const std::vector<int> & field_numbers);
 
 };
 

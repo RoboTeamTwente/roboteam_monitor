@@ -2,8 +2,8 @@
 // Created by Lukas Bos on 18/10/2019.
 //
 
-#include <include/MainWindow.h>
-#include "include/MenuBar.h"
+#include <src/views/MainWindow.h>
+#include "MenuBar.h"
 
 MenuBar::MenuBar(MainWindow * main_window) : QMenuBar(main_window) {
   auto fileMenu = this->addMenu("File");

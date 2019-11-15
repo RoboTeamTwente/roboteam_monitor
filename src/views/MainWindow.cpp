@@ -1,6 +1,6 @@
-#include <WelcomeDialog.h>
-#include <NewGraphDialog.h>
-#include <MenuBar.h>
+#include <src/views/WelcomeDialog.h>
+#include <src/views/NewGraphDialog.h>
+#include <src/views/components/MenuBar.h>
 #include "MainWindow.h"
 
 MainWindow::MainWindow() : QMainWindow() {

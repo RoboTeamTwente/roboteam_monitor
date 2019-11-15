@@ -10,22 +10,18 @@
 #include <roboteam_proto/World.pb.h>
 #include <roboteam_proto/Setting.pb.h>
 #include <roboteam_utils/Timer.h>
-#include <src/Filter.h>
-#include <include/views/SeriesView.h>
+#include <src/models/FilterModel.h>
+#include <src/views/SeriesView.h>
+#include "SeriesInputSettingsModel.h"
 
 class ChartModel;
 class SeriesModel : public QObject {
+  Q_OBJECT
  private:
   ChartModel * parent = nullptr;
- public:
-  ChartModel *get_parent() const;
-  void set_parent(ChartModel *parent);
- private:
-
+  SeriesInputSettingsModel * settingsModel;
   QXYSeries * qt_series = nullptr;
-  proto::ChannelType channel_type;
   void * proto_subscriber = nullptr;
-  std::vector<Filter *> filters;
 
   void init_subscriber_for_channel_type(const proto::ChannelType & channel_type);
   void handle_robot_command_input(proto::RobotCommand & robot_command);
@@ -37,17 +33,17 @@ class SeriesModel : public QObject {
   void handle_incoming_message(T message, const google::protobuf::Reflection & reflection);
 
  public:
-  explicit SeriesModel(ChartModel * chartModel);
+  explicit SeriesModel(ChartModel * chartModel, const QString & title);
   QXYSeries * get_qt_series();
   void set_name(const QString &name);
-  void update_channel(const proto::ChannelType & channel_type);
+  ChartModel *get_parent() const;
+  void set_parent(ChartModel *parent);
+  SeriesInputSettingsModel *get_settings_model() const;
+  void set_settings_model(SeriesInputSettingsModel *settings_model);
 
  public slots:
   void set_color(const QColor & color);
   void set_visible(bool visible);
-  Filter * add_new_filter();
-  void removeFilter(Filter * filter_to_remove);
-  const std::vector<Filter *> & get_filters();
 };
 
 #endif //RTT_SERIESMODEL_H

@@ -1,11 +1,11 @@
 #include "models/ChartModel.h"
-#include "include/models/SeriesModel.h"
+#include "SeriesModel.h"
 
 ChartModel::ChartModel() : QObject(nullptr) { }
 
 // Add a new series to the list of series
 void ChartModel::add_new_series() {
-    auto series = new SeriesModel(this);
+    auto series = new SeriesModel(this, "Series " + QString::number(seriesList.size() + 1, 10));
     seriesList.push_back(series);
     emit seriesAdded(series);
 }
@@ -21,6 +21,3 @@ void ChartModel::set_theme(bool dark_theme) {
     this->darkTheme = dark_theme;
     emit themeChanged(dark_theme);
 }
-
-
-#include "include/models/moc_ChartModel.cpp"

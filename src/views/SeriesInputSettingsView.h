@@ -7,14 +7,17 @@
 
 #include <QWidget>
 #include <unordered_map>
-#include <src/models/SeriesInputSettingsModel.h>
+#include <src/presenters/SeriesInputSettingsPresenter.h>
 
 class FilterView;
 class SeriesInputSettingsView : public QWidget{
+  Q_OBJECT
  private:
   std::unordered_map<FilterModel *, FilterView *> filterMap;
  public:
-  SeriesInputSettingsView(SeriesInputSettingsModel * model, QWidget * parent = nullptr);
+  explicit SeriesInputSettingsView(SeriesInputSettingsPresenter * delegate, QWidget * parent = nullptr);
+
+  void drawView(SeriesInputSettingsPresenter *delegate);
 };
 
 #endif //RTT_SERIESINPUTSETTINGSVIEW_H

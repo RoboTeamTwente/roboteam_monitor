@@ -1,7 +1,7 @@
 #include "ChartView.h"
 #include "src/models/SeriesModel.h"
 
-ChartView::ChartView(ChartModel *model, QWidget  * parent) : QWidget(parent), model(model) {
+ChartView::ChartView(ChartPresenter *model, QWidget  * parent) : QWidget(parent), model(model) {
     setMinimumWidth(800);
     setMinimumHeight(600);
 
@@ -47,11 +47,11 @@ ChartView::ChartView(ChartModel *model, QWidget  * parent) : QWidget(parent), mo
     chart->chart()->setBackgroundBrush(QColor(33, 33, 33));
 
     //////// VIEW --> MODEL CONNECTIONS //////////
-    connect(add_series_button, &QPushButton::clicked, model, &ChartModel::add_new_series);
-    connect(theme_checkbox, &QCheckBox::toggled, model, &ChartModel::set_theme);
+    connect(add_series_button, &QPushButton::clicked, model, &ChartPresenter::add_new_series);
+    connect(theme_checkbox, &QCheckBox::toggled, model, &ChartPresenter::set_theme);
 
     //////// MODEL --> VIEW CONNECTIONS //////////
-    connect(model, &ChartModel::seriesAdded, [this, series_overview_layout, chart](SeriesModel * series) {
+    connect(model, &ChartPresenter::seriesAdded, [this, series_overview_layout, chart](SeriesModel * series) {
 
         auto seriesView = new SeriesView(series);
         seriesMap.insert(std::make_pair(series, seriesView));
@@ -61,7 +61,7 @@ ChartView::ChartView(ChartModel *model, QWidget  * parent) : QWidget(parent), mo
         chart->chart()->createDefaultAxes();
     });
 
-    connect(model, &ChartModel::seriesRemoved, [this, series_overview_layout, chart](SeriesModel * series) {
+    connect(model, &ChartPresenter::seriesRemoved, [this, series_overview_layout, chart](SeriesModel * series) {
        if (auto view = seriesMap.at(series)) {
 
            view->hide();
@@ -73,7 +73,7 @@ ChartView::ChartView(ChartModel *model, QWidget  * parent) : QWidget(parent), mo
        }
     });
 
-    connect(model, &ChartModel::themeChanged, [chart](bool darkTheme) {
+    connect(model, &ChartPresenter::themeChanged, [chart](bool darkTheme) {
       if (darkTheme) {
           chart->chart()->setTheme(QChart::ChartThemeDark);
           chart->chart()->setBackgroundBrush(QColor(33, 33, 33));

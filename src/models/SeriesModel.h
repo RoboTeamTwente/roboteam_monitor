@@ -12,14 +12,15 @@
 #include <roboteam_utils/Timer.h>
 #include <src/models/FilterModel.h>
 #include <src/views/SeriesView.h>
-#include "SeriesInputSettingsModel.h"
+#include "src/presenters/SeriesInputSettingsPresenter.h"
 
-class ChartModel;
+class ChartPresenter;
+class SeriesInputSettingsPresenter;
 class SeriesModel : public QObject {
   Q_OBJECT
  private:
-  ChartModel * parent = nullptr;
-  SeriesInputSettingsModel * settingsModel;
+  ChartPresenter * parent = nullptr;
+  SeriesInputSettingsPresenter * settingsDelegate;
   QXYSeries * qt_series = nullptr;
   void * proto_subscriber = nullptr;
 
@@ -33,13 +34,13 @@ class SeriesModel : public QObject {
   void handle_incoming_message(T message, const google::protobuf::Reflection & reflection);
 
  public:
-  explicit SeriesModel(ChartModel * chartModel, const QString & title);
+  explicit SeriesModel(ChartPresenter * chartModel, const QString & title);
   QXYSeries * get_qt_series();
   void set_name(const QString &name);
-  ChartModel *get_parent() const;
-  void set_parent(ChartModel *parent);
-  SeriesInputSettingsModel *get_settings_model() const;
-  void set_settings_model(SeriesInputSettingsModel *settings_model);
+  ChartPresenter *get_parent() const;
+  void set_parent(ChartPresenter *parent);
+  SeriesInputSettingsPresenter *get_settings_model() const;
+  void set_settings_model(SeriesInputSettingsPresenter *settings_model);
 
  public slots:
   void set_color(const QColor & color);

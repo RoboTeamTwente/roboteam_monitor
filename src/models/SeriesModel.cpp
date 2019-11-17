@@ -1,15 +1,16 @@
 #include "SeriesModel.h"
 #include <roboteam_proto/RobotCommand.pb.h>
-#include <src/models/ChartModel.h>
+#include <src/presenters/ChartPresenter.h>
 #include <functional>
 #include <roboteam_utils/constants.h>
 #include <src/views/ChartSeriesDialog.h>
 
 using namespace google::protobuf;
 
-SeriesModel::SeriesModel(ChartModel * chartModel, const QString & title) : QObject(nullptr), parent(chartModel) {
+SeriesModel::SeriesModel(ChartPresenter * chartModel, const QString & title) : QObject(nullptr), parent(chartModel) {
   qt_series = new QSplineSeries();
-  settingsModel = new SeriesInputSettingsModel();
+  auto settingsModel = new SeriesInputSettingsModel();
+    settingsDelegate = new SeriesInputSettingsPresenter(settingsModel);
 
   set_name(title);
   srand (time(nullptr));
@@ -73,20 +74,20 @@ void SeriesModel::handle_incoming_message(T message, const Reflection &reflectio
 
 }
 
-ChartModel *SeriesModel::get_parent() const {
+ChartPresenter *SeriesModel::get_parent() const {
     return parent;
 }
 
-void SeriesModel::set_parent(ChartModel *parent) {
+void SeriesModel::set_parent(ChartPresenter *parent) {
     SeriesModel::parent = parent;
 }
 
-SeriesInputSettingsModel *SeriesModel::get_settings_model() const {
-    return settingsModel;
+SeriesInputSettingsPresenter *SeriesModel::get_settings_model() const {
+    return settingsDelegate;
 }
 
-void SeriesModel::set_settings_model(SeriesInputSettingsModel *settings_model) {
-    settingsModel = settings_model;
+void SeriesModel::set_settings_model(SeriesInputSettingsPresenter *settings_model) {
+    settingsDelegate = settings_model;
 }
 
 

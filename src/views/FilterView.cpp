@@ -6,8 +6,8 @@
 #include <src/models/SeriesModel.h>
 #include "FilterView.h"
 #include "AddFilterDialog.h"
-FilterView::FilterView(FilterModel * filterModel, SeriesInputSettingsModel * inputSettingsModel, QWidget * parent)
-        : QWidget(parent), filterModel(filterModel), inputSettingsModel(inputSettingsModel) {
+FilterView::FilterView(FilterModel * filterModel, SeriesInputSettingsPresenter * series_input_settings_delegate, QWidget * parent)
+        : QWidget(parent), filterModel(filterModel), input_settings_delegate(series_input_settings_delegate) {
 
     auto filter_layout = new QHBoxLayout();
     setLayout(filter_layout);
@@ -34,8 +34,8 @@ FilterView::FilterView(FilterModel * filterModel, SeriesInputSettingsModel * inp
     filter_layout->addWidget(rm_filter_button);
 
     ////// VIEW --> MODEL /////
-    connect(rm_filter_button, &QPushButton::clicked, [inputSettingsModel, filterModel]() {
-      inputSettingsModel->removeFilter(filterModel);
+    connect(rm_filter_button, &QPushButton::clicked, [series_input_settings_delegate, filterModel]() {
+      series_input_settings_delegate->removeFilter(filterModel);
     });
 
 }

@@ -36,7 +36,7 @@ find_package(Qt5Widgets REQUIRED)
 # Add an executable
 add_executable(roboteam_monitor
         src/main.cpp
-        src/models/ChartModel.cpp
+        src/presenters/ChartPresenter.cpp
         src/views/WelcomeDialog.cpp
         src/views/components/MenuBar.cpp
         src/views/NewGraphDialog.cpp
@@ -45,7 +45,23 @@ add_executable(roboteam_monitor
         src/views/ChartSeriesDialog.cpp
         src/utils/Helpers.cpp
         src/views/components/SelectTypeWidget.cpp
-        src/views/AddFilterDialog.cpp src/views/AddFilterDialog.h src/views/ChartView.cpp src/views/ChartView.h src/views/SeriesView.cpp src/views/SeriesView.h src/models/FilterModel.cpp src/views/FilterView.cpp src/views/FilterView.h src/views/components/ConfirmationWidget.cpp src/views/components/ConfirmationWidget.h src/models/SeriesInputSettingsModel.cpp src/models/SeriesInputSettingsModel.h src/views/SeriesInputSettingsView.cpp src/views/SeriesInputSettingsView.h src/delegates/SeriesInputSettingsDelegate.cpp src/delegates/SeriesInputSettingsDelegate.h)
+        src/views/AddFilterDialog.cpp src/views/AddFilterDialog.h
+        src/views/ChartView.cpp src/views/ChartView.h
+        src/views/SeriesView.cpp
+        src/views/SeriesView.h
+        src/models/FilterModel.cpp
+        src/views/FilterView.cpp
+        src/views/FilterView.h
+        src/views/components/ConfirmationWidget.cpp
+        src/views/components/ConfirmationWidget.h
+        src/presenters/SeriesInputSettingsPresenter.cpp
+        src/presenters/SeriesInputSettingsPresenter.h
+        src/views/SeriesInputSettingsView.cpp
+        src/views/SeriesInputSettingsView.h
+        src/presenters/SeriesInputSettingsPresenter.cpp
+        src/presenters/SeriesInputSettingsPresenter.h
+        src/models/SeriesInputSettingsModel.h
+        src/models/ChartModel.h)
 
 # link the exe against the libraries
 target_link_libraries(roboteam_monitor

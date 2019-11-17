@@ -5,7 +5,7 @@
 #ifndef RTT_SERIESVIEW_H
 #define RTT_SERIESVIEW_H
 
-#include <src/models/ChartModel.h>
+#include <src/presenters/ChartPresenter.h>
 #include <QGroupBox>
 #include <unordered_map>
 #include "FilterView.h"

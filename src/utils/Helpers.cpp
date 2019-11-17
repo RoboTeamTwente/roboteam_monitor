@@ -6,6 +6,7 @@
 #include <roboteam_proto/messages_robocup_ssl_geometry.pb.h>
 #include <roboteam_proto/messages_robocup_ssl_referee.pb.h>
 #include <roboteam_proto/Channels.h>
+#include <QWidget>
 
 const google::protobuf::Descriptor * Helpers::get_descriptor_for_topic(const QString &topic_name) {
     auto channel_type = getChannelTypeByName(topic_name);
@@ -52,4 +53,17 @@ QString Helpers::get_actual_typename(const google::protobuf::FieldDescriptor * f
         return QString::fromStdString(field_descriptor->message_type()->name());
     }
     return cpp_type_name;
+}
+
+void Helpers::clearLayout(QLayout* layout) {
+    QLayoutItem* item;
+    while ((item = layout->takeAt(0))) {
+        if (item->layout()) {
+            clearLayout(item->layout());
+            delete item->layout();
+        }
+        if (item->widget()) {
+            delete item->widget();
+        }
+    }
 }

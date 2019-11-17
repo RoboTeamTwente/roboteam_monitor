@@ -36,3 +36,7 @@ FilterModel *FilterModel::clone() {
     clone->set_reference_message(reference_message);
     return clone;
 }
+
+bool FilterModel::operator==(const FilterModel &other) {
+    return field_descriptor == other.get_field_descriptor() && reference_message == other.get_reference_message() && value == other.get_value();
+}

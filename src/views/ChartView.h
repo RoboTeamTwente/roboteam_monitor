@@ -6,17 +6,17 @@
 #define RTT_CHARTVIEW_H
 
 #include <QWidget>
-#include "src/models/ChartModel.h"
+#include "src/presenters/ChartPresenter.h"
 #include "SeriesView.h"
 #include <unordered_map>
 
 class ChartView : public QWidget {
  private:
-  ChartModel * model;
+  ChartPresenter * model;
   std::unordered_map<SeriesModel *, SeriesView *> seriesMap;
 
  public:
-  ChartView(ChartModel *model, QWidget  * parent = nullptr);
+  ChartView(ChartPresenter *model, QWidget  * parent = nullptr);
 };
 
 #endif //RTT_CHARTVIEW_H

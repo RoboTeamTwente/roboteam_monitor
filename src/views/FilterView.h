@@ -6,16 +6,17 @@
 #define RTT_FILTERVIEW_H
 
 #include <QWidget>
-#include <src/models/SeriesInputSettingsModel.h>
+#include <src/presenters/SeriesInputSettingsPresenter.h>
 #include "src/models/FilterModel.h"
 
+class SeriesInputSettingsPresenter;
 class FilterView : public QWidget{
  private:
-  SeriesInputSettingsModel * inputSettingsModel;
+  SeriesInputSettingsPresenter * input_settings_delegate;
   FilterModel * filterModel;
 
  public:
-  FilterView(FilterModel * filterModel, SeriesInputSettingsModel * inputSettingsModel, QWidget * parent);
+  FilterView(FilterModel * filterModel, SeriesInputSettingsPresenter * series_input_settings_delegate, QWidget * parent);
 };
 
 #endif //RTT_FILTERVIEW_H

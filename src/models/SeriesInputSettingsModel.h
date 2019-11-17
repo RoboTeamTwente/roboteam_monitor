@@ -1,32 +1,20 @@
 #ifndef RTT_SERIESINPUTSETTINGSMODEL_H
 #define RTT_SERIESINPUTSETTINGSMODEL_H
 
-#include <QObject>
+#include <vector>
 #include <roboteam_proto/Channels.h>
+#include "FilterModel.h"
+#include "SeriesModel.h"
 
-class FilterModel;
-class SeriesInputSettingsModel : public QObject {
- Q_OBJECT
- public:
-  SeriesInputSettingsModel() = default;
-  SeriesInputSettingsModel(const SeriesInputSettingsModel & other); // copy constructor
+struct SeriesInputSettingsModel {
+  explicit SeriesInputSettingsModel() = default;
 
- private:
-  proto::ChannelType channel_type;
- public:
-  proto::ChannelType get_channel_type() const;
- private:
-  std::vector<FilterModel *> filters;
+  // properties
+  std::vector<FilterModel> filters = {};
+  proto::ChannelType channel_type = proto::UNDEFINED_CHANNEL;
 
- public slots:
-  void add_new_filter();
-  void removeFilter(FilterModel *filter_to_remove);
-  const std::vector<FilterModel *> &get_filters() const;
-  void update_channel(const proto::ChannelType &channel_type);
-
- signals:
-  void filterAdded(FilterModel *filter);
-  void filterRemoved(FilterModel *filter);
+  // relationships
+  SeriesModel * parent = nullptr;
 };
 
 #endif //RTT_SERIESINPUTSETTINGSMODEL_H

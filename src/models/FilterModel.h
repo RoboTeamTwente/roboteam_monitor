@@ -15,6 +15,7 @@ class FilterModel {
               google::protobuf::Message *reference_message,
               const QString &value);
   FilterModel();
+  bool operator==(const FilterModel & other);
 
   FilterModel * clone();
 

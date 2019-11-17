@@ -11,20 +11,23 @@
 #include <roboteam_proto/Setting.pb.h>
 #include <QtCharts/QtCharts>
 
-class ChartModel;
+class ChartPresenter;
 class SeriesInputSettingsModel;
 class SeriesModel {
   friend class SeriesPresenter;
  public:
-  SeriesModel() = default;
-  SeriesModel(QString name = "series");
+  SeriesModel(ChartPresenter * parent);
+  SeriesModel(ChartPresenter * parent, QString name = "series");
  private:
   // properties
   QXYSeries * qt_series = nullptr;
   void * proto_subscriber = nullptr;
 
   // relationships
-  ChartModel * parent = nullptr;
+  ChartPresenter * parent = nullptr;
+ public:
+  ChartPresenter *get_parent() const;
+ private:
   SeriesInputSettingsModel * settings;
 
 

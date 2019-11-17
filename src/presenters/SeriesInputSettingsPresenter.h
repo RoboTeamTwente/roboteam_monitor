@@ -18,8 +18,9 @@ class SeriesInputSettingsPresenter : public QObject {
 
  public slots:
   void add_new_filter();
-  void removeFilter(FilterModel * filter_to_remove);
-  const std::vector<FilterModel> &get_filters() const;
+
+  void removeFilter(FilterPresenter * filter_to_remove);
+  std::vector<FilterPresenter *> &get_filters();
   void update_channel(const proto::ChannelType &channel_type);
   proto::ChannelType get_channel_type() const;
   void createSnapShot();

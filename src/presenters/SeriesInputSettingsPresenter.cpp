@@ -1,5 +1,6 @@
 #include "SeriesInputSettingsPresenter.h"
 #include "FilterPresenter.h"
+#include "../models/FilterModel.h"
 
 // constructor
 SeriesInputSettingsPresenter::SeriesInputSettingsPresenter(SeriesInputSettingsModel * model)
@@ -9,21 +10,20 @@ void SeriesInputSettingsPresenter::update_channel(const proto::ChannelType & cha
         model->channel_type = channel_type;
 }
 
-const std::vector<FilterModel> &SeriesInputSettingsPresenter::get_filters() const {
+std::vector<FilterPresenter *> &SeriesInputSettingsPresenter::get_filters() {
     return model->filters;
 }
 
 void SeriesInputSettingsPresenter::add_new_filter() {
-    FilterModel empty_filter;
-    model->filters.emplace_back(std::move(empty_filter));
-    auto presenter = new FilterPresenter(&model->filters.back());
-    emit filterAdded(presenter);
+    auto empty_filter = new FilterModel(this);
+    auto filterPresenter = new FilterPresenter(empty_filter);
+    model->filters.emplace_back(filterPresenter);
+    emit filterAdded(filterPresenter);
 }
 
-void SeriesInputSettingsPresenter::removeFilter(FilterModel *filter_to_remove) {
-    auto presenter = new FilterPresenter(filter_to_remove);
-    emit filterRemoved(presenter);
-    model->filters.erase(std::remove(model->filters.begin(), model->filters.end(), *filter_to_remove), model->filters.end());
+void SeriesInputSettingsPresenter::removeFilter(FilterPresenter *filter_to_remove) {
+    emit filterRemoved(filter_to_remove);
+    model->filters.erase(std::remove(model->filters.begin(), model->filters.end(), filter_to_remove), model->filters.end());
 }
 proto::ChannelType SeriesInputSettingsPresenter::get_channel_type() const {
     return model->channel_type;

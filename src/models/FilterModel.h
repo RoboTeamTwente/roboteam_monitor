@@ -2,6 +2,10 @@
 #define RTT_FILTERMODEL_H
 
 #include <QString>
+#include <src/presenters/SeriesPresenter.h>
+
+class SeriesPresenter;
+class SeriesInputSettingsPresenter;
 class FilterModel {
 
   // Presenter
@@ -12,9 +16,13 @@ class FilterModel {
   google::protobuf::Message * reference_message;
   QString value;
 
+  // Relations
+  SeriesInputSettingsPresenter * parent;
+
  public:
-  FilterModel() = default;
-  FilterModel(google::protobuf::FieldDescriptor *field_descriptor,
+  FilterModel(SeriesInputSettingsPresenter * parent);
+  FilterModel(SeriesInputSettingsPresenter * parent,
+      google::protobuf::FieldDescriptor *field_descriptor,
               google::protobuf::Message *reference_message,
               QString value);
 

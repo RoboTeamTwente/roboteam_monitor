@@ -35,11 +35,9 @@ SeriesInputSettingsView::SeriesInputSettingsView(SeriesInputSettingsPresenter * 
     network_settings_layout->addWidget(current_filters_label);
 
     auto current_filters_layout = new QVBoxLayout();
-    for (auto filter : presenter->get_filters()) {
-
-        auto filterPresenter = new FilterPresenter(&filter);
-        auto filterView = new FilterView(filterPresenter, this);
-        filterMap.insert(std::make_pair(filterPresenter, filterView));
+    for (auto filter_presenter : presenter->get_filters()) {
+        auto filterView = new FilterView(filter_presenter, this);
+        filterMap.insert(std::make_pair(filter_presenter, filterView));
         current_filters_layout->addWidget(filterView);
     }
     network_settings_layout->addLayout(current_filters_layout);
@@ -87,10 +85,9 @@ SeriesInputSettingsView::SeriesInputSettingsView(SeriesInputSettingsPresenter * 
 
         filterMap.clear();
 
-          for (auto filter : presenter->get_filters()) {
-              auto filterPresenter = new FilterPresenter(&filter);
-              auto filterView = new FilterView(filterPresenter, this);
-              filterMap.insert(std::make_pair(filterPresenter, filterView));
+          for (auto filter_presenter : presenter->get_filters()) {
+              auto filterView = new FilterView(filter_presenter, this);
+              filterMap.insert(std::make_pair(filter_presenter, filterView));
               current_filters_layout->addWidget(filterView);
           }
 

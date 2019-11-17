@@ -1,10 +1,10 @@
 #include "SeriesInputSettingsModel.h"
 
-const std::vector<FilterModel> &SeriesInputSettingsModel::get_filters() const {
+std::vector<FilterPresenter * > SeriesInputSettingsModel::get_filters() {
     return filters;
 }
 
-void SeriesInputSettingsModel::set_filters(const std::vector<FilterModel> &filters) {
+void SeriesInputSettingsModel::set_filters(const std::vector<FilterPresenter *> &filters) {
     SeriesInputSettingsModel::filters = filters;
 }
 

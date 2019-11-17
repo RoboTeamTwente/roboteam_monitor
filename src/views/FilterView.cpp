@@ -35,7 +35,7 @@ FilterView::FilterView(FilterPresenter * filterPresenter, QWidget * parent) : QW
 
     ////// VIEW --> MODEL /////
     connect(rm_filter_button, &QPushButton::clicked, [filterPresenter]() {
-    //  series_input_settings_delegate->removeFilter(filterPresenter);
+      filterPresenter->getParent()->removeFilter(filterPresenter);
     });
 
 }

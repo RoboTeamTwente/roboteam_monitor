@@ -50,7 +50,7 @@ SeriesView::SeriesView(SeriesPresenter * series_presenter) : QGroupBox("", nullp
       series_dialog->exec();
     });
     connect(delete_series_button, &QPushButton::clicked, [series_presenter]() {
-      // series_presenter->get_parent()->delete_series(series_presenter);
+       series_presenter->getParent()->delete_series(series_presenter);
     });
 
     //////// MODEL --> VIEW CONNECTIONS //////////

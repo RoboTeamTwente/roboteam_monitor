@@ -2,7 +2,9 @@
 #include "SeriesInputSettingsModel.h"
 #include <QtCharts/QtCharts>
 
-SeriesModel::SeriesModel(QString name) {
+SeriesModel::SeriesModel(ChartPresenter * parent) : parent(parent) {}
+
+SeriesModel::SeriesModel(ChartPresenter * parent, QString name): parent(parent) {
     qt_series = new QSplineSeries();
     qt_series->setName(name);
     settings = new SeriesInputSettingsModel();
@@ -47,4 +49,7 @@ void SeriesModel::handle_incoming_message(T message, const google::protobuf::Ref
     reflection.ListFields(message, &field_descriptors);
 
 
+}
+ChartPresenter *SeriesModel::get_parent() const {
+    return parent;
 }

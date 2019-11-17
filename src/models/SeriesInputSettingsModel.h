@@ -12,10 +12,10 @@ struct SeriesInputSettingsModel {
   explicit SeriesInputSettingsModel() = default;
 
   // properties
-  std::vector<FilterModel> filters = {};
+  std::vector<FilterPresenter *> filters = {};
   proto::ChannelType channel_type = proto::UNDEFINED_CHANNEL;
-  const std::vector<FilterModel> &get_filters() const;
-  void set_filters(const std::vector<FilterModel> &filters);
+  std::vector<FilterPresenter *> get_filters();
+  void set_filters(const std::vector<FilterPresenter *> &filters);
   proto::ChannelType get_channel_type() const;
   void set_channel_type(proto::ChannelType channel_type);
   SeriesPresenter *get_parent() const;

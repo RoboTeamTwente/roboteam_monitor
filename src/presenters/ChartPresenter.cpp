@@ -6,7 +6,7 @@ ChartPresenter::ChartPresenter(ChartModel *model) : QObject(nullptr), model(mode
 
 // Add a new series to the list of series
 void ChartPresenter::add_new_series() {
-    auto series = new SeriesModel("Series " + QString::number(model->seriesList.size() + 1, 10));
+    auto series = new SeriesModel(this, "Series " + QString::number(model->seriesList.size() + 1, 10));
     auto presenter = new SeriesPresenter(series);
     model->seriesList.push_back(presenter);
     emit seriesAdded(presenter);

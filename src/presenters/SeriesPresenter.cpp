@@ -30,6 +30,9 @@ void SeriesPresenter::set_color(const QColor & color) {
 SeriesInputSettingsPresenter * SeriesPresenter::getSettings() {
     return new SeriesInputSettingsPresenter(model->settings);
 }
+ChartPresenter *SeriesPresenter::getParent() {
+    return model->parent;
+}
 
 
 //

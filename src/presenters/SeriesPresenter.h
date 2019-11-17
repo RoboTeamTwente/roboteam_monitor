@@ -23,6 +23,7 @@ class SeriesPresenter : public QObject {
   QXYSeries * get_qt_series();
   void set_name(const QString &name);
   SeriesInputSettingsPresenter * getSettings();
+  ChartPresenter * getParent();
 
  public slots:
   void set_color(const QColor & color);

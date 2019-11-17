@@ -12,10 +12,10 @@
 
 class SeriesView : public QGroupBox {
  private:
-  SeriesModel * seriesModel;
+  SeriesPresenter * seriesModel;
 
  public:
-  SeriesView(SeriesModel * seriesModel);
+  SeriesView(SeriesPresenter * series_presenter);
 };
 
 #endif //RTT_SERIESVIEW_H

@@ -3,8 +3,9 @@
 
 #include <QObject>
 
-class SeriesModel;
+class SeriesPresenter;
 class ChartModel;
+class SeriesModel;
 class ChartPresenter : public QObject {
  Q_OBJECT
  private:

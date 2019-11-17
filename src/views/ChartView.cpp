@@ -1,7 +1,8 @@
 #include "ChartView.h"
+#include "src/presenters/SeriesPresenter.h"
 #include "src/models/SeriesModel.h"
 
-ChartView::ChartView(ChartPresenter *model, QWidget  * parent) : QWidget(parent), model(model) {
+ChartView::ChartView(ChartPresenter *model, QWidget  * parent) : QWidget(parent), presenter(model) {
     setMinimumWidth(800);
     setMinimumHeight(600);
 
@@ -53,20 +54,22 @@ ChartView::ChartView(ChartPresenter *model, QWidget  * parent) : QWidget(parent)
     //////// MODEL --> VIEW CONNECTIONS //////////
     connect(model, &ChartPresenter::seriesAdded, [this, series_overview_layout, chart](SeriesModel * series) {
 
-        auto seriesView = new SeriesView(series);
+        SeriesPresenter * presenter = new SeriesPresenter(series);
+        auto seriesView = new SeriesView(presenter);
         seriesMap.insert(std::make_pair(series, seriesView));
 
         series_overview_layout->addWidget(seriesView);
-        chart->chart()->addSeries(series->get_qt_series());
+        chart->chart()->addSeries(presenter->get_qt_series());
         chart->chart()->createDefaultAxes();
     });
 
     connect(model, &ChartPresenter::seriesRemoved, [this, series_overview_layout, chart](SeriesModel * series) {
        if (auto view = seriesMap.at(series)) {
+           SeriesPresenter * presenter = new SeriesPresenter(series);
 
            view->hide();
            series_overview_layout->removeWidget(view);
-           chart->chart()->removeSeries(series->get_qt_series());
+           chart->chart()->removeSeries(presenter->get_qt_series());
            chart->chart()->createDefaultAxes();
 
            seriesMap.erase(series);

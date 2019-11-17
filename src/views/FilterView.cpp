@@ -2,12 +2,12 @@
 // Created by Lukas Bos on 15/11/2019.
 //
 
-#include <src/models/FilterModel.h>
-#include <src/models/SeriesModel.h>
+#include <src/presenters/FilterPresenter.h>
+#include <src/presenters/SeriesPresenter.h>
 #include "FilterView.h"
 #include "AddFilterDialog.h"
-FilterView::FilterView(FilterModel * filterModel, SeriesInputSettingsPresenter * series_input_settings_delegate, QWidget * parent)
-        : QWidget(parent), filterModel(filterModel), input_settings_delegate(series_input_settings_delegate) {
+
+FilterView::FilterView(FilterPresenter * filterPresenter, QWidget * parent) : QWidget(parent) {
 
     auto filter_layout = new QHBoxLayout();
     setLayout(filter_layout);
@@ -18,9 +18,9 @@ FilterView::FilterView(FilterModel * filterModel, SeriesInputSettingsPresenter *
     add_filter_button->setText("Select...");
 
     connect(add_filter_button, &QPushButton::clicked, add_filter_dialog, &QDialog::open);
-    connect(add_filter_dialog, &AddFilterDialog::valueChanged, [add_filter_button, filterModel](const google::protobuf::FieldDescriptor * field_descriptor) {
+    connect(add_filter_dialog, &AddFilterDialog::valueChanged, [add_filter_button, filterPresenter](const google::protobuf::FieldDescriptor * field_descriptor) {
       add_filter_button->setText(QString::fromStdString(field_descriptor->name()));
-        filterModel->set_field_descriptor(const_cast<google::protobuf::FieldDescriptor *>(field_descriptor));
+       // filterPresenter->set_field_descriptor(const_cast<google::protobuf::FieldDescriptor *>(field_descriptor));
     });
 
     filter_layout->addWidget(add_filter_button);
@@ -34,8 +34,8 @@ FilterView::FilterView(FilterModel * filterModel, SeriesInputSettingsPresenter *
     filter_layout->addWidget(rm_filter_button);
 
     ////// VIEW --> MODEL /////
-    connect(rm_filter_button, &QPushButton::clicked, [series_input_settings_delegate, filterModel]() {
-      series_input_settings_delegate->removeFilter(filterModel);
+    connect(rm_filter_button, &QPushButton::clicked, [filterPresenter]() {
+    //  series_input_settings_delegate->removeFilter(filterPresenter);
     });
 
 }

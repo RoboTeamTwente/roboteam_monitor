@@ -13,7 +13,7 @@
 #include "SeriesInputSettingsView.h"
 #include "FilterView.h"
 
-SeriesInputSettingsView::SeriesInputSettingsView(SeriesInputSettingsPresenter * delegate, QWidget * parent) : QWidget(parent) {
+SeriesInputSettingsView::SeriesInputSettingsView(SeriesInputSettingsPresenter * presenter, QWidget * parent) : QWidget(parent) {
     auto topLayout = new QVBoxLayout();
 
     auto network_settings_layout = new QVBoxLayout();
@@ -35,9 +35,11 @@ SeriesInputSettingsView::SeriesInputSettingsView(SeriesInputSettingsPresenter * 
     network_settings_layout->addWidget(current_filters_label);
 
     auto current_filters_layout = new QVBoxLayout();
-    for (auto filter : delegate->get_filters()) {
-        auto filterView = new FilterView(&filter, delegate, this);
-        filterMap.insert(std::make_pair(&filter, filterView));
+    for (auto filter : presenter->get_filters()) {
+
+        auto filterPresenter = new FilterPresenter(&filter);
+        auto filterView = new FilterView(filterPresenter, this);
+        filterMap.insert(std::make_pair(filterPresenter, filterView));
         current_filters_layout->addWidget(filterView);
     }
     network_settings_layout->addLayout(current_filters_layout);
@@ -49,7 +51,7 @@ SeriesInputSettingsView::SeriesInputSettingsView(SeriesInputSettingsPresenter * 
 
 
     ////// VIEW --> MODEL CONNECTIONS /////
-    connect(add_new_filter_button, &QPushButton::clicked, delegate, &SeriesInputSettingsPresenter::add_new_filter);
+    connect(add_new_filter_button, &QPushButton::clicked, presenter, &SeriesInputSettingsPresenter::add_new_filter);
 //    connect(channel_combo_box, &QComboBox::currentTextChanged, [this](const QString &text) {
 //     // selected_topic_name = text;
 //     // select_field_dialog->update_filters_layout(text);
@@ -59,14 +61,14 @@ SeriesInputSettingsView::SeriesInputSettingsView(SeriesInputSettingsPresenter * 
 
 
     ////// MODEL --> VIEW CONNECTIONS /////
-    connect(delegate, &SeriesInputSettingsPresenter::filterAdded, [this, delegate, current_filters_layout](FilterModel * new_filter) {
-      auto filterView = new FilterView(new_filter, delegate, this);
+    connect(presenter, &SeriesInputSettingsPresenter::filterAdded, [this, presenter, current_filters_layout](FilterPresenter * new_filter) {
+      auto filterView = new FilterView(new_filter, this);
       auto pair = std::make_pair(new_filter, filterView);
       filterMap.insert(pair);
       current_filters_layout->addWidget(filterView);
     });
 
-    connect(delegate, &SeriesInputSettingsPresenter::filterRemoved, [this, delegate, current_filters_layout](FilterModel * removed_filter) {
+    connect(presenter, &SeriesInputSettingsPresenter::filterRemoved, [this, presenter, current_filters_layout](FilterPresenter * removed_filter) {
       auto filterView = filterMap.at(removed_filter);
       filterView->hide();
       current_filters_layout->removeWidget(filterView);
@@ -76,8 +78,8 @@ SeriesInputSettingsView::SeriesInputSettingsView(SeriesInputSettingsPresenter * 
 
 
 
-    delegate->createSnapShot();
-    connect(delegate, &SeriesInputSettingsPresenter::modelChanged, [this, delegate, current_filters_layout]() {
+    presenter->createSnapShot();
+    connect(presenter, &SeriesInputSettingsPresenter::modelChanged, [this, presenter, current_filters_layout]() {
         for (auto const& [model, view] : filterMap) {
             view->hide();
             current_filters_layout->removeWidget(view);
@@ -85,20 +87,21 @@ SeriesInputSettingsView::SeriesInputSettingsView(SeriesInputSettingsPresenter * 
 
         filterMap.clear();
 
-          for (auto filter : delegate->get_filters()) {
-              auto filterView = new FilterView(&filter, delegate, this);
-              filterMap.insert(std::make_pair(&filter, filterView));
+          for (auto filter : presenter->get_filters()) {
+              auto filterPresenter = new FilterPresenter(&filter);
+              auto filterView = new FilterView(filterPresenter, this);
+              filterMap.insert(std::make_pair(filterPresenter, filterView));
               current_filters_layout->addWidget(filterView);
           }
 
-        delegate->createSnapShot();
+        presenter->createSnapShot();
     });
 
 
 
     auto confirmWidget = new ConfirmationWidget("Cancel", "Apply", this);
     topLayout->addWidget(confirmWidget);
-    connect(confirmWidget, &ConfirmationWidget::cancel, delegate, &SeriesInputSettingsPresenter::rollBack);
-    connect(confirmWidget, &ConfirmationWidget::confirm, delegate, &SeriesInputSettingsPresenter::confirm);
+    connect(confirmWidget, &ConfirmationWidget::cancel, presenter, &SeriesInputSettingsPresenter::rollBack);
+    connect(confirmWidget, &ConfirmationWidget::confirm, presenter, &SeriesInputSettingsPresenter::confirm);
 }
 

@@ -41,7 +41,7 @@ add_executable(roboteam_monitor
         src/views/components/MenuBar.cpp
         src/views/NewGraphDialog.cpp
         src/views/MainWindow.cpp
-        src/models/SeriesModel.cpp
+        src/presenters/SeriesPresenter.cpp
         src/views/ChartSeriesDialog.cpp
         src/utils/Helpers.cpp
         src/views/components/SelectTypeWidget.cpp
@@ -49,7 +49,7 @@ add_executable(roboteam_monitor
         src/views/ChartView.cpp src/views/ChartView.h
         src/views/SeriesView.cpp
         src/views/SeriesView.h
-        src/models/FilterModel.cpp
+        src/presenters/FilterPresenter.cpp
         src/views/FilterView.cpp
         src/views/FilterView.h
         src/views/components/ConfirmationWidget.cpp
@@ -61,7 +61,7 @@ add_executable(roboteam_monitor
         src/presenters/SeriesInputSettingsPresenter.cpp
         src/presenters/SeriesInputSettingsPresenter.h
         src/models/SeriesInputSettingsModel.h
-        src/models/ChartModel.h)
+        src/models/ChartModel.h src/models/FilterModel.h src/models/SeriesModel.h src/models/ChartModel.cpp src/models/SeriesInputSettingsModel.cpp src/models/FilterModel.cpp src/models/SeriesModel.cpp)
 
 # link the exe against the libraries
 target_link_libraries(roboteam_monitor

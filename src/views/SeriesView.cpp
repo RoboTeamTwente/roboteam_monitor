@@ -3,10 +3,10 @@
 #include <QPushButton>
 #include <src/views/ChartSeriesDialog.h>
 #include "views/SeriesView.h"
-#include "models/SeriesModel.h"
+#include "src/presenters/SeriesPresenter.h"
 #include <QtCharts/QtCharts>
 
-SeriesView::SeriesView(SeriesModel * seriesModel) : QGroupBox("", nullptr), seriesModel(seriesModel) {
+SeriesView::SeriesView(SeriesPresenter * series_presenter) : QGroupBox("", nullptr), seriesModel(series_presenter) {
     this->setCheckable(false);
     setMaximumHeight(260);
     auto series_layout = new QVBoxLayout();
@@ -14,7 +14,7 @@ SeriesView::SeriesView(SeriesModel * seriesModel) : QGroupBox("", nullptr), seri
 
     auto title_and_color_layout = new QHBoxLayout();
     auto series_title_line_edit = new QLineEdit();
-    series_title_line_edit->setText(seriesModel->get_qt_series()->name());
+    series_title_line_edit->setText(series_presenter->get_qt_series()->name());
     title_and_color_layout->addWidget(series_title_line_edit);
     auto change_color_button = new QPushButton();
     change_color_button->setText("");
@@ -35,26 +35,26 @@ SeriesView::SeriesView(SeriesModel * seriesModel) : QGroupBox("", nullptr), seri
     auto series_settings_button = new QPushButton();
     series_settings_button->setText("Configuration");
     series_layout->addWidget(series_settings_button);
-    auto series_dialog = new ChartSeriesDialog(seriesModel, this);
+    auto series_dialog = new ChartSeriesDialog(series_presenter, this);
 
 
     //////// VIEW --> MODEL CONNECTIONS //////////
-    connect(color_dialog, &QColorDialog::colorSelected, seriesModel, &SeriesModel::set_color);
-    connect(color_dialog, &QColorDialog::currentColorChanged, seriesModel, &SeriesModel::set_color);
-    connect(visible_checkbox, &QCheckBox::toggled, seriesModel, &SeriesModel::set_visible);
+    connect(color_dialog, &QColorDialog::colorSelected, series_presenter, &SeriesPresenter::set_color);
+    connect(color_dialog, &QColorDialog::currentColorChanged, series_presenter, &SeriesPresenter::set_color);
+    connect(visible_checkbox, &QCheckBox::toggled, series_presenter, &SeriesPresenter::set_visible);
     connect(change_color_button, &QPushButton::clicked, [color_dialog]() {
       color_dialog->exec();
     });
-    connect(series_title_line_edit, &QLineEdit::textChanged, seriesModel->get_qt_series(), &QXYSeries::setName);
+    connect(series_title_line_edit, &QLineEdit::textChanged, series_presenter->get_qt_series(), &QXYSeries::setName);
     connect(series_settings_button, &QPushButton::clicked, [series_dialog]() {
       series_dialog->exec();
     });
-    connect(delete_series_button, &QPushButton::clicked, [seriesModel]() {
-       seriesModel->get_parent()->delete_series(seriesModel);
+    connect(delete_series_button, &QPushButton::clicked, [series_presenter]() {
+      // series_presenter->get_parent()->delete_series(series_presenter);
     });
 
     //////// MODEL --> VIEW CONNECTIONS //////////
-    connect(seriesModel->get_qt_series(), &QXYSeries::colorChanged, [change_color_button](const QColor & newColor) {
+    connect(series_presenter->get_qt_series(), &QXYSeries::colorChanged, [change_color_button](const QColor & newColor) {
       QString change_color_button_stylesheet = "background-color: " + newColor.name() +";";
       change_color_button->setStyleSheet(change_color_button_stylesheet);
     });

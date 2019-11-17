@@ -5,7 +5,7 @@
 #include <roboteam_proto/Channels.h>
 #include <src/models/SeriesInputSettingsModel.h>
 
-class FilterModel;
+class FilterPresenter;
 class SeriesInputSettingsModel;
 class SeriesInputSettingsPresenter : public QObject {
  Q_OBJECT
@@ -15,7 +15,6 @@ class SeriesInputSettingsPresenter : public QObject {
 
  public:
   SeriesInputSettingsPresenter(SeriesInputSettingsModel * model);
-  SeriesInputSettingsModel *get_model() const;
 
  public slots:
   void add_new_filter();
@@ -28,8 +27,8 @@ class SeriesInputSettingsPresenter : public QObject {
   void confirm();
 
  signals:
-  void filterAdded(FilterModel *filter);
-  void filterRemoved(FilterModel *filter);
+  void filterAdded(FilterPresenter *filter);
+  void filterRemoved(FilterPresenter *filter);
   void modelChanged();
   void finished();
 };

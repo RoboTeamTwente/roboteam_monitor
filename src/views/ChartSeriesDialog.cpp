@@ -1,4 +1,4 @@
-#include <src/models/SeriesModel.h>
+#include <src/presenters/SeriesPresenter.h>
 #include <roboteam_utils/constants.h>
 #include <src/utils/Helpers.h>
 #include <src/views/AddFilterDialog.h>
@@ -6,7 +6,7 @@
 #include "ChartSeriesDialog.h"
 #include "SeriesInputSettingsView.h"
 
-ChartSeriesDialog::ChartSeriesDialog(SeriesModel *series, QWidget * parent) : QDialog(parent) {
+ChartSeriesDialog::ChartSeriesDialog(SeriesPresenter *series_presenter, QWidget * parent) : QDialog(parent) {
     setMinimumWidth(600);
     auto dialog_layout = new QVBoxLayout(this);
     setLayout(dialog_layout);
@@ -15,16 +15,16 @@ ChartSeriesDialog::ChartSeriesDialog(SeriesModel *series, QWidget * parent) : QD
     dialog_layout->addWidget(tab_widget);
 
     // input settings
-    auto inputSettingsView = new SeriesInputSettingsView(series->get_settings_model());
+    auto inputSettingsView = new SeriesInputSettingsView(series_presenter->getSettings());
     tab_widget->addTab(inputSettingsView, "Input");
 
     // visualization settings
-//    QWidget * visualization_tab = create_visualization_settings_tab(series);
+//    QWidget * visualization_tab = create_visualization_settings_tab(series_presenter);
 //    tab_widget->addTab(visualization_tab, "Visualization");
 }
 
 //
-//QWidget *ChartSeriesDialog::create_visualization_settings_tab(SeriesModel *series) {
+//QWidget *ChartSeriesDialog::create_visualization_settings_tab(SeriesPresenter *series) {
 //    auto visualization_widget = new QWidget();
 //    auto visualization_layout = new QHBoxLayout();
 //    visualization_widget->setLayout(visualization_layout);

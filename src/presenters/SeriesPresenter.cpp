@@ -8,9 +8,7 @@
 
 using namespace google::protobuf;
 
-SeriesPresenter::SeriesPresenter(SeriesModel * model) : QObject(nullptr), model(model) {
-   // settingsDelegate = new SeriesInputSettingsPresenter(settingsModel);
-}
+SeriesPresenter::SeriesPresenter(SeriesModel * model) : QObject(nullptr), model(model) {}
 
 void SeriesPresenter::set_name(const QString &name) {
   model->qt_series->setName(name);
@@ -33,24 +31,4 @@ SeriesInputSettingsPresenter * SeriesPresenter::getSettings() {
 ChartPresenter *SeriesPresenter::getParent() {
     return model->parent;
 }
-
-
-//
-//ChartPresenter *SeriesPresenter::get_parent() const {
-//    return parent;
-//}
-//
-//void SeriesPresenter::set_parent(ChartPresenter *parent) {
-//    SeriesPresenter::parent = parent;
-//}
-//
-//SeriesInputSettingsPresenter *SeriesPresenter::get_settings_model() const {
-//    return settingsDelegate;
-//}
-//
-//void SeriesPresenter::set_settings_model(SeriesInputSettingsPresenter *settings_model) {
-//    settingsDelegate = settings_model;
-//}
-
-
 

@@ -29,6 +29,5 @@ class FilterModel {
 
   // methods
   bool operator==(const FilterModel & other);
-  const QString &get_value() const;
 };
 #endif //RTT_FILTERMODEL_H

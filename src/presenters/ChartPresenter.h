@@ -16,12 +16,12 @@ class ChartPresenter : public QObject {
 
  public slots:
   void add_new_series();
-  void delete_series(SeriesModel *series_to_delete);
+  void delete_series(SeriesPresenter *series_to_delete);
   void set_theme(bool dark_theme);
 
  signals:
-  void seriesAdded(SeriesModel *series);
-  void seriesRemoved(SeriesModel *series);
+  void seriesAdded(SeriesPresenter *series);
+  void seriesRemoved(SeriesPresenter *series);
   void themeChanged(bool darkTheme);
 };
 

@@ -13,7 +13,7 @@
 class ChartView : public QWidget {
  private:
   ChartPresenter * presenter;
-  std::unordered_map<SeriesModel *, SeriesView *> seriesMap;
+  std::unordered_map<SeriesPresenter *, SeriesView *> seriesMap;
 
  public:
   ChartView(ChartPresenter *model, QWidget  * parent = nullptr);

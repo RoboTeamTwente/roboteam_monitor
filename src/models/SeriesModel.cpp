@@ -15,12 +15,9 @@ SeriesModel::SeriesModel(QString name) {
 }
 
 
-
 void SeriesModel::init_subscriber_for_channel_type(const proto::ChannelType & channel_type) {
-
     proto_subscriber = new proto::Subscriber<proto::RobotCommand>
         (proto::ROBOT_COMMANDS_PRIMARY_CHANNEL, &SeriesModel::handle_robot_command_input, this);
-
 }
 
 void SeriesModel::handle_robot_command_input(proto::RobotCommand &robot_command) {
@@ -42,8 +39,6 @@ void SeriesModel::handle_setting_input(proto::Setting &setting) {
     auto reflection = proto::Setting::GetReflection();
     this->handle_incoming_message(setting, *reflection);
 }
-
-
 
 template<class T>
 void SeriesModel::handle_incoming_message(T message, const google::protobuf::Reflection &reflection) {

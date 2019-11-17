@@ -52,27 +52,25 @@ ChartView::ChartView(ChartPresenter *model, QWidget  * parent) : QWidget(parent)
     connect(theme_checkbox, &QCheckBox::toggled, model, &ChartPresenter::set_theme);
 
     //////// MODEL --> VIEW CONNECTIONS //////////
-    connect(model, &ChartPresenter::seriesAdded, [this, series_overview_layout, chart](SeriesModel * series) {
+    connect(model, &ChartPresenter::seriesAdded, [this, series_overview_layout, chart](SeriesPresenter * series_presenter) {
 
-        SeriesPresenter * presenter = new SeriesPresenter(series);
-        auto seriesView = new SeriesView(presenter);
-        seriesMap.insert(std::make_pair(series, seriesView));
+        auto seriesView = new SeriesView(series_presenter);
+        seriesMap.insert(std::make_pair(series_presenter, seriesView));
 
         series_overview_layout->addWidget(seriesView);
-        chart->chart()->addSeries(presenter->get_qt_series());
+        chart->chart()->addSeries(series_presenter->get_qt_series());
         chart->chart()->createDefaultAxes();
     });
 
-    connect(model, &ChartPresenter::seriesRemoved, [this, series_overview_layout, chart](SeriesModel * series) {
-       if (auto view = seriesMap.at(series)) {
-           SeriesPresenter * presenter = new SeriesPresenter(series);
+    connect(model, &ChartPresenter::seriesRemoved, [this, series_overview_layout, chart](SeriesPresenter * series_presenter) {
+       if (auto view = seriesMap.at(series_presenter)) {
 
            view->hide();
            series_overview_layout->removeWidget(view);
-           chart->chart()->removeSeries(presenter->get_qt_series());
+           chart->chart()->removeSeries(series_presenter->get_qt_series());
            chart->chart()->createDefaultAxes();
 
-           seriesMap.erase(series);
+           seriesMap.erase(series_presenter);
        }
     });
 

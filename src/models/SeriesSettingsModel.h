@@ -1,25 +1,25 @@
-#ifndef RTT_SERIESINPUTSETTINGSMODEL_H
-#define RTT_SERIESINPUTSETTINGSMODEL_H
+#ifndef RTT_SERIESSETTINGSMODEL_H
+#define RTT_SERIESSETTINGSMODEL_H
 
 #include <vector>
 #include <roboteam_proto/Channels.h>
 #include "src/presenters/FilterPresenter.h"
 #include "src/presenters/SeriesPresenter.h"
 
-class SeriesInputSettingsModel {
-  friend class SeriesInputSettingsPresenter;
+class SeriesSettingsModel {
 
+  // Presenter
+  friend class SeriesSettingsPresenter;
 
-  // properties
+  // Properties
   std::vector<FilterPresenter *> filters = {};
   proto::ChannelType channel_type = proto::UNDEFINED_CHANNEL;
 
-  // relationships
+  // Relationships
   SeriesPresenter * parent = nullptr;
 
  public:
-  explicit SeriesInputSettingsModel() = default;
-
+  explicit SeriesSettingsModel() = default;
 };
 
-#endif //RTT_SERIESINPUTSETTINGSMODEL_H
+#endif //RTT_SERIESSETTINGSMODEL_H

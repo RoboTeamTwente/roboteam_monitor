@@ -1,42 +1,42 @@
-#include "SeriesInputSettingsPresenter.h"
+#include "SeriesSettingsPresenter.h"
 #include "FilterPresenter.h"
 #include "../models/FilterModel.h"
 
 // constructor
-SeriesInputSettingsPresenter::SeriesInputSettingsPresenter(SeriesInputSettingsModel * model)
+SeriesSettingsPresenter::SeriesSettingsPresenter(SeriesSettingsModel * model)
     : model(model){ }
 
-void SeriesInputSettingsPresenter::update_channel(const proto::ChannelType & channel_type) {
+void SeriesSettingsPresenter::update_channel(const proto::ChannelType & channel_type) {
         model->channel_type = channel_type;
 }
 
-std::vector<FilterPresenter *> &SeriesInputSettingsPresenter::get_filters() {
+std::vector<FilterPresenter *> &SeriesSettingsPresenter::get_filters() {
     return model->filters;
 }
 
-void SeriesInputSettingsPresenter::add_new_filter() {
+void SeriesSettingsPresenter::add_new_filter() {
     auto empty_filter = new FilterModel(this);
     auto filterPresenter = new FilterPresenter(empty_filter);
     model->filters.emplace_back(filterPresenter);
     emit filterAdded(filterPresenter);
 }
 
-void SeriesInputSettingsPresenter::removeFilter(FilterPresenter *filter_to_remove) {
+void SeriesSettingsPresenter::removeFilter(FilterPresenter *filter_to_remove) {
     emit filterRemoved(filter_to_remove);
     model->filters.erase(std::remove(model->filters.begin(), model->filters.end(), filter_to_remove), model->filters.end());
 }
-proto::ChannelType SeriesInputSettingsPresenter::get_channel_type() const {
+proto::ChannelType SeriesSettingsPresenter::get_channel_type() const {
     return model->channel_type;
 }
 
 // make a snapshot of the presenter and store it as snapshot
-void SeriesInputSettingsPresenter::createSnapShot() {
-    auto snap = new SeriesInputSettingsModel(* model);
+void SeriesSettingsPresenter::createSnapShot() {
+    auto snap = new SeriesSettingsModel(* model);
     snapshot = snap;
 }
 
 // make the snapshot the presenter
-void SeriesInputSettingsPresenter::rollBack() {
+void SeriesSettingsPresenter::rollBack() {
     if (snapshot) {
         model = snapshot;
         emit modelChanged();
@@ -45,7 +45,7 @@ void SeriesInputSettingsPresenter::rollBack() {
     }
 }
 
-void SeriesInputSettingsPresenter::confirm() {
+void SeriesSettingsPresenter::confirm() {
     emit finished();
 }
 

@@ -1,20 +1,20 @@
-#ifndef RTT_SERIESINPUTSETTINGSPRESENTER_H
-#define RTT_SERIESINPUTSETTINGSPRESENTER_H
+#ifndef RTT_SERIESSETTINGSPRESENTER_H
+#define RTT_SERIESSETTINGSPRESENTER_H
 
 #include <QObject>
 #include <roboteam_proto/Channels.h>
-#include <src/models/SeriesInputSettingsModel.h>
+#include <src/models/SeriesSettingsModel.h>
 
 class FilterPresenter;
-class SeriesInputSettingsModel;
-class SeriesInputSettingsPresenter : public QObject {
+class SeriesSettingsModel;
+class SeriesSettingsPresenter : public QObject {
  Q_OBJECT
  private:
-  SeriesInputSettingsModel * model;
-  SeriesInputSettingsModel * snapshot = nullptr;
+  SeriesSettingsModel * model;
+  SeriesSettingsModel * snapshot = nullptr;
 
  public:
-  SeriesInputSettingsPresenter(SeriesInputSettingsModel * model);
+  SeriesSettingsPresenter(SeriesSettingsModel * model);
 
  public slots:
   void add_new_filter();
@@ -34,4 +34,4 @@ class SeriesInputSettingsPresenter : public QObject {
   void finished();
 };
 
-#endif //RTT_SERIESINPUTSETTINGSPRESENTER_H
+#endif //RTT_SERIESSETTINGSPRESENTER_H

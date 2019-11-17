@@ -25,8 +25,8 @@ void SeriesPresenter::set_visible(bool visible) {
 void SeriesPresenter::set_color(const QColor & color) {
     model->qt_series->setColor(color);
 }
-SeriesInputSettingsPresenter * SeriesPresenter::getSettings() {
-    return new SeriesInputSettingsPresenter(model->settings);
+SeriesSettingsPresenter * SeriesPresenter::getSettings() {
+    return new SeriesSettingsPresenter(model->settings);
 }
 ChartPresenter *SeriesPresenter::getParent() {
     return model->parent;

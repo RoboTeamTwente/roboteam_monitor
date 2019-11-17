@@ -8,10 +8,10 @@
 #include <roboteam_utils/Timer.h>
 #include <src/presenters/FilterPresenter.h>
 #include <src/views/SeriesView.h>
-#include "src/presenters/SeriesInputSettingsPresenter.h"
+#include "src/presenters/SeriesSettingsPresenter.h"
 
 class ChartPresenter;
-class SeriesInputSettingsPresenter;
+class SeriesSettingsPresenter;
 class SeriesModel;
 class SeriesPresenter : public QObject {
   Q_OBJECT
@@ -22,7 +22,7 @@ class SeriesPresenter : public QObject {
   explicit SeriesPresenter(SeriesModel * model);
   QXYSeries * get_qt_series();
   void set_name(const QString &name);
-  SeriesInputSettingsPresenter * getSettings();
+  SeriesSettingsPresenter * getSettings();
   ChartPresenter * getParent();
 
  public slots:

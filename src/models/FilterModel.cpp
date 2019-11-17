@@ -5,10 +5,10 @@
 #include <google/protobuf/descriptor.h>
 #include "FilterModel.h"
 
-FilterModel::FilterModel(SeriesInputSettingsPresenter * parent) : parent(parent) {}
+FilterModel::FilterModel(SeriesSettingsPresenter * parent) : parent(parent) {}
 
 
-FilterModel::FilterModel(SeriesInputSettingsPresenter * parent, google::protobuf::FieldDescriptor *field_descriptor,
+FilterModel::FilterModel(SeriesSettingsPresenter * parent, google::protobuf::FieldDescriptor *field_descriptor,
                          google::protobuf::Message *reference_message,
                          QString value)
     : field_descriptor(field_descriptor), reference_message(reference_message), value(std::move(value)), parent(parent)

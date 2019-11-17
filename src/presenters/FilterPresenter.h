@@ -4,14 +4,14 @@
 #include <google/protobuf/descriptor.h>
 #include <QString>
 
-class SeriesInputSettingsPresenter;
+class SeriesSettingsPresenter;
 class FilterModel;
 class FilterPresenter {
  private:
   FilterModel * model;
  public:
   FilterPresenter(FilterModel * model);
-  SeriesInputSettingsPresenter * getParent();
+  SeriesSettingsPresenter * getParent();
 };
 
 #endif //RTT_FILTERPRESENTER_H

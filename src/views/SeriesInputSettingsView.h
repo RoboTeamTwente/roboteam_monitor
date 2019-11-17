@@ -7,7 +7,7 @@
 
 #include <QWidget>
 #include <unordered_map>
-#include <src/presenters/SeriesInputSettingsPresenter.h>
+#include <src/presenters/SeriesSettingsPresenter.h>
 
 class FilterView;
 class SeriesInputSettingsView : public QWidget{
@@ -15,7 +15,7 @@ class SeriesInputSettingsView : public QWidget{
  private:
   std::unordered_map<FilterPresenter *, FilterView *> filterMap;
  public:
-  explicit SeriesInputSettingsView(SeriesInputSettingsPresenter * presenter, QWidget * parent = nullptr);
+  explicit SeriesInputSettingsView(SeriesSettingsPresenter * presenter, QWidget * parent = nullptr);
 };
 
 #endif //RTT_SERIESINPUTSETTINGSVIEW_H

@@ -12,12 +12,12 @@
 #include <QtCharts/QtCharts>
 
 class ChartPresenter;
-class SeriesInputSettingsModel;
+class SeriesSettingsModel;
 class SeriesModel {
   friend class SeriesPresenter;
  public:
   SeriesModel(ChartPresenter * parent);
-  SeriesModel(ChartPresenter * parent, QString name = "series");
+  SeriesModel(ChartPresenter * parent, QString name = "Series");
  private:
   // properties
   QXYSeries * qt_series = nullptr;
@@ -28,7 +28,7 @@ class SeriesModel {
  public:
   ChartPresenter *get_parent() const;
  private:
-  SeriesInputSettingsModel * settings;
+  SeriesSettingsModel * settings;
 
 
   void init_subscriber_for_channel_type(const proto::ChannelType & channel_type);

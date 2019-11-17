@@ -5,7 +5,7 @@
 #include <src/presenters/SeriesPresenter.h>
 
 class SeriesPresenter;
-class SeriesInputSettingsPresenter;
+class SeriesSettingsPresenter;
 class FilterModel {
 
   // Presenter
@@ -17,12 +17,12 @@ class FilterModel {
   QString value;
 
   // Relations
-  SeriesInputSettingsPresenter * parent;
+  SeriesSettingsPresenter * parent;
 
  public:
-  FilterModel(SeriesInputSettingsPresenter * parent);
-  FilterModel(SeriesInputSettingsPresenter * parent,
-      google::protobuf::FieldDescriptor *field_descriptor,
+  FilterModel(SeriesSettingsPresenter * parent);
+  FilterModel(SeriesSettingsPresenter * parent,
+              google::protobuf::FieldDescriptor *field_descriptor,
               google::protobuf::Message *reference_message,
               QString value);
 

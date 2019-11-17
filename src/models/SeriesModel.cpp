@@ -1,5 +1,5 @@
 #include "SeriesModel.h"
-#include "SeriesInputSettingsModel.h"
+#include "SeriesSettingsModel.h"
 #include <QtCharts/QtCharts>
 
 SeriesModel::SeriesModel(ChartPresenter * parent) : parent(parent) {}
@@ -7,7 +7,7 @@ SeriesModel::SeriesModel(ChartPresenter * parent) : parent(parent) {}
 SeriesModel::SeriesModel(ChartPresenter * parent, QString name): parent(parent) {
     qt_series = new QSplineSeries();
     qt_series->setName(name);
-    settings = new SeriesInputSettingsModel();
+    settings = new SeriesSettingsModel();
 
     srand (time(nullptr));
     qt_series->append(0, rand() % 20 + 1);

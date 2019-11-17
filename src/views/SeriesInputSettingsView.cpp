@@ -6,14 +6,14 @@
 #include <QComboBox>
 #include <roboteam_proto/Channels.h>
 #include <QLabel>
-#include <src/presenters/SeriesInputSettingsPresenter.h>
+#include <src/presenters/SeriesSettingsPresenter.h>
 #include <src/views/components/ConfirmationWidget.h>
 #include <QPushButton>
 #include <src/utils/Helpers.h>
 #include "SeriesInputSettingsView.h"
 #include "FilterView.h"
 
-SeriesInputSettingsView::SeriesInputSettingsView(SeriesInputSettingsPresenter * presenter, QWidget * parent) : QWidget(parent) {
+SeriesInputSettingsView::SeriesInputSettingsView(SeriesSettingsPresenter * presenter, QWidget * parent) : QWidget(parent) {
     auto topLayout = new QVBoxLayout();
 
     auto network_settings_layout = new QVBoxLayout();
@@ -49,7 +49,7 @@ SeriesInputSettingsView::SeriesInputSettingsView(SeriesInputSettingsPresenter * 
 
 
     ////// VIEW --> MODEL CONNECTIONS /////
-    connect(add_new_filter_button, &QPushButton::clicked, presenter, &SeriesInputSettingsPresenter::add_new_filter);
+    connect(add_new_filter_button, &QPushButton::clicked, presenter, &SeriesSettingsPresenter::add_new_filter);
 //    connect(channel_combo_box, &QComboBox::currentTextChanged, [this](const QString &text) {
 //     // selected_topic_name = text;
 //     // select_field_dialog->update_filters_layout(text);
@@ -59,14 +59,14 @@ SeriesInputSettingsView::SeriesInputSettingsView(SeriesInputSettingsPresenter * 
 
 
     ////// MODEL --> VIEW CONNECTIONS /////
-    connect(presenter, &SeriesInputSettingsPresenter::filterAdded, [this, presenter, current_filters_layout](FilterPresenter * new_filter) {
+    connect(presenter, &SeriesSettingsPresenter::filterAdded, [this, presenter, current_filters_layout](FilterPresenter * new_filter) {
       auto filterView = new FilterView(new_filter, this);
       auto pair = std::make_pair(new_filter, filterView);
       filterMap.insert(pair);
       current_filters_layout->addWidget(filterView);
     });
 
-    connect(presenter, &SeriesInputSettingsPresenter::filterRemoved, [this, presenter, current_filters_layout](FilterPresenter * removed_filter) {
+    connect(presenter, &SeriesSettingsPresenter::filterRemoved, [this, presenter, current_filters_layout](FilterPresenter * removed_filter) {
       auto filterView = filterMap.at(removed_filter);
       filterView->hide();
       current_filters_layout->removeWidget(filterView);
@@ -77,7 +77,7 @@ SeriesInputSettingsView::SeriesInputSettingsView(SeriesInputSettingsPresenter * 
 
 
     presenter->createSnapShot();
-    connect(presenter, &SeriesInputSettingsPresenter::modelChanged, [this, presenter, current_filters_layout]() {
+    connect(presenter, &SeriesSettingsPresenter::modelChanged, [this, presenter, current_filters_layout]() {
         for (auto const& [model, view] : filterMap) {
             view->hide();
             current_filters_layout->removeWidget(view);
@@ -98,7 +98,7 @@ SeriesInputSettingsView::SeriesInputSettingsView(SeriesInputSettingsPresenter * 
 
     auto confirmWidget = new ConfirmationWidget("Cancel", "Apply", this);
     topLayout->addWidget(confirmWidget);
-    connect(confirmWidget, &ConfirmationWidget::cancel, presenter, &SeriesInputSettingsPresenter::rollBack);
-    connect(confirmWidget, &ConfirmationWidget::confirm, presenter, &SeriesInputSettingsPresenter::confirm);
+    connect(confirmWidget, &ConfirmationWidget::cancel, presenter, &SeriesSettingsPresenter::rollBack);
+    connect(confirmWidget, &ConfirmationWidget::confirm, presenter, &SeriesSettingsPresenter::confirm);
 }
 

@@ -4,7 +4,7 @@
 
 FilterPresenter::FilterPresenter(FilterModel * model) : model(model){}
 
-SeriesInputSettingsPresenter *FilterPresenter::getParent() {
+SeriesSettingsPresenter *FilterPresenter::getParent() {
     return model->parent;
 }
 

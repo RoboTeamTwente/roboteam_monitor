@@ -22,8 +22,8 @@ class SeriesSettingsModel {
   bool operator==(const SeriesSettingsModel &rhs) const;
   bool operator!=(const SeriesSettingsModel &rhs) const;
  public:
-  explicit SeriesSettingsModel() = default;
-  explicit SeriesSettingsModel(const SeriesSettingsModel &other);
+  explicit SeriesSettingsModel(SeriesPresenter * parent);
+  explicit SeriesSettingsModel(SeriesPresenter * parent, const SeriesSettingsModel &other);
 };
 
 #endif //RTT_SERIESSETTINGSMODEL_H

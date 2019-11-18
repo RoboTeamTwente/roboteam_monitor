@@ -120,11 +120,8 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
     });
 
     connect(presenter, &SeriesSettingsPresenter::modelChanged, [this, presenter, current_filters_layout, channel_combo_box, radio_field, radio_rate]() {
-
-
       channel_combo_box->setCurrentText(QString::fromStdString(proto::CHANNELS.at(presenter->get_channel_type()).name));
-
-    // Refresh filters
+      // Refresh filters
       for (auto const& [model, view] : filterMap) {
           view->hide();
           current_filters_layout->removeWidget(view);
@@ -135,22 +132,17 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
           filterMap.insert(std::make_pair(filter_presenter, filterView));
           current_filters_layout->addWidget(filterView);
       }
-
       radio_rate->setChecked(presenter->use_packet_rate());
       radio_field->setChecked(!presenter->use_packet_rate());
-
-
       presenter->createSnapShot();
     });
-
-
-
 
     connect(this, &SeriesSettingsDialog::user_event_dirty, confirmWidget, &ConfirmationWidget::setDisabled);
     connect(this, &QDialog::rejected, presenter, &SeriesSettingsPresenter::rollBack);
     connect(this, &QDialog::accepted, presenter, &SeriesSettingsPresenter::createSnapShot);
     connect(confirmWidget, &ConfirmationWidget::cancel, this, &QDialog::reject);
     connect(confirmWidget, &ConfirmationWidget::confirm, this, &QDialog::accept);
+    connect(confirmWidget, &ConfirmationWidget::confirm, presenter, &SeriesSettingsPresenter::confirm);
 }
 
 /*

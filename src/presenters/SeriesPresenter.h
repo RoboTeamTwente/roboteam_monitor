@@ -28,6 +28,7 @@ class SeriesPresenter : public QObject {
  public slots:
   void set_color(const QColor & color);
   void set_visible(bool visible);
+  void start_new_subscription();
 };
 
 #endif //RTT_SERIESPRESENTER_H

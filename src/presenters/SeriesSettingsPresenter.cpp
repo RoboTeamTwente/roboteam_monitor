@@ -59,10 +59,10 @@ void SeriesSettingsPresenter::rollBack() {
     }
 }
 
-// Confirm the changes
+// Confirm the changes and boot up the new subscriber for the series
 void SeriesSettingsPresenter::confirm() {
     snapshot = model;
-    emit finished();
+    model->parent->start_new_subscription();
 }
 
 // If the model is different from the snapshot (i.e. it has unsaved changes), it is considered 'dirty'.

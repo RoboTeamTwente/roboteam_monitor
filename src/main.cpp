@@ -6,7 +6,10 @@
 #include <QStyleFactory>
 #include "src/views/components/MenuBar.h"
 #include "src/views/MainWindow.h"
-
+#include "../../roboteam_ai/include/roboteam_ai/control/RobotCommand.h"
+#include <thread>
+#include <roboteam_utils/Timer.h>
+#include <roboteam_proto/Publisher.h>
 
 void setDarkTheme() {
   qApp->setStyle(QStyleFactory::create("Fusion"));
@@ -28,11 +31,27 @@ void setDarkTheme() {
   qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
 }
 
+
+void fakeRobotCommands() {
+    roboteam_utils::Timer t;
+    auto publisher = new proto::Publisher<proto::RobotCommand>(proto::ChannelType::ROBOT_COMMANDS_PRIMARY_CHANNEL);
+    t.loop([publisher]() {
+        auto cmd = new proto::RobotCommand;
+        cmd->mutable_vel()->set_x(10);
+        cmd->mutable_vel()->set_y(20);
+        publisher->send(*cmd);
+    }, 20);
+}
+
 int main(int argc, char** argv) {
   QApplication a(argc, argv);
   setDarkTheme();
+
+  std::thread thread(fakeRobotCommands);
   MainWindow window;
   window.setWindowState(Qt::WindowMaximized);
   window.show();
+
   return a.exec();
 }
+

@@ -10,14 +10,14 @@
 #include <roboteam_proto/World.pb.h>
 #include <roboteam_proto/Setting.pb.h>
 #include <QtCharts/QtCharts>
+#include <roboteam_utils/Timer.h>
 
 class ChartPresenter;
 class SeriesSettingsModel;
 class SeriesModel {
   friend class SeriesPresenter;
  public:
-  SeriesModel(ChartPresenter * parent);
-  SeriesModel(ChartPresenter * parent, QString name = "Series");
+  SeriesModel(ChartPresenter * parent, const QString & name = "Series");
  private:
   // properties
   QXYSeries * qt_series = nullptr;
@@ -27,10 +27,14 @@ class SeriesModel {
   ChartPresenter * parent = nullptr;
  public:
   ChartPresenter *get_parent() const;
+
+
  private:
-  SeriesSettingsModel * settings;
+  roboteam_utils::Timer timer;
+  int rate = 0;
+  long lastRateUpdateTime;
 
-
+  SeriesSettingsModel * settings = nullptr;
   void init_subscriber_for_channel_type(const proto::ChannelType & channel_type);
   void handle_robot_command_input(proto::RobotCommand & robot_command);
   void handle_world_input(proto::World & world);

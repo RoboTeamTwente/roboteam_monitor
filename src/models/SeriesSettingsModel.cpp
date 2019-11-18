@@ -21,7 +21,7 @@ bool SeriesSettingsModel::operator!=(const SeriesSettingsModel &rhs) const {
     return !(rhs==*this);
 }
 
-SeriesSettingsModel::SeriesSettingsModel(const SeriesSettingsModel &other) {
+SeriesSettingsModel::SeriesSettingsModel(SeriesPresenter * parent, const SeriesSettingsModel &other) : parent(parent) {
     std::cout << "[SeriesSettingsModel] Making a copy..." << std::endl;
     channel_type = other.channel_type;
     use_packet_rate = other.use_packet_rate;
@@ -32,3 +32,5 @@ SeriesSettingsModel::SeriesSettingsModel(const SeriesSettingsModel &other) {
         filters.push_back(new FilterPresenter(new_filter));
     }
 }
+SeriesSettingsModel::SeriesSettingsModel(SeriesPresenter *parent) : parent(parent)
+{ }

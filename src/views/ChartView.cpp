@@ -30,6 +30,10 @@ ChartView::ChartView(ChartPresenter *model, QWidget  * parent) : QWidget(parent)
     add_series_button->setText("Add series");
     series_overview_layout->addWidget(add_series_button);
 
+    auto play_pause_button = new QPushButton();
+    play_pause_button->setText("Play");
+    series_overview_layout->addWidget(play_pause_button);
+
     // theme toggle checkbox
     auto theme_checkbox = new QCheckBox("Dark theme");
     theme_checkbox->setChecked(true);

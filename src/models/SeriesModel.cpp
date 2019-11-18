@@ -2,18 +2,10 @@
 #include "SeriesSettingsModel.h"
 #include <QtCharts/QtCharts>
 
-SeriesModel::SeriesModel(ChartPresenter * parent) : parent(parent) {}
-
-SeriesModel::SeriesModel(ChartPresenter * parent, QString name): parent(parent) {
+SeriesModel::SeriesModel(ChartPresenter * parent, const QString & name): parent(parent) {
     qt_series = new QSplineSeries();
     qt_series->setName(name);
-    settings = new SeriesSettingsModel();
-
-    srand (time(nullptr));
-    qt_series->append(0, rand() % 20 + 1);
-    qt_series->append(2, rand() % 20 + 1);
-    qt_series->append(4, rand() % 20 + 1);
-    qt_series->append(16, rand() % 20 + 1);
+    settings = new SeriesSettingsModel(new SeriesPresenter(this));
 }
 
 
@@ -48,8 +40,18 @@ void SeriesModel::handle_incoming_message(T message, const google::protobuf::Ref
     auto field_descriptors = std::vector<const google::protobuf::FieldDescriptor *>();
     reflection.ListFields(message, &field_descriptors);
 
+    auto now = timer.getCurrentTime();
 
+    if (now.count() < lastRateUpdateTime + 1000) {
+        rate++;
+    } else {
+        lastRateUpdateTime = now.count();
+        QPoint point(now.count(), rate);
+        qt_series->append(point);
+        rate = 0;
+    }
 }
+
 ChartPresenter *SeriesModel::get_parent() const {
     return parent;
 }

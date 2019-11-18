@@ -31,4 +31,7 @@ SeriesSettingsPresenter * SeriesPresenter::getSettings() {
 ChartPresenter *SeriesPresenter::getParent() {
     return model->parent;
 }
+void SeriesPresenter::start_new_subscription() {
+    model->init_subscriber_for_channel_type(getSettings()->get_channel_type());
+}
 

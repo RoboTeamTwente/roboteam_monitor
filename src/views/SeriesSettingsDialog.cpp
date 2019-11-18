@@ -82,12 +82,9 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
 
     ////// VIEW --> MODEL CONNECTIONS /////
     connect(add_new_filter_button, &QPushButton::clicked, presenter, &SeriesSettingsPresenter::add_new_filter);
-//    connect(channel_combo_box, &QComboBox::currentTextChanged, [this](const QString &text) {
-//     // selected_topic_name = text;
-//     // select_field_dialog->update_filters_layout(text);
-//    });
-
-
+    connect(channel_combo_box, &QComboBox::currentTextChanged, [presenter](const QString & text) {
+      presenter->update_channel(text);
+    });
 
 
     ////// MODEL --> VIEW CONNECTIONS /////

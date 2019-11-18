@@ -15,6 +15,9 @@ FilterView::FilterView(FilterPresenter * filterPresenter, QWidget * parent) : QW
 
 
     auto add_filter_dialog = new AddFilterDialog((QWidget *) this);
+    if (filterPresenter->getParent()->get_channel_type()) {
+        add_filter_dialog->update_filters_layout(QString::fromStdString(proto::CHANNELS.at(filterPresenter->getParent()->get_channel_type()).name));
+    }
     auto add_filter_button = new QPushButton();
     auto descriptor = filterPresenter->get_field_descriptor();
     if (descriptor) {

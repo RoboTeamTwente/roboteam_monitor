@@ -147,18 +147,10 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
 
 
     connect(this, &SeriesSettingsDialog::user_event_dirty, confirmWidget, &ConfirmationWidget::setDisabled);
-
-    connect(confirmWidget, &ConfirmationWidget::cancel, [this, presenter]() {
-        presenter->rollBack();
-        this->close();
-    });
-    connect(this, &QDialog::close, [presenter]() {
-      presenter->rollBack();
-    });
-    connect(confirmWidget, &ConfirmationWidget::confirm, [this, presenter]() {
-      presenter->confirm();
-      this->close();
-    });
+    connect(this, &QDialog::rejected, presenter, &SeriesSettingsPresenter::rollBack);
+    connect(this, &QDialog::accepted, presenter, &SeriesSettingsPresenter::createSnapShot);
+    connect(confirmWidget, &ConfirmationWidget::cancel, this, &QDialog::reject);
+    connect(confirmWidget, &ConfirmationWidget::confirm, this, &QDialog::accept);
 }
 
 /*
@@ -174,7 +166,11 @@ bool SeriesSettingsDialog::event(QEvent *event) {
  */
 int SeriesSettingsDialog::exec() {
     presenter->createSnapShot();
-    QDialog::exec();
+    return QDialog::exec();
 }
+
+
+
+
 
 

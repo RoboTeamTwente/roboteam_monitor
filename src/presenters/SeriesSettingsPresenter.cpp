@@ -85,6 +85,9 @@ void SeriesSettingsPresenter::set_use_packet_rate(bool use_packet_rate) {
 bool SeriesSettingsPresenter::use_packet_rate() {
     return model->use_packet_rate;
 }
+
+// Remove all the filters.
+// The following implementation was chosen to also update the gui as well.
 void SeriesSettingsPresenter::removeAllFilters() {
     for (auto filter : model->filters) {
         removeFilter(filter);

@@ -44,8 +44,7 @@ set(VIEWS
         src/views/SeriesView.cpp
         src/views/FilterView.cpp
         src/views/components/ConfirmationWidget.cpp
-        src/views/SeriesInputSettingsView.cpp
-        src/views/ChartSeriesDialog.cpp
+        src/views/SeriesSettingsDialog.cpp
         )
 
 

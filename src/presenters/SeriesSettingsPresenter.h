@@ -15,6 +15,7 @@ class SeriesSettingsPresenter : public QObject {
 
  public:
   SeriesSettingsPresenter(SeriesSettingsModel * model);
+  bool is_dirty();
 
  public slots:
   void add_new_filter();
@@ -33,5 +34,6 @@ class SeriesSettingsPresenter : public QObject {
   void modelChanged();
   void finished();
 };
+
 
 #endif //RTT_SERIESSETTINGSPRESENTER_H

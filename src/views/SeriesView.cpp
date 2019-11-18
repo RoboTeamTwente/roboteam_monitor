@@ -1,7 +1,7 @@
 #include <QVBoxLayout>
 #include <QLineEdit>
 #include <QPushButton>
-#include <src/views/ChartSeriesDialog.h>
+#include <src/views/SeriesSettingsDialog.h>
 #include "views/SeriesView.h"
 #include "src/presenters/SeriesPresenter.h"
 #include <QtCharts/QtCharts>
@@ -35,7 +35,7 @@ SeriesView::SeriesView(SeriesPresenter * series_presenter) : QGroupBox("", nullp
     auto series_settings_button = new QPushButton();
     series_settings_button->setText("Configuration");
     series_layout->addWidget(series_settings_button);
-    auto series_dialog = new ChartSeriesDialog(series_presenter, this);
+    auto series_dialog = new SeriesSettingsDialog(series_presenter->getSettings(), this);
 
 
     //////// VIEW --> MODEL CONNECTIONS //////////

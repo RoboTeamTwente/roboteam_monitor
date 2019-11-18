@@ -3,7 +3,7 @@
 #include <src/presenters/ChartPresenter.h>
 #include <functional>
 #include <roboteam_utils/constants.h>
-#include <src/views/ChartSeriesDialog.h>
+#include <src/views/SeriesSettingsDialog.h>
 #include "models/SeriesModel.h"
 
 using namespace google::protobuf;

@@ -3,6 +3,7 @@
 //
 
 #include <google/protobuf/descriptor.h>
+#include <src/utils/Helpers.h>
 #include "FilterModel.h"
 
 FilterModel::FilterModel(SeriesSettingsPresenter * parent) : parent(parent) {}
@@ -16,7 +17,13 @@ FilterModel::FilterModel(SeriesSettingsPresenter * parent, google::protobuf::Fie
 
 
 bool FilterModel::operator==(const FilterModel &other) {
-    return field_descriptor == other.field_descriptor && reference_message == other.reference_message && value == other.value;
+    return  ((
+        (field_descriptor && other.field_descriptor) &&
+        (Helpers::get_actual_typename(field_descriptor) == Helpers::get_actual_typename(other.field_descriptor)) &&
+        (field_descriptor == other.field_descriptor))
+    || (!field_descriptor && !other.field_descriptor))
+    && reference_message == other.reference_message
+    && value == other.value;
 }
 
 

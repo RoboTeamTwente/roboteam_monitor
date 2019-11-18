@@ -31,6 +31,7 @@ proto::ChannelType SeriesSettingsPresenter::get_channel_type() const {
 
 // make a snapshot of the presenter and store it as snapshot
 void SeriesSettingsPresenter::createSnapShot() {
+    std::cout << "[SeriesSettingsPresenter] Creating snapshot..." << std::endl;
     auto snap = new SeriesSettingsModel(* model);
     snapshot = snap;
 }
@@ -46,7 +47,12 @@ void SeriesSettingsPresenter::rollBack() {
 }
 
 void SeriesSettingsPresenter::confirm() {
+    snapshot = model;
     emit finished();
+}
+
+bool SeriesSettingsPresenter::is_dirty() {
+    return snapshot && (*snapshot != *model);
 }
 
 

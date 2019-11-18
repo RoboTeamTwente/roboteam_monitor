@@ -12,8 +12,8 @@ class FilterModel {
   friend class FilterPresenter;
 
   // properties
-  google::protobuf::FieldDescriptor * field_descriptor;
-  google::protobuf::Message * reference_message;
+  google::protobuf::FieldDescriptor * field_descriptor = nullptr;
+  google::protobuf::Message * reference_message = nullptr;
   QString value;
 
   // Relations

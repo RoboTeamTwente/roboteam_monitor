@@ -16,7 +16,7 @@ class ChartView : public QWidget {
   std::unordered_map<SeriesPresenter *, SeriesView *> seriesMap;
 
  public:
-  ChartView(ChartPresenter *model, QWidget  * parent = nullptr);
+  ChartView(ChartPresenter *presenter, QWidget  * parent = nullptr);
 };
 
 #endif //RTT_CHARTVIEW_H

@@ -1,3 +1,6 @@
 #include "ChartModel.h"
 
-ChartModel::ChartModel() {}
+ChartModel::ChartModel() {
+    xAxis = new QValueAxis();
+    yAxis = new QValueAxis();
+}

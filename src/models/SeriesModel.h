@@ -22,6 +22,8 @@ class SeriesModel {
   // properties
   QXYSeries * qt_series = nullptr;
   void * proto_subscriber = nullptr;
+  QVector<QPointF> data;
+
 
   // relationships
   ChartPresenter * parent = nullptr;
@@ -29,10 +31,12 @@ class SeriesModel {
   ChartPresenter *get_parent() const;
 
 
+
  private:
   roboteam_utils::Timer timer;
   int rate = 0;
   long lastRateUpdateTime;
+  long time_since_series_is_created;
 
   SeriesSettingsModel * settings = nullptr;
   void init_subscriber_for_channel_type(const proto::ChannelType & channel_type);

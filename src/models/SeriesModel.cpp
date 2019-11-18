@@ -3,9 +3,11 @@
 #include <QtCharts/QtCharts>
 
 SeriesModel::SeriesModel(ChartPresenter * parent, const QString & name): parent(parent) {
+    time_since_series_is_created = timer.getCurrentTime().count();
     qt_series = new QSplineSeries();
     qt_series->setName(name);
     settings = new SeriesSettingsModel(new SeriesPresenter(this));
+    init_subscriber_for_channel_type(proto::ChannelType::GEOMETRY_CHANNEL);
 }
 
 
@@ -42,12 +44,16 @@ void SeriesModel::handle_incoming_message(T message, const google::protobuf::Ref
 
     auto now = timer.getCurrentTime();
 
-    if (now.count() < lastRateUpdateTime + 1000) {
+    if (now.count() <= lastRateUpdateTime + 1000) {
         rate++;
     } else {
         lastRateUpdateTime = now.count();
-        QPoint point(now.count(), rate);
-        qt_series->append(point);
+        QPoint point((now.count() - time_since_series_is_created)/1000, rate);
+        data.append(point);
+        std::cout << "adding data: " << point.x() << ", " << point.y() << std::endl;
+        qt_series->replace(data);
+        parent->adjustBoundaries(point.x(), point.y());
+        parent->getxAxis()->applyNiceNumbers();
         rate = 0;
     }
 }
@@ -55,3 +61,4 @@ void SeriesModel::handle_incoming_message(T message, const google::protobuf::Ref
 ChartPresenter *SeriesModel::get_parent() const {
     return parent;
 }
+

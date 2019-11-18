@@ -2,7 +2,7 @@
 #include "src/presenters/SeriesPresenter.h"
 #include "src/models/SeriesModel.h"
 
-ChartView::ChartView(ChartPresenter *model, QWidget  * parent) : QWidget(parent), presenter(model) {
+ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(parent), presenter(presenter) {
     setMinimumWidth(800);
     setMinimumHeight(600);
 
@@ -45,40 +45,57 @@ ChartView::ChartView(ChartPresenter *model, QWidget  * parent) : QWidget(parent)
 
     // chart
     auto chart = new QChartView();
-    chart->chart()->createDefaultAxes();
     chart->chart()->setMinimumHeight(300);
     dialog_splitter->addWidget(chart);
     chart->chart()->setTheme(QChart::ChartThemeDark);
     chart->chart()->setBackgroundBrush(QColor(33, 33, 33));
+    chart->setRenderHint(QPainter::Antialiasing);
+    chart->chart()->createDefaultAxes();
+
+    chart->chart()->addAxis(presenter->getxAxis(), Qt::AlignBottom);
+    chart->chart()->addAxis(presenter->getyAxis(), Qt::AlignLeft);
+
+    presenter->getxAxis()->setTitleText("Time");
+    presenter->getyAxis()->setTitleText("Rate");
+
+    roboteam_utils::Timer t;
+    presenter->getxAxis()->setRange(0, 10);
+    presenter->getyAxis()->setRange(0,10);
+
+
+//    presenter->setxAxis(dynamic_cast<QValueAxis *>(chart->chart()->axes(Qt::Horizontal)[0]));
+//    presenter->setyAxis(dynamic_cast<QValueAxis *>(chart->chart()->axes(Qt::Vertical)[0]));
 
     //////// VIEW --> MODEL CONNECTIONS //////////
-    connect(add_series_button, &QPushButton::clicked, model, &ChartPresenter::add_new_series);
-    connect(theme_checkbox, &QCheckBox::toggled, model, &ChartPresenter::set_theme);
+    connect(add_series_button, &QPushButton::clicked, presenter, &ChartPresenter::add_new_series);
+    connect(theme_checkbox, &QCheckBox::toggled, presenter, &ChartPresenter::set_theme);
 
     //////// MODEL --> VIEW CONNECTIONS //////////
-    connect(model, &ChartPresenter::seriesAdded, [this, series_overview_layout, chart](SeriesPresenter * series_presenter) {
-
+    connect(presenter, &ChartPresenter::seriesAdded, [this, series_overview_layout, chart, presenter](SeriesPresenter * series_presenter) {
         auto seriesView = new SeriesView(series_presenter);
         seriesMap.insert(std::make_pair(series_presenter, seriesView));
-
         series_overview_layout->addWidget(seriesView);
         chart->chart()->addSeries(series_presenter->get_qt_series());
-        chart->chart()->createDefaultAxes();
+
+      chart->chart()->addAxis(presenter->getxAxis(), Qt::AlignBottom);
+      chart->chart()->addAxis(presenter->getyAxis(), Qt::AlignLeft);
+
+
+      series_presenter->get_qt_series()->attachAxis(series_presenter->getParent()->getxAxis());
+      series_presenter->get_qt_series()->attachAxis(series_presenter->getParent()->getyAxis());
     });
 
-    connect(model, &ChartPresenter::seriesRemoved, [this, series_overview_layout, chart](SeriesPresenter * series_presenter) {
+    connect(presenter, &ChartPresenter::seriesRemoved, [this, series_overview_layout, chart](SeriesPresenter * series_presenter) {
        if (auto view = seriesMap.at(series_presenter)) {
-
            view->hide();
            series_overview_layout->removeWidget(view);
            chart->chart()->removeSeries(series_presenter->get_qt_series());
-           chart->chart()->createDefaultAxes();
-
+           // chart->chart()->createDefaultAxes();
            seriesMap.erase(series_presenter);
        }
     });
 
-    connect(model, &ChartPresenter::themeChanged, [chart](bool darkTheme) {
+    connect(presenter, &ChartPresenter::themeChanged, [chart](bool darkTheme) {
       if (darkTheme) {
           chart->chart()->setTheme(QChart::ChartThemeDark);
           chart->chart()->setBackgroundBrush(QColor(33, 33, 33));

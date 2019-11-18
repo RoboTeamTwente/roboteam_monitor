@@ -40,7 +40,7 @@ void fakeRobotCommands() {
         cmd->mutable_vel()->set_x(10);
         cmd->mutable_vel()->set_y(20);
         publisher->send(*cmd);
-    }, 20);
+    }, 60);
 }
 
 int main(int argc, char** argv) {

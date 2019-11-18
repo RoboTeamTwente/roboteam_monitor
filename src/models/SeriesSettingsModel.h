@@ -13,9 +13,8 @@ class SeriesSettingsModel {
 
   // Properties
   std::vector<FilterPresenter *> filters = {};
-  proto::ChannelType channel_type = proto::UNDEFINED_CHANNEL;
-  bool show_packet_rate = true;
-  bool show_custom_field = false;
+  proto::ChannelType channel_type = proto::GEOMETRY_CHANNEL;
+  bool use_packet_rate = true;
 
   // Relationships
   SeriesPresenter * parent = nullptr;

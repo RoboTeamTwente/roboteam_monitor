@@ -13,8 +13,7 @@ bool SeriesSettingsModel::operator==(const SeriesSettingsModel &rhs) const {
     std::cout << "filters_are_equal: " + std::to_string(filters_are_equal) << std::endl;
     return filters_are_equal &&
         channel_type==rhs.channel_type &&
-        show_packet_rate==rhs.show_packet_rate &&
-        show_custom_field==rhs.show_custom_field &&
+        use_packet_rate==rhs.use_packet_rate &&
         parent==rhs.parent;
 }
 
@@ -25,8 +24,7 @@ bool SeriesSettingsModel::operator!=(const SeriesSettingsModel &rhs) const {
 SeriesSettingsModel::SeriesSettingsModel(const SeriesSettingsModel &other) {
     std::cout << "[SeriesSettingsModel] Making a copy..." << std::endl;
     channel_type = other.channel_type;
-    show_packet_rate = other.show_packet_rate;
-    show_custom_field = other.show_custom_field;
+    use_packet_rate = other.use_packet_rate;
     parent = other.parent;
 
     for (auto filter : other.filters) {

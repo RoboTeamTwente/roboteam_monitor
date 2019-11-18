@@ -1,3 +1,9 @@
+/*
+ * This view displays the series settings dialog.
+ *
+ * It shows the GUI for input settings and visualization settings.
+ */
+
 #include <src/presenters/SeriesPresenter.h>
 #include <roboteam_utils/constants.h>
 #include <src/utils/Helpers.h>
@@ -64,19 +70,20 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
     auto select_field_dialog = new AddFilterDialog((QWidget *) this);
     auto select_field_button = new QPushButton();
     select_field_button->setText("Select...");
-    select_field_button->setStyleSheet("background-color: gray");
+    select_field_button->setHidden(presenter->use_packet_rate());
+    network_settings_layout->addWidget(select_field_button);
+
+    auto confirmWidget = new ConfirmationWidget("Cancel", "Apply", this);
+    network_settings_layout->addWidget(confirmWidget);
 
     connect(select_field_button, &QPushButton::clicked, select_field_dialog, &QDialog::open);
     connect(select_field_dialog, &AddFilterDialog::valueChanged, [select_field_button](const google::protobuf::FieldDescriptor * field_descriptor) {
       select_field_button->setText(QString::fromStdString(field_descriptor->name()));
     });
-    connect(radio_field, &QRadioButton::toggled, [select_field_button](bool checked) {
-      select_field_button->setDisabled(!checked);
-      if (checked) {
-          select_field_button->setStyleSheet("background-color: none");
-      } else {
-          select_field_button->setStyleSheet("background-color: gray");
-      }
+
+    connect(presenter, &SeriesSettingsPresenter::rateSettingChanged, [select_field_button](bool use_packet_rate) {
+      select_field_button->setDisabled(use_packet_rate);
+      select_field_button->setHidden(use_packet_rate);
     });
 
 
@@ -85,6 +92,12 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
     connect(channel_combo_box, &QComboBox::currentTextChanged, [presenter](const QString & text) {
       presenter->update_channel(text);
     });
+
+    connect(radio_rate, &QRadioButton::toggled, [presenter, select_field_button](bool checked) {
+      presenter->set_use_packet_rate(checked);
+
+    });
+
 
 
     ////// MODEL --> VIEW CONNECTIONS /////
@@ -96,33 +109,42 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
     });
 
     connect(presenter, &SeriesSettingsPresenter::filterRemoved, [this, presenter, current_filters_layout](FilterPresenter * removed_filter) {
-      auto filterView = filterMap.at(removed_filter);
-      filterView->hide();
-      current_filters_layout->removeWidget(filterView);
-      filterMap.erase(removed_filter);
+        if (filterMap.count(removed_filter) == 0) {
+            std::cerr << "[SeriesSettingsDialog] It looks like the filter was removed already." << std::endl;
+        } else {
+            auto filterView = filterMap.at(removed_filter);
+            filterView->hide();
+            current_filters_layout->removeWidget(filterView);
+            filterMap.erase(removed_filter);
+        }
     });
 
-    connect(presenter, &SeriesSettingsPresenter::modelChanged, [this, presenter, current_filters_layout]() {
+    connect(presenter, &SeriesSettingsPresenter::modelChanged, [this, presenter, current_filters_layout, channel_combo_box, radio_field, radio_rate]() {
+
+
+      channel_combo_box->setCurrentText(QString::fromStdString(proto::CHANNELS.at(presenter->get_channel_type()).name));
+
+    // Refresh filters
       for (auto const& [model, view] : filterMap) {
           view->hide();
           current_filters_layout->removeWidget(view);
       }
-
       filterMap.clear();
-
       for (auto filter_presenter : presenter->get_filters()) {
           auto filterView = new FilterView(filter_presenter, this);
           filterMap.insert(std::make_pair(filter_presenter, filterView));
           current_filters_layout->addWidget(filterView);
       }
 
+      radio_rate->setChecked(presenter->use_packet_rate());
+      radio_field->setChecked(!presenter->use_packet_rate());
+
+
       presenter->createSnapShot();
     });
 
 
 
-    auto confirmWidget = new ConfirmationWidget("Cancel", "Apply", this);
-    network_settings_layout->addWidget(confirmWidget);
 
     connect(this, &SeriesSettingsDialog::user_event_dirty, confirmWidget, &ConfirmationWidget::setDisabled);
 

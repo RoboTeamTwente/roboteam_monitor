@@ -26,15 +26,33 @@ SeriesView::SeriesView(SeriesPresenter * series_presenter) : QGroupBox("", nullp
     title_and_color_layout->addWidget(visible_checkbox);
     series_layout->addLayout(title_and_color_layout);
 
+
+    auto subscription_label = new QLabel();
+    series_layout->addWidget(subscription_label);
+    auto filters_label = new QLabel();
+    series_layout->addWidget(filters_label);
+
+    if (series_presenter->getSettings()) {
+        auto type = series_presenter->getSettings()->get_channel_type();
+        subscription_label->setText(QString::fromStdString(proto::CHANNELS.at(type).name));
+        //TODO add connection
+
+        int filters = series_presenter->getSettings()->get_filters().size();
+        filters_label->setText(QString::number(filters, 10) + " filters");
+        //TODO add connection
+    }
+    auto buttons_layout = new QHBoxLayout();
+    series_layout->addLayout(buttons_layout);
+
     auto delete_series_button = new QPushButton();
-    delete_series_button->setText("Remove series");
+    delete_series_button->setText("Remove");
     delete_series_button->setAutoFillBackground(true);
     delete_series_button->setStyleSheet("background-color: red");
-    series_layout->addWidget(delete_series_button);
+    buttons_layout->addWidget(delete_series_button);
 
     auto series_settings_button = new QPushButton();
     series_settings_button->setText("Configuration");
-    series_layout->addWidget(series_settings_button);
+    buttons_layout->addWidget(series_settings_button);
     auto series_dialog = new SeriesSettingsDialog(series_presenter->getSettings(), this);
 
 

@@ -20,9 +20,12 @@ class SeriesSettingsPresenter : public QObject {
  public slots:
   void add_new_filter();
   void removeFilter(FilterPresenter * filter_to_remove);
+  void removeAllFilters();
   std::vector<FilterPresenter *> &get_filters();
   void update_channel(const QString & channel_str);
   void update_channel(const proto::ChannelType &channel_type);
+  void set_use_packet_rate(bool use_packet_rate);
+  bool use_packet_rate();
   proto::ChannelType get_channel_type() const;
   void createSnapShot();
   void rollBack();
@@ -32,6 +35,7 @@ class SeriesSettingsPresenter : public QObject {
   void filterAdded(FilterPresenter *filter);
   void filterRemoved(FilterPresenter *filter);
   void channelChanged(const proto::ChannelType &channel_type);
+  void rateSettingChanged(bool use_packet_rate);
   void modelChanged();
   void finished();
 };

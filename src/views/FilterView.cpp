@@ -21,10 +21,9 @@ FilterView::FilterView(FilterPresenter * filterPresenter, QWidget * parent) : QW
     auto add_filter_button = new QPushButton();
     auto descriptor = filterPresenter->get_field_descriptor();
     if (descriptor) {
-        add_filter_button->setText(Helpers::get_actual_typename(descriptor));
+        add_filter_button->setText(QString::fromStdString(descriptor->name()));
     } else {
         add_filter_button->setText("Select...");
-
     }
 
     filter_layout->addWidget(add_filter_button);

@@ -31,13 +31,16 @@ void ChartPresenter::set_theme(bool dark_theme) {
 void ChartPresenter::adjustBoundaries(const qreal & x, const qreal & y) {
     double margin_y = 0.05; // 5 % above and under the graph
     if (x < model->min_x) {
+
         model->min_x = x;
-        model->xAxis->setMin(x);
+        model->xAxis->setMin(model->max_x - 10);
     }
     
     if (x > model->max_x) {
         model->max_x = x;
         model->xAxis->setMax(x);
+        model->xAxis->setMin(model->max_x - 10);
+
     }
 
     if (y < model->min_y) {
@@ -80,6 +83,10 @@ void ChartPresenter::setxAxis(QValueAxis * axis) {
 void ChartPresenter::setyAxis(QValueAxis * axis) {
     model->yAxis = axis;
 
+}
+
+long ChartPresenter::get_time_chart_created() {
+    return model->time_chart_created;
 }
 
 

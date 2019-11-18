@@ -27,6 +27,7 @@ class ChartPresenter : public QObject {
   QValueAxis * getxAxis();
   QValueAxis * getyAxis();
 
+  long get_time_chart_created();
 
   void setxAxis(QValueAxis *);
   void setyAxis(QValueAxis *);

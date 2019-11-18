@@ -35,12 +35,21 @@ void setDarkTheme() {
 void fakeRobotCommands() {
     roboteam_utils::Timer t;
     auto publisher = new proto::Publisher<proto::RobotCommand>(proto::ChannelType::ROBOT_COMMANDS_PRIMARY_CHANNEL);
-    t.loop([publisher]() {
+
+    int id = 0;
+    t.loop([&]() {
         auto cmd = new proto::RobotCommand;
+        cmd->set_id(id);
+        if (id == 1) {
+            id = 0;
+        }
+        else if (id == 0) {
+            id = 1;
+        }
         cmd->mutable_vel()->set_x(10);
         cmd->mutable_vel()->set_y(20);
         publisher->send(*cmd);
-    }, 60);
+    }, 100);
 }
 
 int main(int argc, char** argv) {

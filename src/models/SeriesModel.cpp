@@ -48,12 +48,10 @@ void SeriesModel::handle_incoming_message(T message, const google::protobuf::Ref
         rate++;
     } else {
         lastRateUpdateTime = now.count();
-        QPoint point((now.count() - time_since_series_is_created)/1000, rate);
-        data.append(point);
+        QPoint point((now.count() - parent->get_time_chart_created())/1000.0, rate);
         std::cout << "adding data: " << point.x() << ", " << point.y() << std::endl;
-        qt_series->replace(data);
+        qt_series->append(point);
         parent->adjustBoundaries(point.x(), point.y());
-        parent->getxAxis()->applyNiceNumbers();
         rate = 0;
     }
 }

@@ -23,6 +23,7 @@ class ChartModel {
 
   QValueAxis * xAxis = nullptr;
   QValueAxis * yAxis = nullptr;
+  long time_chart_created;
 
   // Relationships
   std::vector<SeriesPresenter *> seriesList;

@@ -58,10 +58,11 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     presenter->getxAxis()->setTitleText("Time");
     presenter->getyAxis()->setTitleText("Rate");
 
-    roboteam_utils::Timer t;
     presenter->getxAxis()->setRange(0, 10);
     presenter->getyAxis()->setRange(0,10);
 
+    presenter->getxAxis()->setTickCount(10);
+    presenter->getyAxis()->setTickCount(10);
 
 //    presenter->setxAxis(dynamic_cast<QValueAxis *>(chart->chart()->axes(Qt::Horizontal)[0]));
 //    presenter->setyAxis(dynamic_cast<QValueAxis *>(chart->chart()->axes(Qt::Vertical)[0]));

@@ -1,8 +1,5 @@
 #include "SeriesPresenter.h"
-#include <roboteam_proto/RobotCommand.pb.h>
 #include <src/presenters/ChartPresenter.h>
-#include <functional>
-#include <roboteam_utils/constants.h>
 #include <src/views/SeriesSettingsDialog.h>
 #include "models/SeriesModel.h"
 
@@ -26,12 +23,17 @@ void SeriesPresenter::set_color(const QColor & color) {
     model->qt_series->setColor(color);
 }
 SeriesSettingsPresenter * SeriesPresenter::getSettings() {
-    return new SeriesSettingsPresenter(model->settings);
+    return model->settings_presenter;
 }
+
 ChartPresenter *SeriesPresenter::getParent() {
     return model->parent;
 }
+
 void SeriesPresenter::start_new_subscription() {
     model->init_subscriber_for_channel_type(getSettings()->get_channel_type());
 }
 
+int SeriesPresenter::get_rate() {
+    return model->rate;
+}

@@ -31,7 +31,8 @@ SeriesView::SeriesView(SeriesPresenter * series_presenter) : QGroupBox("", nullp
     series_layout->addWidget(subscription_label);
     auto filters_label = new QLabel();
     series_layout->addWidget(filters_label);
-
+    auto rate_label = new QLabel();
+    series_layout->addWidget(rate_label);
     if (series_presenter->getSettings()) {
         auto type = series_presenter->getSettings()->get_channel_type();
         subscription_label->setText(QString::fromStdString(proto::CHANNELS.at(type).name));
@@ -40,7 +41,16 @@ SeriesView::SeriesView(SeriesPresenter * series_presenter) : QGroupBox("", nullp
         int filters = series_presenter->getSettings()->get_filters().size();
         filters_label->setText(QString::number(filters, 10) + " filters");
         //TODO add connection
+
+
     }
+
+    connect(series_presenter->get_qt_series(), &QXYSeries::pointAdded, [series_presenter, rate_label]() {
+      int rate = series_presenter->get_rate();
+      rate_label->setText(QString::number(rate, 10) + " packets/s");
+    });
+
+
     auto buttons_layout = new QHBoxLayout();
     series_layout->addLayout(buttons_layout);
 

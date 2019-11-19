@@ -68,6 +68,7 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
     filter_widget->setLayout(filter_layout);
 
     auto select_field_dialog = new AddFilterDialog((QWidget *) this);
+
     auto select_field_button = new QPushButton();
     select_field_button->setText("Select...");
     select_field_button->setHidden(presenter->use_packet_rate());
@@ -98,7 +99,9 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
 
     });
 
-
+    connect(select_field_dialog, &AddFilterDialog::valueChanged, [presenter](const google::protobuf::FieldDescriptor * fd) {
+      presenter->set_field_to_show(const_cast<google::protobuf::FieldDescriptor *>(fd));
+    });
 
     ////// MODEL --> VIEW CONNECTIONS /////
     connect(presenter, &SeriesSettingsPresenter::filterAdded, [this, presenter, current_filters_layout](FilterPresenter * new_filter) {
@@ -107,6 +110,11 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
       filterMap.insert(pair);
       current_filters_layout->addWidget(filterView);
     });
+
+    connect(presenter, &SeriesSettingsPresenter::channelChanged, [select_field_dialog](const proto::ChannelType & type) {
+      select_field_dialog->update_filters_layout(QString::fromStdString(proto::CHANNELS.at(type).name));
+    });
+
 
     connect(presenter, &SeriesSettingsPresenter::filterRemoved, [this, presenter, current_filters_layout](FilterPresenter * removed_filter) {
         if (filterMap.count(removed_filter) == 0) {

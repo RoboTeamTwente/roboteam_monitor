@@ -37,19 +37,36 @@ void fakeRobotCommands() {
     auto publisher = new proto::Publisher<proto::RobotCommand>(proto::ChannelType::ROBOT_COMMANDS_PRIMARY_CHANNEL);
 
     int id = 0;
+    float w = 50.0;
     t.loop([&]() {
         auto cmd = new proto::RobotCommand;
+
+      if (w > 100) {
+          w = 50;
+
+      } else {
+          w+=0.1;
+      }
+
+
         cmd->set_id(id);
         if (id == 1) {
             id = 0;
+            cmd->set_w(100-w);
+
         }
         else if (id == 0) {
             id = 1;
+            cmd->set_w(w);
+
         }
         cmd->mutable_vel()->set_x(10);
         cmd->mutable_vel()->set_y(20);
+
+
+
         publisher->send(*cmd);
-    }, 100);
+    }, 10);
 }
 
 int main(int argc, char** argv) {

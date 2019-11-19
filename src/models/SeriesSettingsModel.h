@@ -15,6 +15,7 @@ class SeriesSettingsModel {
   std::vector<FilterPresenter *> filters = {};
   proto::ChannelType channel_type = proto::GEOMETRY_CHANNEL;
   bool use_packet_rate = true;
+  google::protobuf::FieldDescriptor * field_to_show = nullptr;
 
   // Relationships
   SeriesPresenter * parent = nullptr;

@@ -24,6 +24,7 @@ class SeriesPresenter : public QObject {
   void set_name(const QString &name);
   SeriesSettingsPresenter * getSettings();
   ChartPresenter * getParent();
+  int get_rate();
 
  public slots:
   void set_color(const QColor & color);

@@ -14,6 +14,7 @@
 
 class ChartPresenter;
 class SeriesSettingsModel;
+class SeriesSettingsPresenter;
 class SeriesModel {
   friend class SeriesPresenter;
  public:
@@ -24,13 +25,10 @@ class SeriesModel {
   void * proto_subscriber = nullptr;
   QVector<QPointF> data;
 
-
   // relationships
   ChartPresenter * parent = nullptr;
  public:
   ChartPresenter *get_parent() const;
-
-
 
  private:
   roboteam_utils::Timer timer;
@@ -38,7 +36,7 @@ class SeriesModel {
   long lastRateUpdateTime;
   long time_since_series_is_created;
 
-  SeriesSettingsModel * settings = nullptr;
+  SeriesSettingsPresenter * settings_presenter = nullptr;
   void init_subscriber_for_channel_type(const proto::ChannelType & channel_type);
   void handle_robot_command_input(proto::RobotCommand & robot_command);
   void handle_world_input(proto::World & world);

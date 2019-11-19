@@ -66,6 +66,8 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
 
 //    presenter->setxAxis(dynamic_cast<QValueAxis *>(chart->chart()->axes(Qt::Horizontal)[0]));
 //    presenter->setyAxis(dynamic_cast<QValueAxis *>(chart->chart()->axes(Qt::Vertical)[0]));
+    chart->chart()->addAxis(presenter->getxAxis(), Qt::AlignBottom);
+    chart->chart()->addAxis(presenter->getyAxis(), Qt::AlignLeft);
 
     //////// VIEW --> MODEL CONNECTIONS //////////
     connect(add_series_button, &QPushButton::clicked, presenter, &ChartPresenter::add_new_series);
@@ -78,8 +80,7 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
         series_overview_layout->addWidget(seriesView);
         chart->chart()->addSeries(series_presenter->get_qt_series());
 
-      chart->chart()->addAxis(presenter->getxAxis(), Qt::AlignBottom);
-      chart->chart()->addAxis(presenter->getyAxis(), Qt::AlignLeft);
+
 
 
       series_presenter->get_qt_series()->attachAxis(series_presenter->getParent()->getxAxis());

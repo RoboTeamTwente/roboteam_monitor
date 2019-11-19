@@ -31,6 +31,9 @@ class SeriesSettingsPresenter : public QObject {
   void rollBack();
   void confirm();
 
+  void set_field_to_show(google::protobuf::FieldDescriptor * field_descriptor);
+  google::protobuf::FieldDescriptor * get_field_to_show();
+
  signals:
   void filterAdded(FilterPresenter *filter);
   void filterRemoved(FilterPresenter *filter);
@@ -38,6 +41,7 @@ class SeriesSettingsPresenter : public QObject {
   void rateSettingChanged(bool use_packet_rate);
   void modelChanged();
   void finished();
+  void field_to_show_changed(google::protobuf::FieldDescriptor * field_descriptor);
 };
 
 

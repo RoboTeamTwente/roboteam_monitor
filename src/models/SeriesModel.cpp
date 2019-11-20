@@ -41,7 +41,10 @@ void SeriesModel::handle_setting_input(proto::Setting &setting) {
 
 template<class T>
 void SeriesModel::handle_incoming_message(T message, const google::protobuf::Reflection &reflection) {
+
     auto current_time = roboteam_utils::Timer::getCurrentTime();
+
+    google::protobuf::Reflection * refl = const_cast<Reflection *>(&reflection);
 
 
     // apply filters
@@ -83,52 +86,50 @@ void SeriesModel::handle_incoming_message(T message, const google::protobuf::Ref
     if (!settings_presenter->use_packet_rate()) {
     if (settings_presenter->get_field_to_show()) {
 
-        auto field = settings_presenter->get_field_to_show()->get_field_descriptor();
 
-
-        // we have for example:
-        // robotcommand.vector2f.x
-
-        // fielddescriptor says: i am x of vector2f
-        //
-
-        // recursively look up parents
-//        auto container = field->containing_type();
-//
-//        while (container != field->extension_scope()) {
-//            container = container->containing_type();
-//            container.
-//        }
+        google::protobuf::Message * msg = &message;
+        auto field_definition = settings_presenter->get_field_to_show();
+        auto desc = message.GetDescriptor();
+        google::protobuf::FieldDescriptor * field = const_cast<FieldDescriptor *>(field_definition->get_field_descriptor());
+        for (int i = 0; i < field_definition->get_field_numbers().size(); i++) {
+            field = const_cast<FieldDescriptor *>(desc->field(field_definition->get_field_numbers().at(i)));
+            refl = const_cast<google::protobuf::Reflection *>(msg->GetReflection());
 
 
 
+            if (field) {
+                desc = field->message_type();
+            }
 
-
+            if (field->cpp_type() == google::protobuf::FieldDescriptor::CPPTYPE_MESSAGE) {
+                msg = const_cast<Message *>(&refl->GetMessage(*msg, field));
+            }
+        }
 
         // field->extension_scope()->FindNestedTypeByName(field->na
         switch(field->cpp_type()) {
             case FieldDescriptor::CPPTYPE_INT32: {
-                value = reflection.GetInt32(message, field);
+                value = refl->GetInt32(*msg, field);
                 break;
             }
             case FieldDescriptor::CPPTYPE_UINT32: {
-                value = reflection.GetUInt32(message, field);
+                value = refl->GetUInt32(*msg, field);
                 break;
             }
             case FieldDescriptor::CPPTYPE_INT64: {
-                value = reflection.GetInt64(message, field);
+                value = refl->GetInt64(*msg, field);
                 break;
             }
             case FieldDescriptor::CPPTYPE_UINT64: {
-                value = reflection.GetUInt64(message, field);
+                value = refl->GetUInt64(*msg, field);
                 break;
             }
             case FieldDescriptor::CPPTYPE_FLOAT: {
-                value = reflection.GetFloat(message, field);
+                value = refl->GetFloat(*msg, field);
                 break;
             }
             case FieldDescriptor::CPPTYPE_DOUBLE: {
-                value = reflection.GetDouble(message, field);
+                value = refl->GetDouble(*msg, field);
                 break;
             }
             default: return;

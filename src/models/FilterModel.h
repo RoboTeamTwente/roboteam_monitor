@@ -12,7 +12,7 @@ class FilterModel {
   friend class FilterPresenter;
 
   // properties
-  google::protobuf::FieldDescriptor * field_descriptor = nullptr;
+  FieldDefinition * field_definition = nullptr;
   google::protobuf::Message * reference_message = nullptr;
   QString value;
 
@@ -22,7 +22,7 @@ class FilterModel {
  public:
   FilterModel(SeriesSettingsPresenter * parent);
   FilterModel(SeriesSettingsPresenter * parent,
-              google::protobuf::FieldDescriptor *field_descriptor,
+              FieldDefinition * field_definition,
               google::protobuf::Message *reference_message,
               QString value);
 

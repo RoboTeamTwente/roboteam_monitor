@@ -61,7 +61,7 @@ set(MODELS
         src/models/SeriesSettingsModel.cpp
         src/models/FilterModel.cpp
         src/models/SeriesModel.cpp
-        )
+        src/models/FieldDefinition.cpp src/models/FieldDefinition.h)
 
 set(UTILS
         src/utils/Helpers.cpp

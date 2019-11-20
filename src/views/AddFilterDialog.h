@@ -11,15 +11,15 @@
 class AddFilterDialog : public QDialog {
  Q_OBJECT
  private:
-  const google::protobuf::FieldDescriptor *selectedFieldDescriptor = nullptr;
+  FieldDefinition *selected_field_definition = nullptr;
   SelectTypeWidget *filters_tree_widget;
  public:
   explicit AddFilterDialog(QWidget *parent = nullptr);
  public slots:
-  void set_selected_field_descriptor(const google::protobuf::FieldDescriptor *selected_field_descriptor);
+  void set_selected_field_definition(FieldDefinition * field_definition);
   void update_filters_layout(const QString &topic_name);
  signals:
-  void valueChanged(const google::protobuf::FieldDescriptor *selected_field_descriptor);
+  void valueChanged(FieldDefinition * field_definition);
 };
 
 #endif //RTT_ADDFILTERDIALOG_H

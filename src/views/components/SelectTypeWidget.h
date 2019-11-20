@@ -7,6 +7,7 @@
 
 #include <QTreeWidget>
 #include <google/protobuf/descriptor.h>
+#include <src/models/FieldDefinition.h>
 
 class AddFilterDialog;
 class SelectTypeWidget : public QTreeWidget {
@@ -21,8 +22,8 @@ class SelectTypeWidget : public QTreeWidget {
   void update_filters_layout(const QString & topic_name);
 
   signals:
-    void fieldSelected(const google::protobuf::FieldDescriptor * field_descriptor, const std::vector<int> & field_numbers);
-    void fieldSelectedAndClose(const google::protobuf::FieldDescriptor * field_descriptor, const std::vector<int> & field_numbers);
+    void fieldSelected(FieldDefinition * field_definition);
+    void fieldSelectedAndClose(FieldDefinition * field_definition);
 
 };
 

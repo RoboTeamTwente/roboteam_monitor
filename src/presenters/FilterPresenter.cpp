@@ -23,10 +23,10 @@ FilterModel *FilterPresenter::get_model() const {
 const QString &FilterPresenter::get_value() {
     return model->value;
 }
-void FilterPresenter::set_field_descriptor(google::protobuf::FieldDescriptor *fd) {
-    model->field_descriptor = fd;
+void FilterPresenter::set_field_definition(FieldDefinition *fd) {
+    model->field_definition = fd;
 }
-const google::protobuf::FieldDescriptor *FilterPresenter::get_field_descriptor() {
-    return model->field_descriptor;
+FieldDefinition *FilterPresenter::get_field_definition() {
+    return model->field_definition;
 }
 

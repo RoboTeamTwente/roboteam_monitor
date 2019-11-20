@@ -53,12 +53,10 @@ void fakeRobotCommands() {
         if (id == 1) {
             id = 0;
             cmd->set_w(100-w);
-
         }
         else if (id == 0) {
             id = 1;
             cmd->set_w(w);
-
         }
         cmd->mutable_vel()->set_x(10);
         cmd->mutable_vel()->set_y(20);
@@ -66,7 +64,7 @@ void fakeRobotCommands() {
 
 
         publisher->send(*cmd);
-    }, 10);
+    }, 100);
 }
 
 int main(int argc, char** argv) {

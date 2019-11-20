@@ -78,8 +78,8 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
     network_settings_layout->addWidget(confirmWidget);
 
     connect(select_field_button, &QPushButton::clicked, select_field_dialog, &QDialog::open);
-    connect(select_field_dialog, &AddFilterDialog::valueChanged, [select_field_button](const google::protobuf::FieldDescriptor * field_descriptor) {
-      select_field_button->setText(QString::fromStdString(field_descriptor->name()));
+    connect(select_field_dialog, &AddFilterDialog::valueChanged, [select_field_button](FieldDefinition * field_definition) {
+      select_field_button->setText(QString::fromStdString(field_definition->get_field_descriptor()->name()));
     });
 
     connect(presenter, &SeriesSettingsPresenter::rateSettingChanged, [select_field_button](bool use_packet_rate) {
@@ -99,8 +99,8 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
 
     });
 
-    connect(select_field_dialog, &AddFilterDialog::valueChanged, [presenter](const google::protobuf::FieldDescriptor * fd) {
-      presenter->set_field_to_show(const_cast<google::protobuf::FieldDescriptor *>(fd));
+    connect(select_field_dialog, &AddFilterDialog::valueChanged, [presenter](FieldDefinition * fd) {
+      presenter->set_field_to_show(fd);
     });
 
     ////// MODEL --> VIEW CONNECTIONS /////

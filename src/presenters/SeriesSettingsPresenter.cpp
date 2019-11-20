@@ -94,12 +94,12 @@ void SeriesSettingsPresenter::removeAllFilters() {
     }
 }
 
-void SeriesSettingsPresenter::set_field_to_show(google::protobuf::FieldDescriptor *field_descriptor) {
-    model->field_to_show = field_descriptor;
-    emit field_to_show_changed(field_descriptor);
+void SeriesSettingsPresenter::set_field_to_show(FieldDefinition * field_definition) {
+    model->field_to_show = field_definition;
+    emit field_to_show_changed(field_definition);
 }
 
-google::protobuf::FieldDescriptor *SeriesSettingsPresenter::get_field_to_show() {
+FieldDefinition *SeriesSettingsPresenter::get_field_to_show() {
     return model->field_to_show;
 }
 

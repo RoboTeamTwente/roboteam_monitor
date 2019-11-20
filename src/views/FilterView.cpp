@@ -19,9 +19,9 @@ FilterView::FilterView(FilterPresenter * filterPresenter, QWidget * parent) : QW
         add_filter_dialog->update_filters_layout(QString::fromStdString(proto::CHANNELS.at(filterPresenter->getParent()->get_channel_type()).name));
     }
     auto add_filter_button = new QPushButton();
-    auto descriptor = filterPresenter->get_field_descriptor();
-    if (descriptor) {
-        add_filter_button->setText(QString::fromStdString(descriptor->name()));
+    auto definition = filterPresenter->get_field_definition();
+    if (definition) {
+        add_filter_button->setText(QString::fromStdString(definition->get_field_descriptor()->name()));
     } else {
         add_filter_button->setText("Select...");
     }
@@ -43,9 +43,9 @@ FilterView::FilterView(FilterPresenter * filterPresenter, QWidget * parent) : QW
     });
 
     connect(add_filter_button, &QPushButton::clicked, add_filter_dialog, &QDialog::open);
-    connect(add_filter_dialog, &AddFilterDialog::valueChanged, [add_filter_button, filterPresenter](const google::protobuf::FieldDescriptor * field_descriptor) {
-      add_filter_button->setText(QString::fromStdString(field_descriptor->name()));
-      filterPresenter->set_field_descriptor(const_cast<google::protobuf::FieldDescriptor *>(field_descriptor));
+    connect(add_filter_dialog, &AddFilterDialog::valueChanged, [add_filter_button, filterPresenter](FieldDefinition * field_definition) {
+      add_filter_button->setText(QString::fromStdString(field_definition->get_field_descriptor()->name()));
+      filterPresenter->set_field_definition(field_definition);
     });
 
     connect(filter_value_edit, &QLineEdit::textChanged, [filterPresenter](const QString & value) {

@@ -50,32 +50,28 @@ AddFilterDialog::AddFilterDialog(QWidget * parent) : QDialog(parent) {
     });
 
     // for a selection we can still use the select or cancel button
-    connect(filters_tree_widget, &SelectTypeWidget::fieldSelected, this, &AddFilterDialog::set_selected_field_descriptor);
+    connect(filters_tree_widget, &SelectTypeWidget::fieldSelected, this, &AddFilterDialog::set_selected_field_definition);
 
     // for a double click we select and close immediately
-    connect(filters_tree_widget, &SelectTypeWidget::fieldSelectedAndClose, [this](const google::protobuf::FieldDescriptor * field_descriptor) {
-      set_selected_field_descriptor(field_descriptor);
-      emit valueChanged(field_descriptor);
+    connect(filters_tree_widget, &SelectTypeWidget::fieldSelectedAndClose, [this](FieldDefinition * field_definition) {
+      set_selected_field_definition(field_definition);
+      emit valueChanged(field_definition);
       close();
     });
 
     connect(select_button, &QPushButton::clicked, [this]() {
-      if(selectedFieldDescriptor) {
-          emit valueChanged(selectedFieldDescriptor);
+      if(selected_field_definition) {
+          emit valueChanged(selected_field_definition);
       }
       this->close();
     });
 
     auto topic = proto::CHANNELS.at(proto::ChannelType::GEOMETRY_CHANNEL).name;
     filters_tree_widget->update_filters_layout(QString::fromStdString(topic));
-
-
-
-
 }
 
-void AddFilterDialog::set_selected_field_descriptor(const google::protobuf::FieldDescriptor * selected_field_descriptor) {
-    selectedFieldDescriptor = selected_field_descriptor;
+void AddFilterDialog::set_selected_field_definition(FieldDefinition * field_definition) {
+    selected_field_definition = field_definition;
 }
 
 void AddFilterDialog::update_filters_layout(const QString & topic_name) {

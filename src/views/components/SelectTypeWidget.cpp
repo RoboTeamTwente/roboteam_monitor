@@ -52,13 +52,15 @@ void SelectTypeWidget::add_filter_descriptor(const google::protobuf::Descriptor 
         // Select the item and close the dialog on double click
         connect(this, &QTreeWidget::itemActivated, [this, row_widget, field_descriptor, fieldNumbersToHere](QTreeWidgetItem *item, int column) {
             if (item == row_widget) {
-                emit fieldSelectedAndClose(field_descriptor, fieldNumbersToHere);
+                auto fd = new FieldDefinition(field_descriptor, fieldNumbersToHere);
+                emit fieldSelectedAndClose(fd);
             }
         });
 
         connect(this, &QTreeWidget::currentItemChanged, [this, row_widget, field_descriptor, fieldNumbersToHere](QTreeWidgetItem *item) {
           if (item == row_widget) {
-              emit fieldSelected(field_descriptor, fieldNumbersToHere);
+              auto fd = new FieldDefinition(field_descriptor, fieldNumbersToHere);
+              emit fieldSelected(fd);
           }
         });
 

@@ -38,13 +38,9 @@ class SeriesModel {
 
   SeriesSettingsPresenter * settings_presenter = nullptr;
   void init_subscriber_for_channel_type(const proto::ChannelType & channel_type);
-  void handle_robot_command_input(proto::RobotCommand & robot_command);
-  void handle_world_input(proto::World & world);
-  void handle_feedback_input(proto::RobotFeedback & feedback);
-  void handle_setting_input(proto::Setting & setting);
 
   template <class T>
-  void handle_incoming_message(T message, const google::protobuf::Reflection & reflection);
+  void handle_incoming_message(T message);
 
 };
 

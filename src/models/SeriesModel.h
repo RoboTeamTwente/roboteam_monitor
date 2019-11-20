@@ -33,6 +33,7 @@ class SeriesModel {
  private:
   roboteam_utils::Timer timer;
   int rate = 0;
+  int internal_rate = 0;
   long lastRateUpdateTime;
   long time_since_series_is_created;
 

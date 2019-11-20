@@ -54,16 +54,17 @@ void SeriesModel::handle_incoming_message(T message) {
     // handle rate
     auto now = timer.getCurrentTime();
     if (now.count() <= lastRateUpdateTime + 1000) {
-        rate++;
+        internal_rate++;
     } else {
         lastRateUpdateTime = now.count();
-        QPoint point((now.count() - parent->get_time_chart_created())/1000.0, rate);
+        QPoint point((now.count() - parent->get_time_chart_created())/1000.0, internal_rate);
 
         if (settings_presenter->use_packet_rate()) {
             qt_series->append(point);
             parent->adjustBoundaries(point.x(), point.y());
         }
-        rate = 0;
+        rate = internal_rate;
+        internal_rate = 0;
     }
 
 

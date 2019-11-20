@@ -34,10 +34,12 @@ QPushButton *ConfirmationWidget::get_cancel_button() const {
 QPushButton *ConfirmationWidget::get_confirm_button() const {
     return confirmButton;
 }
-void ConfirmationWidget::setDisabled(bool enabled) {
-    confirmButton->setDisabled(!enabled);
-    if (enabled) {
+void ConfirmationWidget::setDisabled(bool dirty, bool valid) {
+    confirmButton->setDisabled(!dirty);
+    if (dirty && valid) {
         confirmButton->setStyleSheet("background-color: green");
+    } else if (dirty) {
+        confirmButton->setStyleSheet("background-color: orange");
     } else {
         confirmButton->setStyleSheet("background-color: gray");
     }

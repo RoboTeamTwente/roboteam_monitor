@@ -17,14 +17,18 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
     network_settings_layout->setAlignment(Qt::AlignTop);
     setLayout(network_settings_layout);
 
-
-    // communication layout
     auto comm_layout = new QHBoxLayout();
     auto channel_combo_box = new QComboBox();
     comm_layout->addWidget(channel_combo_box);
     for (auto const &channel : proto::CHANNELS) {
         channel_combo_box->addItem(QString::fromStdString(channel.second.name));
     }
+
+    if (auto channel = presenter->get_channel_type()){
+        channel_combo_box->setCurrentText(QString::fromStdString(proto::CHANNELS.at(channel).name));
+
+    }
+
     network_settings_layout->addLayout(comm_layout);
 
     auto current_filters_label = new QLabel();
@@ -53,7 +57,8 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
     auto groupBox = new QGroupBox(tr("Data to plot"));
     auto radio_rate = new QRadioButton("Data rate (packets/s)");
     auto radio_field = new QRadioButton("Custom field");
-    radio_rate->setChecked(true);
+    radio_rate->setChecked(presenter->use_packet_rate());
+    radio_field->setChecked(!presenter->use_packet_rate());
 
     auto vbox = new QVBoxLayout;
     vbox->addWidget(radio_rate);
@@ -69,8 +74,18 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
 
     auto select_field_dialog = new AddFilterDialog((QWidget *) this);
 
+    if (auto channel = presenter->get_channel_type()) {
+        select_field_dialog->update_filters_layout(QString::fromStdString(proto::CHANNELS.at(channel).name));
+    }
+
     auto select_field_button = new QPushButton();
-    select_field_button->setText("Select...");
+    if (auto field_definition = presenter->get_field_to_show()) {
+        if (field_definition->get_field_descriptor()) {
+            select_field_button->setText(Helpers::get_actual_typename(field_definition->get_field_descriptor()));
+        }
+    } else {
+        select_field_button->setText("Select...");
+    }
     select_field_button->setHidden(presenter->use_packet_rate());
     network_settings_layout->addWidget(select_field_button);
 
@@ -82,10 +97,7 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
       select_field_button->setText(QString::fromStdString(field_definition->get_field_descriptor()->name()));
     });
 
-    connect(presenter, &SeriesSettingsPresenter::rateSettingChanged, [select_field_button](bool use_packet_rate) {
-      select_field_button->setDisabled(use_packet_rate);
-      select_field_button->setHidden(use_packet_rate);
-    });
+
 
 
     ////// VIEW --> MODEL CONNECTIONS /////
@@ -115,6 +127,11 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
       select_field_dialog->update_filters_layout(QString::fromStdString(proto::CHANNELS.at(type).name));
     });
 
+    connect(presenter, &SeriesSettingsPresenter::rateSettingChanged, [select_field_button](bool use_packet_rate) {
+      select_field_button->setDisabled(use_packet_rate);
+      select_field_button->setHidden(use_packet_rate);
+    });
+
 
     connect(presenter, &SeriesSettingsPresenter::filterRemoved, [this, presenter, current_filters_layout](FilterPresenter * removed_filter) {
         if (filterMap.count(removed_filter) == 0) {
@@ -127,30 +144,14 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
         }
     });
 
-    connect(presenter, &SeriesSettingsPresenter::modelChanged, [this, presenter, current_filters_layout, channel_combo_box, radio_field, radio_rate]() {
-      channel_combo_box->setCurrentText(QString::fromStdString(proto::CHANNELS.at(presenter->get_channel_type()).name));
-      // Refresh filters
-      for (auto const& [model, view] : filterMap) {
-          view->hide();
-          current_filters_layout->removeWidget(view);
-      }
-      filterMap.clear();
-      for (auto filter_presenter : presenter->get_filters()) {
-          auto filterView = new FilterView(filter_presenter, this);
-          filterMap.insert(std::make_pair(filter_presenter, filterView));
-          current_filters_layout->addWidget(filterView);
-      }
-      radio_rate->setChecked(presenter->use_packet_rate());
-      radio_field->setChecked(!presenter->use_packet_rate());
-      presenter->createSnapShot();
+    connect(this, &SeriesSettingsDialog::user_event_dirty, [confirmWidget, presenter]() {
+        confirmWidget->setDisabled(presenter->is_dirty(), presenter->is_valid());
     });
-
-    connect(this, &SeriesSettingsDialog::user_event_dirty, confirmWidget, &ConfirmationWidget::setDisabled);
     connect(this, &QDialog::rejected, presenter, &SeriesSettingsPresenter::rollBack);
     connect(this, &QDialog::accepted, presenter, &SeriesSettingsPresenter::createSnapShot);
-    connect(confirmWidget, &ConfirmationWidget::cancel, this, &QDialog::reject);
     connect(confirmWidget, &ConfirmationWidget::confirm, this, &QDialog::accept);
     connect(confirmWidget, &ConfirmationWidget::confirm, presenter, &SeriesSettingsPresenter::confirm);
+    connect(confirmWidget, &ConfirmationWidget::cancel, this, &QDialog::reject);
 }
 
 /*

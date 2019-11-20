@@ -19,7 +19,7 @@ class ConfirmationWidget : public QWidget {
   QPushButton * get_confirm_button() const;
 
  public slots:
-  void setDisabled(bool disabled);
+  void setDisabled(bool disabled, bool valid);
 
   signals:
     void confirm();

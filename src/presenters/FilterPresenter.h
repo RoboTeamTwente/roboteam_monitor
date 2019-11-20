@@ -23,6 +23,7 @@ class FilterPresenter : public QObject {
   bool operator==(const FilterPresenter &rhs) const;
   bool operator!=(const FilterPresenter &rhs) const;
   const QString &get_value();
+  bool is_valid();
 
   signals:
     void value_changed(const QString & value);

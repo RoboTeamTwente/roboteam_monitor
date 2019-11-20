@@ -63,7 +63,6 @@ SeriesView::SeriesView(SeriesPresenter * series_presenter) : QGroupBox("", nullp
     auto series_settings_button = new QPushButton();
     series_settings_button->setText("Configuration");
     buttons_layout->addWidget(series_settings_button);
-    auto series_dialog = new SeriesSettingsDialog(series_presenter->getSettings(), this);
 
 
     //////// VIEW --> MODEL CONNECTIONS //////////
@@ -74,7 +73,20 @@ SeriesView::SeriesView(SeriesPresenter * series_presenter) : QGroupBox("", nullp
       color_dialog->exec();
     });
     connect(series_title_line_edit, &QLineEdit::textChanged, series_presenter->get_qt_series(), &QXYSeries::setName);
-    connect(series_settings_button, &QPushButton::clicked, [series_dialog]() {
+    connect(series_settings_button, &QPushButton::clicked, [this, series_presenter]() {
+
+
+      auto copy = series_presenter->get_settings_copy();
+      auto series_dialog = new SeriesSettingsDialog(copy, this);
+
+
+        connect(series_dialog, &QDialog::accepted, [series_presenter, copy]() {
+            series_presenter->applySettings(copy);
+        });
+
+    connect(series_dialog, &QDialog::rejected, [series_presenter]() {
+
+    });
       series_dialog->exec();
     });
     connect(delete_series_button, &QPushButton::clicked, [series_presenter]() {

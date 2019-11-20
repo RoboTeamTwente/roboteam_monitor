@@ -29,4 +29,7 @@ void FilterPresenter::set_field_definition(FieldDefinition *fd) {
 FieldDefinition *FilterPresenter::get_field_definition() {
     return model->field_definition;
 }
+bool FilterPresenter::is_valid() {
+    return !model->value.isEmpty() && model->field_definition && model->field_definition->get_field_descriptor();
+}
 

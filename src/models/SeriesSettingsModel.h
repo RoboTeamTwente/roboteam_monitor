@@ -22,9 +22,10 @@ class SeriesSettingsModel {
  public:
   bool operator==(const SeriesSettingsModel &rhs) const;
   bool operator!=(const SeriesSettingsModel &rhs) const;
+  bool is_valid();
  public:
   explicit SeriesSettingsModel(SeriesPresenter * parent);
-  explicit SeriesSettingsModel(SeriesPresenter * parent, const SeriesSettingsModel &other);
+  explicit SeriesSettingsModel(const SeriesSettingsModel &other);
 };
 
 #endif //RTT_SERIESSETTINGSMODEL_H

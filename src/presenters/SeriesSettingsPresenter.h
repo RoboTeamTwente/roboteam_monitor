@@ -11,11 +11,16 @@ class SeriesSettingsPresenter : public QObject {
  Q_OBJECT
  private:
   SeriesSettingsModel * model;
+ public:
+  SeriesSettingsModel *get_model_copy() const;
+ private:
   SeriesSettingsModel * snapshot = nullptr;
+  SeriesSettingsModel * get_internal_model();
 
  public:
   SeriesSettingsPresenter(SeriesSettingsModel * model);
   bool is_dirty();
+  bool is_valid();
 
  public slots:
   void add_new_filter();
@@ -26,7 +31,7 @@ class SeriesSettingsPresenter : public QObject {
   void update_channel(const proto::ChannelType &channel_type);
   void set_use_packet_rate(bool use_packet_rate);
   bool use_packet_rate();
-  proto::ChannelType get_channel_type() const;
+  proto::ChannelType get_channel_type();
   void createSnapShot();
   void rollBack();
   void confirm();

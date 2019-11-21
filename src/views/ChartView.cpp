@@ -3,6 +3,7 @@
 #include "src/models/SeriesModel.h"
 #include <QSpinBox>
 #include <src/utils/Helpers.h>
+#include <QDoubleSpinBox>
 
 ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(parent), presenter(presenter) {
     setMinimumWidth(800);
@@ -38,18 +39,42 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     group->setLayout(g_layout);
 
 
-    auto margin_y_spinbox = new QSpinBox(this);
+    auto margin_y_spinbox = new QDoubleSpinBox(this);
+    margin_y_spinbox->setFixedWidth(100);
     margin_y_spinbox->setRange(0, 9e99);
+    margin_y_spinbox->setValue(presenter->get_margin_y());
     g_layout->addRow(new QLabel("Margin y"), margin_y_spinbox);
+    connect(margin_y_spinbox, SIGNAL(valueChanged(double)), presenter, SLOT(set_margin_y(double)));
+
+    auto margin_x_spinbox = new QDoubleSpinBox(this);
+    margin_x_spinbox->setFixedWidth(100);
+    margin_x_spinbox->setRange(0, 9e99);
+    margin_x_spinbox->setValue(presenter->get_margin_x());
+    g_layout->addRow(new QLabel("Margin x"), margin_x_spinbox);
+    connect(margin_x_spinbox, SIGNAL(valueChanged(double)), presenter, SLOT(set_margin_x(double)));
 
     auto sliding_window_checkbox = new QCheckBox(this);
     g_layout->addRow(new QLabel("Sliding window"), sliding_window_checkbox);
+    sliding_window_checkbox->setChecked(presenter->is_sliding_window());
+    connect(sliding_window_checkbox, &QCheckBox::toggled, presenter, &ChartPresenter::set_sliding_window);
 
-    auto sliding_window_margin = new QSpinBox(this);
+    auto sliding_window_margin = new QDoubleSpinBox(this);
+    sliding_window_margin->setFixedWidth(100);
+    sliding_window_margin->setValue(presenter->get_sliding_window_width());
     sliding_window_margin->setRange(0, 9e99);
     g_layout->addRow(new QLabel("Sliding window margin"), sliding_window_margin);
+    connect(sliding_window_margin, SIGNAL(valueChanged(double)), presenter, SLOT(set_sliding_window_width(double)));
+    connect(presenter, &ChartPresenter::set_sliding_window_changed, [sliding_window_margin](bool enabled) {
+      sliding_window_margin->setEnabled(enabled);
+        if (enabled) {
+            sliding_window_margin->setStyleSheet("background-color: auto;");
+        } else {
+            sliding_window_margin->setStyleSheet("background-color: gray;");
+        }
+    });
 
     auto update_frequency_spin = new QSpinBox(this);
+    update_frequency_spin->setFixedWidth(100);
     update_frequency_spin->setRange(1, 100);
     update_frequency_spin->setValue(presenter->get_update_frequency());
     g_layout->addRow(new QLabel("Chart update frequency (Hz)"), update_frequency_spin);
@@ -63,11 +88,22 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     g_layout->addRow(new QLabel("Dark theme"), theme_checkbox);
     connect(theme_checkbox, &QCheckBox::toggled, presenter, &ChartPresenter::set_theme);
 
+    auto reset_boundaries_button = new QPushButton(this);
+    reset_boundaries_button->setText("Reset boundaries");
+    g_layout->addRow( reset_boundaries_button);
+    connect(reset_boundaries_button, &QPushButton::clicked, presenter, &ChartPresenter::resetBoundaries);
+
+    auto clear_series_button = new QPushButton();
+    clear_series_button->setText("Clear all series");
+    g_layout->addRow(clear_series_button);
+    connect(clear_series_button, &QPushButton::clicked, presenter, &ChartPresenter::clear_data);
+
+
     series_overview_layout->addWidget(group);
 
     series_overview_widget->setLayout(series_overview_scroll_layout);
     dialog_splitter->addWidget(series_overview_widget);
-    series_overview_widget->setMaximumWidth(300);
+    series_overview_widget->setMaximumWidth(380);
 
     // chart
     auto chart = new QChartView();
@@ -97,11 +133,7 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
 
 
     auto timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, [presenter]() {
-         for (auto series : presenter->get_series_list()) {
-             series->apply_data();
-         }
-    });
+    connect(timer, &QTimer::timeout, presenter, &ChartPresenter::apply_data);
     timer->start(Helpers::frequency_hz_to_millis(presenter->get_update_frequency()));
 
     connect(presenter, &ChartPresenter::update_frequency_changed, [timer](int frequency) {

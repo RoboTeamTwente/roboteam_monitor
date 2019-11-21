@@ -60,6 +60,10 @@ SeriesView::SeriesView(SeriesPresenter * series_presenter) : QGroupBox("", nullp
     delete_series_button->setStyleSheet("background-color: red");
     buttons_layout->addWidget(delete_series_button);
 
+    auto clear_series_button = new QPushButton();
+    clear_series_button->setText("Clear");
+    buttons_layout->addWidget(clear_series_button);
+
     auto series_settings_button = new QPushButton();
     series_settings_button->setText("Configuration");
     buttons_layout->addWidget(series_settings_button);
@@ -74,12 +78,8 @@ SeriesView::SeriesView(SeriesPresenter * series_presenter) : QGroupBox("", nullp
     });
     connect(series_title_line_edit, &QLineEdit::textChanged, series_presenter->get_qt_series(), &QXYSeries::setName);
     connect(series_settings_button, &QPushButton::clicked, [this, series_presenter]() {
-
-
       auto copy = series_presenter->get_settings_copy();
       auto series_dialog = new SeriesSettingsDialog(copy, this);
-
-
         connect(series_dialog, &QDialog::accepted, [series_presenter, copy]() {
             series_presenter->applySettings(copy);
         });
@@ -92,8 +92,10 @@ SeriesView::SeriesView(SeriesPresenter * series_presenter) : QGroupBox("", nullp
     connect(delete_series_button, &QPushButton::clicked, [series_presenter]() {
        series_presenter->getParent()->delete_series(series_presenter);
     });
+    connect(clear_series_button, &QPushButton::clicked, series_presenter, &SeriesPresenter::clear_data);
 
-    //////// MODEL --> VIEW CONNECTIONS //////////
+
+      //////// MODEL --> VIEW CONNECTIONS //////////
     connect(series_presenter->get_qt_series(), &QXYSeries::colorChanged, [change_color_button](const QColor & newColor) {
       QString change_color_button_stylesheet = "background-color: " + newColor.name() +";";
       change_color_button->setStyleSheet(change_color_button_stylesheet);

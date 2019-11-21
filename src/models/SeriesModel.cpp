@@ -18,12 +18,15 @@ SeriesModel::SeriesModel(ChartPresenter * parent, const QString & name): parent(
 void SeriesModel::init_subscriber_for_channel_type(const proto::ChannelType & channel_type) {
     if (!proto_subscriber) {
 
-        proto_subscriber =
-            reinterpret_cast<proto::Subscriber<google::protobuf::Message> *>(new proto::Subscriber<proto::RobotCommand>(
+        proto_subscriber = reinterpret_cast<proto::Subscriber<google::protobuf::Message> *>
+            (new proto::Subscriber<proto::RobotCommand>(
                 proto::ROBOT_COMMANDS_PRIMARY_CHANNEL,
                 &SeriesModel::handle_incoming_message,
                 this));
     }
+
+
+
     std::cerr << "[SeriesModel:init_subscriber_for_channel_type] temporarily only allowing one type of publisher" << std::endl;
 }
 
@@ -71,28 +74,27 @@ void SeriesModel::handle_incoming_message(T message) {
         parent->adjustBoundaries(point.x(), point.y(), 10);
     }
 
-    double value = 0;
+    double value = 0.0;
 
     // handle custom fields
     if (!settings_presenter->use_packet_rate()) {
-    if (settings_presenter->get_field_to_show()) {
+        if (settings_presenter->get_field_to_show()) {
 
-        google::protobuf::Message * msg = &message;
-        auto field_definition = settings_presenter->get_field_to_show();
-        auto desc = message.GetDescriptor();
-        google::protobuf::FieldDescriptor * field = const_cast<FieldDescriptor *>(field_definition->get_field_descriptor());
-        for (int i = 0; i < field_definition->get_field_numbers().size(); i++) {
-            field = const_cast<FieldDescriptor *>(desc->field(field_definition->get_field_numbers().at(i)));
-            refl = const_cast<google::protobuf::Reflection *>(msg->GetReflection());
+            google::protobuf::Message * msg = &message;
+            auto field_definition = settings_presenter->get_field_to_show();
+            auto desc = message.GetDescriptor();
+            auto field = const_cast<FieldDescriptor *>(field_definition->get_field_descriptor());
+            for (int index : field_definition->get_field_numbers()) {
+                field = const_cast<FieldDescriptor *>(desc->field(index));
+                refl = const_cast<google::protobuf::Reflection *>(msg->GetReflection());
 
-            if (field) {
-                desc = field->message_type();
+                if (field) {
+                    desc = field->message_type();
+                    if (field->cpp_type() == google::protobuf::FieldDescriptor::CPPTYPE_MESSAGE) {
+                        msg = const_cast<Message *>(&refl->GetMessage(*msg, field));
+                    }
+                }
             }
-
-            if (field->cpp_type() == google::protobuf::FieldDescriptor::CPPTYPE_MESSAGE) {
-                msg = const_cast<Message *>(&refl->GetMessage(*msg, field));
-            }
-        }
 
         // field->extension_scope()->FindNestedTypeByName(field->na
         switch(field->cpp_type()) {
@@ -145,7 +147,12 @@ ChartPresenter *SeriesModel::get_parent() const {
     return parent;
 }
 SeriesModel::~SeriesModel() {
-    std::cout << "destroying series model" << std::endl;
+    /*
+     * Ignore the clang-tidy warning here.
+     * clang-tidy thinks proto_subscriber == nullptr, but it is not.
+     */
+
+    // NOLINTNEXTLINE
     if (proto_subscriber) {
         delete proto_subscriber;
     }

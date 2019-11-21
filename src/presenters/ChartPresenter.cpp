@@ -28,28 +28,27 @@ void ChartPresenter::set_theme(bool dark_theme) {
 
 // change boundaries of chart if necessary
 void ChartPresenter::adjustBoundaries(const qreal & x, const qreal & y, const qreal & margin) {
-    double margin_y = 0.05; // 5 % above and under the graph
-    if (x < model->min_x) {
 
-        model->min_x = x;
-       // model->xAxis->setMin(model->max_x - margin);
+    /*
+     *
+     * Here the margins are added. This is to prevent that we have to constantly update the range.
+     * This saves a lot of CPU
+     *
+     */
+    if (x < model->min_x) {
+        model->min_x = x - model->margin_x;
     }
     
     if (x > model->max_x) {
-        model->max_x = x;
-     //   model->xAxis->setMax(x);
-       // model->xAxis->setMin(model->max_x - margin);
-
+        model->max_x = x + model->margin_x;
     }
 
     if (y < model->min_y) {
-        model->min_y = y;
-       // model->yAxis->setMin(y-y*margin_y);
+        model->min_y = y  - model->margin_y;
     }
 
     if (y > model->max_y) {
-        model->max_y = y;
-       // model->yAxis->setMax(y+y*margin_y);
+        model->max_y = y  + model->margin_y;
     }
 }
 
@@ -96,6 +95,7 @@ bool ChartPresenter::is_sliding_window() const {
 }
 void ChartPresenter::set_sliding_window(bool sliding_window) {
     model->sliding_window = sliding_window;
+    emit set_sliding_window_changed(sliding_window);
 }
 qreal ChartPresenter::get_sliding_window_width() const {
     return model->sliding_window_width;
@@ -121,6 +121,36 @@ int ChartPresenter::get_update_frequency() const {
 void ChartPresenter::set_update_frequency(int update_frequency) {
     model->update_frequency = update_frequency;
     emit update_frequency_changed(update_frequency);
+}
+
+void ChartPresenter::resetBoundaries() {
+    model->min_x = 9e99;
+    model->max_x = -9e99;
+    model->min_y = 9e99;
+    model->max_y = -9e99;
+}
+void ChartPresenter::apply_data() {
+
+    for (auto series : get_series_list()) {
+        series->apply_data();
+    }
+
+        // apply the boundaries
+    if (is_sliding_window()) {
+        getxAxis()->setMin(get_max_x() - get_sliding_window_width());
+        getxAxis()->setMax(get_max_x() + get_margin_x());
+    } else {
+        getxAxis()->setMin(get_min_x() - get_margin_x());
+        getxAxis()->setMax(get_max_x() + get_margin_x());
+    }
+    getyAxis()->setMin(get_min_y() - get_margin_y());
+    getyAxis()->setMax(get_max_y() + get_margin_y());
+}
+
+void ChartPresenter::clear_data() {
+    for (auto series : get_series_list()) {
+        series->clear_data();
+    }
 }
 
 

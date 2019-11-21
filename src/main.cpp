@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
   QApplication a(argc, argv);
   setDarkTheme();
 
-  std::thread thread(fakeRobotCommands);
+//  std::thread thread(fakeRobotCommands);
   MainWindow window;
   window.setWindowState(Qt::WindowMaximized);
   window.show();

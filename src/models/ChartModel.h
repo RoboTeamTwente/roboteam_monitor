@@ -18,8 +18,8 @@ class ChartModel {
   bool darkTheme = true;
   qreal min_x = 9e99;
   qreal min_y = 9e99;
-  qreal max_x = 1.0;
-  qreal max_y = 1.0;
+  qreal max_x = -9e99;
+  qreal max_y = -9e99;
 
   QValueAxis * xAxis = nullptr;
   QValueAxis * yAxis = nullptr;
@@ -27,8 +27,8 @@ class ChartModel {
 
   bool sliding_window = true;
   qreal sliding_window_width = 10.0;
-  qreal margin_y = 1.05;
-  qreal margin_x = 1.10;
+  qreal margin_y = 10.0;
+  qreal margin_x = 10.0;
   int update_frequency = 5;
 
   // Relationships

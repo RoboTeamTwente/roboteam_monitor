@@ -1,4 +1,5 @@
 #include <src/models/ChartModel.h>
+#include <src/models/SeriesModel.h>
 #include "ChartPresenter.h"
 #include "SeriesPresenter.h"
 
@@ -124,10 +125,10 @@ void ChartPresenter::set_update_frequency(int update_frequency) {
 }
 
 void ChartPresenter::resetBoundaries() {
-    model->min_x = 9e99;
-    model->max_x = -9e99;
-    model->min_y = 9e99;
-    model->max_y = -9e99;
+    model->min_x = 1;
+    model->max_x = 0;
+    model->min_y = 1;
+    model->max_y = 0;
 }
 void ChartPresenter::apply_data() {
 
@@ -152,5 +153,10 @@ void ChartPresenter::clear_data() {
         series->clear_data();
     }
 }
+
+json ChartPresenter::to_json() {
+    return model->to_json();
+}
+
 
 

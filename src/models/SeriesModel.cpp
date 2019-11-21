@@ -158,4 +158,10 @@ SeriesModel::~SeriesModel() {
     }
 }
 
+json SeriesModel::to_json() {
+    return {
+        {"settings", settings_presenter->get_model_copy()->to_json()}
+    };
+}
+
 

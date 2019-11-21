@@ -49,14 +49,16 @@ void SeriesPresenter::apply_data() {
     // apply the data
     model->qt_series->clear();
     model->qt_series->replace(*model->data);
-
-
-
 }
+
 SeriesPresenter::~SeriesPresenter() {
 delete model;
 }
 
 void SeriesPresenter::clear_data() {
     model->data->clear();
+}
+
+json SeriesPresenter::to_json() {
+    return model->to_json();
 }

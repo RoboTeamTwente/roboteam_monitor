@@ -19,6 +19,8 @@ class SeriesModel {
   friend class SeriesPresenter;
  public:
   SeriesModel(ChartPresenter * parent, const QString & name = "Series");
+  json to_json();
+
  private:
   // properties
   QXYSeries * qt_series = nullptr;

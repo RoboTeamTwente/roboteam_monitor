@@ -6,6 +6,7 @@
 #include <src/utils/Helpers.h>
 #include "FilterModel.h"
 
+
 FilterModel::FilterModel(SeriesSettingsPresenter * parent) : parent(parent) {}
 
 
@@ -25,6 +26,13 @@ bool FilterModel::operator==(const FilterModel &other) {
 //    || (!field_descriptor && !other.field_descriptor))
 //    && reference_message == other.reference_message
 //    && value == other.value;
+}
+
+json FilterModel::to_json() {
+    return {
+        {"field_definition", field_definition->to_json()},
+        {"value", value.toStdString()}
+    };
 }
 
 

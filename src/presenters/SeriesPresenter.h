@@ -21,6 +21,7 @@ class SeriesPresenter : public QObject {
  public:
   explicit SeriesPresenter(SeriesModel * model);
   ~SeriesPresenter();
+  json to_json();
 
   QXYSeries * get_qt_series();
   void set_name(const QString &name);

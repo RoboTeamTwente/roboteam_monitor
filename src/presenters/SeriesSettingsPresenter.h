@@ -21,6 +21,7 @@ class SeriesSettingsPresenter : public QObject {
   SeriesSettingsPresenter(SeriesSettingsModel * model);
   bool is_dirty();
   bool is_valid();
+  json to_json();
 
  public slots:
   void add_new_filter();

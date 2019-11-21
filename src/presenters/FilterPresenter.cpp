@@ -32,4 +32,7 @@ FieldDefinition *FilterPresenter::get_field_definition() {
 bool FilterPresenter::is_valid() {
     return !model->value.isEmpty() && model->field_definition && model->field_definition->get_field_descriptor();
 }
+json FilterPresenter::to_json() {
+    return model->to_json();
+}
 

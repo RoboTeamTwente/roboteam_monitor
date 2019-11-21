@@ -3,6 +3,10 @@
 
 #include <QObject>
 #include <QtCharts/QtCharts>
+#include <roboteam_utils/json.hpp>
+
+using json = nlohmann::json;
+
 class SeriesPresenter;
 class ChartModel;
 class SeriesModel;
@@ -13,6 +17,7 @@ class ChartPresenter : public QObject {
 
  public:
   explicit ChartPresenter(ChartModel *model);
+  json to_json();
 
  public slots:
   void add_new_series();

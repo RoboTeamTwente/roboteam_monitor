@@ -1,8 +1,6 @@
-//
-// Created by Lukas Bos on 20/11/2019.
-//
-
+#include <src/utils/Helpers.h>
 #include "FieldDefinition.h"
+
 const google::protobuf::FieldDescriptor *FieldDefinition::get_field_descriptor() const {
     return field_descriptor;
 }
@@ -15,4 +13,13 @@ const std::vector<int> &FieldDefinition::get_field_numbers() const {
 FieldDefinition::FieldDefinition(const google::protobuf::FieldDescriptor *field_descriptor,
                                  const std::vector<int> &field_numbers)
     : field_descriptor(field_descriptor), field_numbers(field_numbers) {}
+
 FieldDefinition::FieldDefinition() {}
+
+json FieldDefinition::to_json() {
+
+    return {
+        {"name", "This will probably be the field name"},
+        {"field_numbers", field_numbers}
+    };
+}

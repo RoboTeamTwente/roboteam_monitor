@@ -33,3 +33,23 @@ SeriesSettingsModel::SeriesSettingsModel(const SeriesSettingsModel &other) {
 }
 SeriesSettingsModel::SeriesSettingsModel(SeriesPresenter *parent) : parent(parent)
 { }
+
+json SeriesSettingsModel::to_json() {
+
+    // convert the vector of filtermodels* to filtermodel jsons
+    std::vector<json> filter_jsons;
+    filter_jsons.reserve(filters.size());
+    for (auto filter : filters) {
+        filter_jsons.push_back(filter->to_json());
+    }
+
+    // this field definition might not exist.
+    json field_to_show_json = field_to_show ? field_to_show->to_json() : json();
+
+    return {
+        {"filters", filter_jsons},
+        {"channel_type", proto::GEOMETRY_CHANNEL},
+        {"use_packet_rate", use_packet_rate},
+        {"field_to_show", field_to_show_json},
+    };
+}

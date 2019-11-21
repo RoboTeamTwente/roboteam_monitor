@@ -3,7 +3,6 @@ project(roboteam_monitor)
 
 SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 
-
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Instruct CMake to run moc automatically when needed
@@ -64,8 +63,7 @@ set(MODELS
         src/models/FieldDefinition.cpp)
 
 set(UTILS
-        src/utils/Helpers.cpp
-        )
+        src/utils/Helpers.cpp)
 
 # Add an executable
 add_executable(roboteam_monitor

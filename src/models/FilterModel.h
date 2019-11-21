@@ -1,8 +1,11 @@
 #ifndef RTT_FILTERMODEL_H
 #define RTT_FILTERMODEL_H
 
+#include <roboteam_utils/json.hpp>
 #include <QString>
 #include <src/presenters/SeriesPresenter.h>
+
+using json = nlohmann::json;
 
 class SeriesPresenter;
 class SeriesSettingsPresenter;
@@ -29,5 +32,6 @@ class FilterModel {
 
   // methods
   bool operator==(const FilterModel & other);
+  json to_json();
 };
 #endif //RTT_FILTERMODEL_H

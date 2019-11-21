@@ -122,6 +122,10 @@ bool SeriesSettingsPresenter::is_valid() {
     return model->channel_type != proto::ChannelType::UNDEFINED_CHANNEL && (use_packet_rate() || model->field_to_show);
 }
 
+json SeriesSettingsPresenter::to_json() {
+    return model->to_json();
+}
+
 
 
 

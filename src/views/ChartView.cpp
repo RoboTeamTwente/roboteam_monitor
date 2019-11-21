@@ -98,6 +98,13 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     g_layout->addRow(clear_series_button);
     connect(clear_series_button, &QPushButton::clicked, presenter, &ChartPresenter::clear_data);
 
+    auto save_file_button = new QPushButton();
+    save_file_button->setText("Save file");
+    g_layout->addRow(save_file_button);
+    connect(save_file_button, &QPushButton::clicked, [presenter]() {
+        std::cout << presenter->to_json().dump(3) << std::endl;
+    });
+
 
     series_overview_layout->addWidget(group);
 

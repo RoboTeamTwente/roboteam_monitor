@@ -61,8 +61,6 @@ void fakeRobotCommands() {
         cmd->mutable_vel()->set_x(10);
         cmd->mutable_vel()->set_y(20);
 
-
-
         publisher->send(*cmd);
     }, 100);
 }
@@ -71,7 +69,7 @@ int main(int argc, char** argv) {
   QApplication a(argc, argv);
   setDarkTheme();
 
-//  std::thread thread(fakeRobotCommands);
+  std::thread thread(fakeRobotCommands);
   MainWindow window;
   window.setWindowState(Qt::WindowMaximized);
   window.show();

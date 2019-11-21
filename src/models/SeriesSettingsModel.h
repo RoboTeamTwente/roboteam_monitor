@@ -23,6 +23,7 @@ class SeriesSettingsModel {
   bool operator==(const SeriesSettingsModel &rhs) const;
   bool operator!=(const SeriesSettingsModel &rhs) const;
   bool is_valid();
+  json to_json();
  public:
   explicit SeriesSettingsModel(SeriesPresenter * parent);
   explicit SeriesSettingsModel(const SeriesSettingsModel &other);

@@ -67,3 +67,6 @@ void Helpers::clearLayout(QLayout* layout) {
         }
     }
 }
+int Helpers::frequency_hz_to_millis(int frequency) {
+    return (1.0/(double)frequency)*1000;
+}

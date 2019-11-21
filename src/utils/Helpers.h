@@ -21,6 +21,7 @@ class Helpers {
    */
   static QString get_actual_typename(const google::protobuf::FieldDescriptor * field_descriptor);
   static void clearLayout(QLayout* layout);
+  static int frequency_hz_to_millis(int frequency);
 
 };
 

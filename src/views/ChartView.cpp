@@ -2,6 +2,7 @@
 #include "src/presenters/SeriesPresenter.h"
 #include "src/models/SeriesModel.h"
 #include <QSpinBox>
+#include <src/utils/Helpers.h>
 
 ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(parent), presenter(presenter) {
     setMinimumWidth(800);
@@ -52,9 +53,9 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     update_frequency_spin->setRange(1, 100);
     update_frequency_spin->setValue(presenter->get_update_frequency());
     g_layout->addRow(new QLabel("Chart update frequency (Hz)"), update_frequency_spin);
-    connect(update_frequency_spin, &QSpinBox::editingFinished, [presenter, update_frequency_spin]() {
-      presenter->set_update_frequency(update_frequency_spin->value());
-    });
+
+    //somehow this breaks with new syntax
+    connect(update_frequency_spin,SIGNAL(valueChanged(int)), presenter, SLOT(set_update_frequency(int)));
 
     // theme toggle checkbox
     auto theme_checkbox = new QCheckBox();
@@ -101,11 +102,11 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
              series->apply_data();
          }
     });
-    timer->start(presenter->get_update_frequency());
+    timer->start(Helpers::frequency_hz_to_millis(presenter->get_update_frequency()));
 
     connect(presenter, &ChartPresenter::update_frequency_changed, [timer](int frequency) {
        timer->stop();
-       timer->start((1.0/(double)frequency)*1000.0);
+       timer->start(Helpers::frequency_hz_to_millis(frequency));
     });
 
     //////// VIEW --> MODEL CONNECTIONS //////////

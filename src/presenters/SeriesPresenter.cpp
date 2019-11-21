@@ -47,6 +47,7 @@ void SeriesPresenter::applySettings(SeriesSettingsPresenter *new_settings) {
 
 void SeriesPresenter::apply_data() {
     // apply the data
+    model->qt_series->clear();
     model->qt_series->replace(*model->data);
 
     // apply the boundaries

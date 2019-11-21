@@ -69,6 +69,15 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     chart->chart()->addAxis(presenter->getxAxis(), Qt::AlignBottom);
     chart->chart()->addAxis(presenter->getyAxis(), Qt::AlignLeft);
 
+
+    auto timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, [presenter]() {
+         for (auto series : presenter->get_series_list()) {
+             series->apply_data();
+         }
+    });
+    timer->start(200); // 5fps
+
     //////// VIEW --> MODEL CONNECTIONS //////////
     connect(add_series_button, &QPushButton::clicked, presenter, &ChartPresenter::add_new_series);
     connect(theme_checkbox, &QCheckBox::toggled, presenter, &ChartPresenter::set_theme);
@@ -79,9 +88,6 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
         seriesMap.insert(std::make_pair(series_presenter, seriesView));
         series_overview_layout->addWidget(seriesView);
         chart->chart()->addSeries(series_presenter->get_qt_series());
-
-
-
 
       series_presenter->get_qt_series()->attachAxis(series_presenter->getParent()->getxAxis());
       series_presenter->get_qt_series()->attachAxis(series_presenter->getParent()->getyAxis());

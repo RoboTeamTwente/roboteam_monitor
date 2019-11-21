@@ -8,6 +8,7 @@ SeriesModel::SeriesModel(ChartPresenter * parent, const QString & name): parent(
     time_since_series_is_created = timer.getCurrentTime().count();
     qt_series = new QLineSeries();
     qt_series->setName(name);
+    data = new QVector<QPointF>();
     auto settings = new SeriesSettingsModel(new SeriesPresenter(this));
     settings_presenter = new SeriesSettingsPresenter(settings);
     init_subscriber_for_channel_type(proto::ChannelType::GEOMETRY_CHANNEL);
@@ -57,22 +58,16 @@ void SeriesModel::handle_incoming_message(T message) {
 
     // handle rate
     auto now = timer.getCurrentTime();
-    if (now.count() <= lastRateUpdateTime + 1000) {
-        internal_rate++;
-    } else {
-        lastRateUpdateTime = now.count();
-        QPoint point((now.count() - parent->get_time_chart_created())/1000.0, internal_rate);
+    determine_packet_rate();
 
-        if (settings_presenter->use_packet_rate()) {
-            qt_series->append(point);
-            parent->adjustBoundaries(point.x(), point.y());
-        }
-        rate = internal_rate;
-        internal_rate = 0;
+
+
+    if (settings_presenter->use_packet_rate()) {
+        QPoint point((now.count() - parent->get_time_chart_created())/1000.0, rate);
+        data->append(point);
+        parent->adjustBoundaries(point.x(), point.y(), 10);
     }
 
-
-    auto time = (now.count() - parent->get_time_chart_created())/1000.0;
     double value = 0;
 
     // handle custom fields
@@ -125,10 +120,21 @@ void SeriesModel::handle_incoming_message(T message) {
             default: return;
 
         }
+
+        qreal time = (now.count() - parent->get_time_chart_created());
         QPoint point(time, value);
-        qt_series->append(point);
-        parent->adjustBoundaries(point.x(), point.y());
+        parent->adjustBoundaries(point.x(), point.y(), 10);
+        data->append(point);
         }
+    }
+}
+void SeriesModel::determine_packet_rate() {
+    if (timer.getCurrentTime().count() <= lastRateUpdateTime + 1000) {
+        internal_rate++;
+    } else {
+        lastRateUpdateTime = timer.getCurrentTime().count();
+        rate = internal_rate;
+        internal_rate = 0;
     }
 }
 

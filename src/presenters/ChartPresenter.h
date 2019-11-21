@@ -18,11 +18,13 @@ class ChartPresenter : public QObject {
   void add_new_series();
   void delete_series(SeriesPresenter *series_to_delete);
   void set_theme(bool dark_theme);
-  void adjustBoundaries(const qreal & x, const qreal & y);
+  void adjustBoundaries(const qreal & x, const qreal & y, const qreal & margin);
   qreal get_min_x();
   qreal get_min_y();
   qreal get_max_x();
   qreal get_max_y();
+
+  std::vector<SeriesPresenter *> get_series_list();
 
   QValueAxis * getxAxis();
   QValueAxis * getyAxis();

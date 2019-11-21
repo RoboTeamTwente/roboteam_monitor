@@ -13,6 +13,7 @@
 
 SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, QWidget * parent) : QDialog(parent), presenter(presenter){
     setMinimumWidth(600);
+    setWindowTitle("Edit series");
     auto network_settings_layout = new QVBoxLayout(this);
     network_settings_layout->setAlignment(Qt::AlignTop);
     setLayout(network_settings_layout);

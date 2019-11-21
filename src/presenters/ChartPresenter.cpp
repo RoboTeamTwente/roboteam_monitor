@@ -10,8 +10,6 @@ void ChartPresenter::add_new_series() {
     auto presenter = new SeriesPresenter(series);
     model->seriesList.push_back(presenter);
     emit seriesAdded(presenter);
-
-
 }
 
 // Remove the series from the list of series
@@ -28,29 +26,29 @@ void ChartPresenter::set_theme(bool dark_theme) {
 }
 
 // change boundaries of chart if necessary
-void ChartPresenter::adjustBoundaries(const qreal & x, const qreal & y) {
+void ChartPresenter::adjustBoundaries(const qreal & x, const qreal & y, const qreal & margin) {
     double margin_y = 0.05; // 5 % above and under the graph
     if (x < model->min_x) {
 
         model->min_x = x;
-        model->xAxis->setMin(model->max_x - 10);
+       // model->xAxis->setMin(model->max_x - margin);
     }
     
     if (x > model->max_x) {
         model->max_x = x;
-        model->xAxis->setMax(x);
-        model->xAxis->setMin(model->max_x - 10);
+     //   model->xAxis->setMax(x);
+       // model->xAxis->setMin(model->max_x - margin);
 
     }
 
     if (y < model->min_y) {
         model->min_y = y;
-        model->yAxis->setMin(y-y*margin_y);
+       // model->yAxis->setMin(y-y*margin_y);
     }
 
     if (y > model->max_y) {
         model->max_y = y;
-        model->yAxis->setMax(y+y*margin_y);
+       // model->yAxis->setMax(y+y*margin_y);
     }
 }
 
@@ -87,6 +85,10 @@ void ChartPresenter::setyAxis(QValueAxis * axis) {
 
 long ChartPresenter::get_time_chart_created() {
     return model->time_chart_created;
+}
+
+std::vector<SeriesPresenter *> ChartPresenter::get_series_list() {
+    return model->seriesList;
 }
 
 

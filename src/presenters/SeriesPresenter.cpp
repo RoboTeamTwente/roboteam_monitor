@@ -44,3 +44,17 @@ SeriesSettingsPresenter *SeriesPresenter::get_settings_copy() {
 void SeriesPresenter::applySettings(SeriesSettingsPresenter *new_settings) {
     model->settings_presenter = new_settings;
 }
+
+void SeriesPresenter::apply_data() {
+    // apply the data
+    model->qt_series->replace(*model->data);
+
+    // apply the boundaries
+    double margin_y = 1.05;
+    auto parent = model->parent;
+    parent->getxAxis()->setMin(parent->get_max_x() - 10000);
+    parent->getxAxis()->setMax(parent->get_max_x() + 10);
+    parent->getyAxis()->setMin(parent->get_min_y() * margin_y);
+    parent->getyAxis()->setMax(parent->get_max_y() * margin_y);
+
+}

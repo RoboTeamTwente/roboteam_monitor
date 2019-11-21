@@ -23,7 +23,7 @@ class SeriesModel {
   // properties
   QXYSeries * qt_series = nullptr;
   void * proto_subscriber = nullptr;
-  QVector<QPointF> data;
+  QVector<QPointF> * data = nullptr;
 
   // relationships
   ChartPresenter * parent = nullptr;
@@ -43,6 +43,7 @@ class SeriesModel {
   template <class T>
   void handle_incoming_message(T message);
 
+  void determine_packet_rate();
 };
 
 #endif //RTT_SERIESMODEL_H

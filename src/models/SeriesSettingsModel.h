@@ -26,6 +26,7 @@ class SeriesSettingsModel {
   json to_json();
  public:
   explicit SeriesSettingsModel(SeriesPresenter * parent);
+  explicit SeriesSettingsModel(SeriesPresenter * parent, json data);
   explicit SeriesSettingsModel(const SeriesSettingsModel &other);
 };
 

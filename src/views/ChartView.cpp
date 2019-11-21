@@ -102,8 +102,42 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     save_file_button->setText("Save file");
     g_layout->addRow(save_file_button);
     connect(save_file_button, &QPushButton::clicked, [presenter]() {
-        std::cout << presenter->to_json().dump(3) << std::endl;
+          QString filename="Data.rtt";
+          QFile file( filename );
+          if ( file.open(QIODevice::ReadWrite) )
+          {
+              QTextStream stream( &file );
+              stream << QString::fromStdString(presenter->to_json().dump(3)) << endl;
+          }
     });
+
+
+    auto load_from_file_button = new QPushButton();
+    load_from_file_button->setText("Load file");
+    g_layout->addRow(load_from_file_button);
+    connect(load_from_file_button, &QPushButton::clicked, [this, presenter]() {
+       auto fileName = QFileDialog::getOpenFileName(this,
+                                              tr("Open rtt file"), "", tr("(*.rtt)"));
+
+      QString filename="Data.rtt";
+      QFile file( filename );
+      if ( file.open(QIODevice::ReadWrite) )
+      {
+
+          QString data_from_file;
+
+          QTextStream in(&file);
+          while (!in.atEnd()) {
+              QString line = in.readLine();
+              data_from_file.append(line);
+              data_from_file.append("\n"); // readability
+          }
+
+          QTextStream stream( &file );
+          std::cout << data_from_file.toStdString() << std::endl;
+      }
+    });
+
 
 
     series_overview_layout->addWidget(group);

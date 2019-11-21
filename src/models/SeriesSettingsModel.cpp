@@ -53,3 +53,9 @@ json SeriesSettingsModel::to_json() {
         {"field_to_show", field_to_show_json},
     };
 }
+
+// Constructor to be used when generating from JSON
+SeriesSettingsModel::SeriesSettingsModel(SeriesPresenter *parent, json data) {
+//    this->channel_type = data["channel_type"];
+//    this->use_packet_rate = data["use_packet_rate"];
+}

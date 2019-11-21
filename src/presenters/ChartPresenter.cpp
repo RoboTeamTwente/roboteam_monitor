@@ -17,6 +17,7 @@ void ChartPresenter::delete_series(SeriesPresenter *series_to_delete) {
     emit seriesRemoved(series_to_delete);
     auto seriesList = &model->seriesList;
     seriesList->erase(std::remove(seriesList->begin(), seriesList->end(), series_to_delete), seriesList->end());
+    delete series_to_delete;
 }
 
 // Allow switching between light and dark theme

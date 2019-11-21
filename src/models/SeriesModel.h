@@ -22,14 +22,14 @@ class SeriesModel {
  private:
   // properties
   QXYSeries * qt_series = nullptr;
-  void * proto_subscriber = nullptr;
+  proto::Subscriber<google::protobuf::Message> * proto_subscriber = nullptr;
   QVector<QPointF> * data = nullptr;
 
   // relationships
   ChartPresenter * parent = nullptr;
  public:
   ChartPresenter *get_parent() const;
-
+  virtual ~SeriesModel();
  private:
   roboteam_utils::Timer timer;
   int rate = 0;

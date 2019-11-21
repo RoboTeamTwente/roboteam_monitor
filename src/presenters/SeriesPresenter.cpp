@@ -58,3 +58,6 @@ void SeriesPresenter::apply_data() {
     parent->getyAxis()->setMax(parent->get_max_y() * margin_y);
 
 }
+SeriesPresenter::~SeriesPresenter() {
+delete model;
+}

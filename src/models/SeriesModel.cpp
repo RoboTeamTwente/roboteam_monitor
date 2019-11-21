@@ -18,8 +18,11 @@ SeriesModel::SeriesModel(ChartPresenter * parent, const QString & name): parent(
 void SeriesModel::init_subscriber_for_channel_type(const proto::ChannelType & channel_type) {
     if (!proto_subscriber) {
 
-        proto_subscriber = new proto::Subscriber<proto::RobotCommand>
-            (proto::ROBOT_COMMANDS_PRIMARY_CHANNEL, &SeriesModel::handle_incoming_message, this);
+        proto_subscriber =
+            reinterpret_cast<proto::Subscriber<google::protobuf::Message> *>(new proto::Subscriber<proto::RobotCommand>(
+                proto::ROBOT_COMMANDS_PRIMARY_CHANNEL,
+                &SeriesModel::handle_incoming_message,
+                this));
     }
     std::cerr << "[SeriesModel:init_subscriber_for_channel_type] temporarily only allowing one type of publisher" << std::endl;
 }
@@ -140,6 +143,12 @@ void SeriesModel::determine_packet_rate() {
 
 ChartPresenter *SeriesModel::get_parent() const {
     return parent;
+}
+SeriesModel::~SeriesModel() {
+    std::cout << "destroying series model" << std::endl;
+    if (proto_subscriber) {
+        delete proto_subscriber;
+    }
 }
 
 

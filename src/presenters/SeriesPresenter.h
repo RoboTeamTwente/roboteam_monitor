@@ -20,6 +20,8 @@ class SeriesPresenter : public QObject {
 
  public:
   explicit SeriesPresenter(SeriesModel * model);
+  ~SeriesPresenter();
+
   QXYSeries * get_qt_series();
   void set_name(const QString &name);
   SeriesSettingsPresenter * getSettings();
@@ -34,6 +36,7 @@ class SeriesPresenter : public QObject {
   void set_color(const QColor & color);
   void set_visible(bool visible);
   void start_new_subscription();
+
 };
 
 #endif //RTT_SERIESPRESENTER_H

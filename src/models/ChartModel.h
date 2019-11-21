@@ -25,6 +25,12 @@ class ChartModel {
   QValueAxis * yAxis = nullptr;
   long time_chart_created;
 
+  bool sliding_window = true;
+  qreal sliding_window_width = 10.0;
+  qreal margin_y = 1.05;
+  qreal margin_x = 1.10;
+  int update_frequency = 5;
+
   // Relationships
   std::vector<SeriesPresenter *> seriesList;
 

@@ -142,3 +142,4 @@ ChartPresenter *SeriesModel::get_parent() const {
     return parent;
 }
 
+

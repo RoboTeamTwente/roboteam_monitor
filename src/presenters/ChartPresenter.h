@@ -23,7 +23,16 @@ class ChartPresenter : public QObject {
   qreal get_min_y();
   qreal get_max_x();
   qreal get_max_y();
-
+  bool is_sliding_window() const;
+  void set_sliding_window(bool sliding_window);
+  qreal get_sliding_window_width() const;
+  void set_sliding_window_width(qreal sliding_window_width);
+  qreal get_margin_y() const;
+  void set_margin_y(qreal margin_y);
+  qreal get_margin_x() const;
+  void set_margin_x(qreal margin_x);
+  int get_update_frequency() const;
+  void set_update_frequency(int update_frequency);
   std::vector<SeriesPresenter *> get_series_list();
 
   QValueAxis * getxAxis();
@@ -39,6 +48,7 @@ class ChartPresenter : public QObject {
   void seriesRemoved(SeriesPresenter *series);
   void themeChanged(bool darkTheme);
   void chartBoundariesChanged();
+  void update_frequency_changed(int update_frequency);
 };
 
 #endif //RTT_CHARTPRESENTER_H

@@ -37,6 +37,10 @@ class SeriesModel {
   long lastRateUpdateTime;
   long time_since_series_is_created;
 
+
+
+ private:
+
   SeriesSettingsPresenter * settings_presenter = nullptr;
   void init_subscriber_for_channel_type(const proto::ChannelType & channel_type);
 

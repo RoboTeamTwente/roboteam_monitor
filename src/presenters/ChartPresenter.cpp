@@ -90,5 +90,36 @@ long ChartPresenter::get_time_chart_created() {
 std::vector<SeriesPresenter *> ChartPresenter::get_series_list() {
     return model->seriesList;
 }
+bool ChartPresenter::is_sliding_window() const {
+    return model->sliding_window;
+}
+void ChartPresenter::set_sliding_window(bool sliding_window) {
+    model->sliding_window = sliding_window;
+}
+qreal ChartPresenter::get_sliding_window_width() const {
+    return model->sliding_window_width;
+}
+void ChartPresenter::set_sliding_window_width(qreal sliding_window_width) {
+    model->sliding_window_width = sliding_window_width;
+}
+qreal ChartPresenter::get_margin_y() const {
+    return model->margin_y;
+}
+void ChartPresenter::set_margin_y(qreal margin_y) {
+    model->margin_y = margin_y;
+}
+qreal ChartPresenter::get_margin_x() const {
+    return model->margin_x;
+}
+void ChartPresenter::set_margin_x(qreal margin_x) {
+    model->margin_x = margin_x;
+}
+int ChartPresenter::get_update_frequency() const {
+    return model->update_frequency;
+}
+void ChartPresenter::set_update_frequency(int update_frequency) {
+    model->update_frequency = update_frequency;
+    emit update_frequency_changed(update_frequency);
+}
 
 

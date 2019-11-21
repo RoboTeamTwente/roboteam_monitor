@@ -1,6 +1,7 @@
 #include "ChartView.h"
 #include "src/presenters/SeriesPresenter.h"
 #include "src/models/SeriesModel.h"
+#include <QSpinBox>
 
 ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(parent), presenter(presenter) {
     setMinimumWidth(800);
@@ -26,18 +27,42 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     series_overview_layout->setAlignment(Qt::AlignTop);
 
     // add series button
-    auto add_series_button = new QPushButton();
+    auto add_series_button = new QPushButton(this);
     add_series_button->setText("Add series");
     series_overview_layout->addWidget(add_series_button);
 
-    auto play_pause_button = new QPushButton();
-    play_pause_button->setText("Play");
-    series_overview_layout->addWidget(play_pause_button);
+    auto group = new QGroupBox();
+
+    auto g_layout = new QFormLayout();
+    group->setLayout(g_layout);
+
+
+    auto margin_y_spinbox = new QSpinBox(this);
+    margin_y_spinbox->setRange(0, 9e99);
+    g_layout->addRow(new QLabel("Margin y"), margin_y_spinbox);
+
+    auto sliding_window_checkbox = new QCheckBox(this);
+    g_layout->addRow(new QLabel("Sliding window"), sliding_window_checkbox);
+
+    auto sliding_window_margin = new QSpinBox(this);
+    sliding_window_margin->setRange(0, 9e99);
+    g_layout->addRow(new QLabel("Sliding window margin"), sliding_window_margin);
+
+    auto update_frequency_spin = new QSpinBox(this);
+    update_frequency_spin->setRange(1, 100);
+    update_frequency_spin->setValue(presenter->get_update_frequency());
+    g_layout->addRow(new QLabel("Chart update frequency (Hz)"), update_frequency_spin);
+    connect(update_frequency_spin, &QSpinBox::editingFinished, [presenter, update_frequency_spin]() {
+      presenter->set_update_frequency(update_frequency_spin->value());
+    });
 
     // theme toggle checkbox
-    auto theme_checkbox = new QCheckBox("Dark theme");
+    auto theme_checkbox = new QCheckBox();
     theme_checkbox->setChecked(true);
-    series_overview_layout->addWidget(theme_checkbox);
+    g_layout->addRow(new QLabel("Dark theme"), theme_checkbox);
+    connect(theme_checkbox, &QCheckBox::toggled, presenter, &ChartPresenter::set_theme);
+
+    series_overview_layout->addWidget(group);
 
     series_overview_widget->setLayout(series_overview_scroll_layout);
     dialog_splitter->addWidget(series_overview_widget);
@@ -76,7 +101,12 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
              series->apply_data();
          }
     });
-    timer->start(200); // 5fps
+    timer->start(presenter->get_update_frequency());
+
+    connect(presenter, &ChartPresenter::update_frequency_changed, [timer](int frequency) {
+       timer->stop();
+       timer->start((1.0/(double)frequency)*1000.0);
+    });
 
     //////// VIEW --> MODEL CONNECTIONS //////////
     connect(add_series_button, &QPushButton::clicked, presenter, &ChartPresenter::add_new_series);

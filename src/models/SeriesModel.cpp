@@ -1,6 +1,7 @@
 #include "SeriesModel.h"
 #include "SeriesSettingsModel.h"
 #include <QtCharts/QtCharts>
+#include <src/utils/Helpers.h>
 
 using namespace google::protobuf;
 
@@ -40,33 +41,23 @@ void SeriesModel::init_subscriber_for_channel_type(const proto::ChannelType & ch
  */
 template<class T>
 void SeriesModel::handle_incoming_message(T message) {
-
-    auto reflection = const_cast<google::protobuf::Reflection *>(message.GetReflection());
-
-    auto current_time = roboteam_utils::Timer::getCurrentTime();
-
-    // apply filters
-    auto field_descriptors = std::vector<const google::protobuf::FieldDescriptor *>();
-    reflection->ListFields(message, &field_descriptors);
-
     for (auto filter : settings_presenter->get_filters()) {
         // if the filter is empty do nothing
-        if (!filter->get_field_definition() || !filter->get_field_definition()->get_field_descriptor() || filter->get_value().isEmpty()) break;
+        if (!filter->get_field_definition() || filter->get_value().isEmpty()) break;
 
-        if (filter->get_field_definition()->get_field_descriptor()->cpp_type() == google::protobuf::FieldDescriptor::CPPTYPE_UINT32) {
-            int value = reflection->GetUInt32(message, filter->get_field_definition()->get_field_descriptor());
-            if (QString::number(value, 10) != filter->get_value()) return;
-        } else {
+        // if the filter is not satisfied then return
+        std::optional<double> value = Helpers::get_numeric_value(&message, filter->get_field_definition());
+
+        if (!value.has_value() || QString::number(static_cast<int>(value.value()), 10) != filter->get_value()) {
+            internal_filtered_packets++;
             return;
-        }
+        };
     }
 
     // handle rate
+    auto current_time = roboteam_utils::Timer::getCurrentTime();
     auto now = timer.getCurrentTime();
     determine_packet_rate();
-
-
-    double value = 0.0;
 
     if (settings_presenter->use_packet_rate()) {
         QPoint point((now.count() - parent->get_time_chart_created())/1000.0, rate);
@@ -74,44 +65,13 @@ void SeriesModel::handle_incoming_message(T message) {
         parent->adjustBoundaries(point.x(), point.y(), 10);
     } else {
         if (settings_presenter->get_field_to_show()) {
-
-
-            auto [msg, field] = getDescriptorFromDefinition(&message, settings_presenter->get_field_to_show());
-            auto refl = const_cast<Reflection *>(msg->GetReflection());
-
-            switch(field->cpp_type()) {
-                case FieldDescriptor::CPPTYPE_INT32: {
-                    value = refl->GetInt32(*msg, field);
-                    break;
-                }
-                case FieldDescriptor::CPPTYPE_UINT32: {
-                    value = refl->GetUInt32(*msg, field);
-                    break;
-                }
-                case FieldDescriptor::CPPTYPE_INT64: {
-                    value = refl->GetInt64(*msg, field);
-                    break;
-                }
-                case FieldDescriptor::CPPTYPE_UINT64: {
-                    value = refl->GetUInt64(*msg, field);
-                    break;
-                }
-                case FieldDescriptor::CPPTYPE_FLOAT: {
-                    value = refl->GetFloat(*msg, field);
-                    break;
-                }
-                case FieldDescriptor::CPPTYPE_DOUBLE: {
-                    value = refl->GetDouble(*msg, field);
-                    break;
-                }
-                default: return;
-
+            auto value = Helpers::get_numeric_value(&message, settings_presenter->get_field_to_show());
+            if (value) {
+                qreal time = (now.count() - parent->get_time_chart_created());
+                QPoint point(time, value.value());
+                parent->adjustBoundaries(point.x(), point.y(), 10);
+                data->append(point);
             }
-
-            qreal time = (now.count() - parent->get_time_chart_created());
-            QPoint point(time, value);
-            parent->adjustBoundaries(point.x(), point.y(), 10);
-            data->append(point);
         }
     }
 }
@@ -121,7 +81,9 @@ void SeriesModel::determine_packet_rate() {
     } else {
         lastRateUpdateTime = roboteam_utils::Timer::getCurrentTime().count();
         rate = internal_rate;
+        filtered_packets = internal_filtered_packets;
         internal_rate = 0;
+        internal_filtered_packets = 0;
     }
 }
 

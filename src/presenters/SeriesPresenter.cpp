@@ -62,3 +62,6 @@ void SeriesPresenter::clear_data() {
 json SeriesPresenter::to_json() {
     return model->to_json();
 }
+int SeriesPresenter::get_filtered_packets_rate() {
+    return model->filtered_packets;
+}

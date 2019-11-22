@@ -30,7 +30,7 @@ FieldDefinition *FilterPresenter::get_field_definition() {
     return model->field_definition;
 }
 bool FilterPresenter::is_valid() {
-    return !model->value.isEmpty() && model->field_definition && model->field_definition->get_field_descriptor();
+    return !model->value.isEmpty() && model->field_definition && model->field_definition->is_valid();
 }
 json FilterPresenter::to_json() {
     return model->to_json();

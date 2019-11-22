@@ -21,7 +21,7 @@ FilterView::FilterView(FilterPresenter * filterPresenter, QWidget * parent) : QW
     auto add_filter_button = new QPushButton();
     auto definition = filterPresenter->get_field_definition();
     if (definition) {
-        add_filter_button->setText(QString::fromStdString(definition->get_field_descriptor()->name()));
+        add_filter_button->setText(definition->get_title());
     } else {
         add_filter_button->setText("Select...");
     }
@@ -44,7 +44,7 @@ FilterView::FilterView(FilterPresenter * filterPresenter, QWidget * parent) : QW
 
     connect(add_filter_button, &QPushButton::clicked, add_filter_dialog, &QDialog::open);
     connect(add_filter_dialog, &AddFilterDialog::valueChanged, [add_filter_button, filterPresenter](FieldDefinition * field_definition) {
-      add_filter_button->setText(QString::fromStdString(field_definition->get_field_descriptor()->name()));
+      add_filter_button->setText(field_definition->get_title());
       filterPresenter->set_field_definition(field_definition);
     });
 

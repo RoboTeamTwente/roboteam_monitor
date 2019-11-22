@@ -37,7 +37,9 @@ class SeriesModel {
  private:
   roboteam_utils::Timer timer;
   int rate = 0;
+  int filtered_packets = 0;
   int internal_rate = 0;
+  int internal_filtered_packets = 0;
   long lastRateUpdateTime;
   long time_since_series_is_created;
   std::pair<protobuf::Message *, google::protobuf::FieldDescriptor *>

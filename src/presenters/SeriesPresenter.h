@@ -33,6 +33,7 @@ class SeriesPresenter : public QObject {
 
   ChartPresenter * getParent();
   int get_rate();
+  int get_filtered_packets_rate();
 
  public slots:
   void set_color(const QColor & color);

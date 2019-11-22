@@ -7,6 +7,7 @@
 #include <roboteam_proto/messages_robocup_ssl_referee.pb.h>
 #include <roboteam_proto/Channels.h>
 #include <QWidget>
+#include <optional>
 
 const google::protobuf::Descriptor * Helpers::get_descriptor_for_topic(const QString &topic_name) {
     auto channel_type = getChannelTypeByName(topic_name);
@@ -96,4 +97,20 @@ std::pair<Message*, FieldDescriptor*> Helpers::getDescriptorFromDefinition(Messa
         }
     }
     return {msg, field};
+}
+
+std::optional<double> Helpers::get_numeric_value(Message *message, FieldDefinition *field_definition) {
+    if (!message || !field_definition) return std::nullopt;
+    auto [msg, field] = getDescriptorFromDefinition(message, field_definition);
+    auto refl = const_cast<Reflection *>(msg->GetReflection());
+
+    switch(field->cpp_type()) {
+        case FieldDescriptor::CPPTYPE_INT32: return refl->GetInt32(*msg, field);
+        case FieldDescriptor::CPPTYPE_UINT32: return refl->GetUInt32(*msg, field);
+        case FieldDescriptor::CPPTYPE_INT64: return refl->GetInt64(*msg, field);
+        case FieldDescriptor::CPPTYPE_UINT64: return refl->GetUInt64(*msg, field);
+        case FieldDescriptor::CPPTYPE_FLOAT: return refl->GetFloat(*msg, field);
+        case FieldDescriptor::CPPTYPE_DOUBLE: return refl->GetDouble(*msg, field);
+    }
+    return std::nullopt;
 }

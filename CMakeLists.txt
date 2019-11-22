@@ -83,6 +83,10 @@ target_link_libraries(roboteam_monitor
         PRIVATE Qt5::Charts
         )
 
+set_target_properties(roboteam_monitor PROPERTIES
+        CXX_STANDARD 17
+        )
+
 target_include_directories(roboteam_monitor
         INTERFACE include
         PRIVATE include

@@ -47,7 +47,8 @@ SeriesView::SeriesView(SeriesPresenter * series_presenter) : QGroupBox("", nullp
 
     connect(series_presenter->get_qt_series(), &QXYSeries::QXYSeries::pointsReplaced, [series_presenter, rate_label]() {
       int rate = series_presenter->get_rate();
-      rate_label->setText(QString::number(rate, 10) + " packets/s");
+      int total_packets = series_presenter->get_filtered_packets_rate() + rate;
+      rate_label->setText(QString::number(rate, 10) + "/" + QString::number(total_packets, 10) + " packets/s");
     });
 
 

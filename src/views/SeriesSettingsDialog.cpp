@@ -81,9 +81,7 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
 
     auto select_field_button = new QPushButton();
     if (auto field_definition = presenter->get_field_to_show()) {
-        if (field_definition->get_field_descriptor()) {
-            select_field_button->setText(Helpers::get_actual_typename(field_definition->get_field_descriptor()));
-        }
+        select_field_button->setText(field_definition->get_title());
     } else {
         select_field_button->setText("Select...");
     }
@@ -95,7 +93,7 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
 
     connect(select_field_button, &QPushButton::clicked, select_field_dialog, &QDialog::open);
     connect(select_field_dialog, &AddFilterDialog::valueChanged, [select_field_button](FieldDefinition * field_definition) {
-      select_field_button->setText(QString::fromStdString(field_definition->get_field_descriptor()->name()));
+      select_field_button->setText(field_definition->get_title());
     });
 
 

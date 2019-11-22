@@ -17,10 +17,11 @@ const QString &FieldDefinition::get_title() const {
 
 json FieldDefinition::to_json() {
     return {
-        {"name", "This will probably be the field name"},
+        {"name", title.toStdString()},
         {"field_numbers", field_numbers}
     };
 }
+
 bool FieldDefinition::is_valid() {
     return !field_numbers.empty();
 }

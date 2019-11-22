@@ -17,7 +17,7 @@ class SelectTypeWidget : public QTreeWidget {
  private:
   AddFilterDialog * parent_widget = nullptr;
   QTreeWidgetItem * top_level_tree_item;
-  void add_filter_descriptor(const google::protobuf::Descriptor * descriptor, const std::vector<int> & field_numbers, QTreeWidgetItem * parent);
+  void add_filter_descriptor(const google::protobuf::Descriptor * descriptor, const std::vector<int> & field_numbers, const QString & name, QTreeWidgetItem * parent);
  public slots:
   void update_filters_layout(const QString & topic_name);
 

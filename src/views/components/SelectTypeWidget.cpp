@@ -39,6 +39,8 @@ void SelectTypeWidget::add_filter_descriptor(const google::protobuf::Descriptor 
 
         auto field_descriptor = descriptor->field(i);
 
+
+
         QString new_name = name;
         new_name.append(QString::fromStdString(field_descriptor->name() + "/"));
 
@@ -49,16 +51,26 @@ void SelectTypeWidget::add_filter_descriptor(const google::protobuf::Descriptor 
         row_widget->setText(0, QString::fromStdString(field_descriptor->name()));
         row_widget->setText(1, Helpers::get_actual_typename(field_descriptor));
 
+        // we cannot select repeated fields for now
+        // Because for filtering it does not make sense
+        // and for displaying we don't
+        if (field_descriptor->is_repeated()) {
+            row_widget->setTextColor(0, Qt::gray);
+            row_widget->setTextColor(1, Qt::gray);
+            row_widget->setDisabled(true);
+        }
+
         // Select the item and close the dialog on double click
         connect(this, &QTreeWidget::itemActivated, [this, new_name, row_widget, field_descriptor, fieldNumbersToHere](QTreeWidgetItem *item, int column) {
-            if (item == row_widget) {
+            if (item == row_widget && !field_descriptor->is_repeated()) {
                 auto fd = new FieldDefinition(new_name, fieldNumbersToHere);
                 emit fieldSelectedAndClose(fd);
             }
         });
 
         connect(this, &QTreeWidget::currentItemChanged, [this, new_name, row_widget, field_descriptor, fieldNumbersToHere](QTreeWidgetItem *item) {
-          if (item == row_widget) {
+
+          if (item == row_widget && !field_descriptor->is_repeated()) {
               auto fd = new FieldDefinition(new_name, fieldNumbersToHere);
               emit fieldSelected(fd);
           }
@@ -67,7 +79,7 @@ void SelectTypeWidget::add_filter_descriptor(const google::protobuf::Descriptor 
 
         // do some nice recursion for the children of this item
         auto child_descriptor = field_descriptor->message_type();
-        if (child_descriptor) {
+        if (child_descriptor && !field_descriptor->is_repeated()) {
             add_filter_descriptor(child_descriptor, fieldNumbersToHere, new_name, row_widget);
         }
     }

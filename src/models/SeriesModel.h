@@ -12,6 +12,8 @@
 #include <QtCharts/QtCharts>
 #include <roboteam_utils/Timer.h>
 
+using namespace google;
+
 class ChartPresenter;
 class SeriesSettingsModel;
 class SeriesSettingsPresenter;
@@ -38,6 +40,8 @@ class SeriesModel {
   int internal_rate = 0;
   long lastRateUpdateTime;
   long time_since_series_is_created;
+  std::pair<protobuf::Message *, google::protobuf::FieldDescriptor *>
+  getDescriptorFromDefinition(protobuf::Message * msg, FieldDefinition * field_definition);
 
 
 

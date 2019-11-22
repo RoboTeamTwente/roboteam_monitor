@@ -43,8 +43,8 @@ template<class T>
 void SeriesModel::handle_incoming_message(T message) {
 
     auto reflection = const_cast<google::protobuf::Reflection *>(message.GetReflection());
+
     auto current_time = roboteam_utils::Timer::getCurrentTime();
-    auto refl = const_cast<Reflection *>(reflection);
 
     // apply filters
     auto field_descriptors = std::vector<const google::protobuf::FieldDescriptor *>();
@@ -80,23 +80,10 @@ void SeriesModel::handle_incoming_message(T message) {
     if (!settings_presenter->use_packet_rate()) {
         if (settings_presenter->get_field_to_show()) {
 
-            google::protobuf::Message * msg = &message;
-            auto field_definition = settings_presenter->get_field_to_show();
-            auto desc = message.GetDescriptor();
-            auto field = const_cast<FieldDescriptor *>(field_definition->get_field_descriptor());
-            for (int index : field_definition->get_field_numbers()) {
-                field = const_cast<FieldDescriptor *>(desc->field(index));
-                refl = const_cast<google::protobuf::Reflection *>(msg->GetReflection());
 
-                if (field) {
-                    desc = field->message_type();
-                    if (field->cpp_type() == google::protobuf::FieldDescriptor::CPPTYPE_MESSAGE) {
-                        msg = const_cast<Message *>(&refl->GetMessage(*msg, field));
-                    }
-                }
-            }
+        auto [msg, field] = getDescriptorFromDefinition(&message, settings_presenter->get_field_to_show());
+        auto refl = const_cast<Reflection *>(msg->GetReflection());
 
-        // field->extension_scope()->FindNestedTypeByName(field->na
         switch(field->cpp_type()) {
             case FieldDescriptor::CPPTYPE_INT32: {
                 value = refl->GetInt32(*msg, field);
@@ -162,6 +149,32 @@ json SeriesModel::to_json() {
     return {
         {"settings", settings_presenter->get_model_copy()->to_json()}
     };
+}
+
+/*
+ * Convert a message and field definition to a submessage and field descriptor.
+ * With this format we can easily retrieve a value from a message.
+ */
+std::pair<Message*, FieldDescriptor*> SeriesModel::getDescriptorFromDefinition(Message * msg, FieldDefinition * field_definition) {
+    if (!field_definition || !msg) return {};
+
+    // these variables get updated in the loop
+    Reflection * reflection = nullptr;
+    FieldDescriptor * field = nullptr;
+    auto desc = msg->GetDescriptor();
+
+    // iterate over the field numbers in the definition to extract the field descriptor and submessage from the message
+    for (int index : field_definition->get_field_numbers()) {
+        field = const_cast<FieldDescriptor *>(desc->field(index));
+        reflection = const_cast<Reflection *>(msg->GetReflection());
+
+        // if the field has a message type then it must be the submessage
+        if (field && field->cpp_type()==FieldDescriptor::CPPTYPE_MESSAGE) {
+            desc = field->message_type();
+            msg = const_cast<Message *>(&reflection->GetMessage(*msg, field));
+        }
+    }
+    return {msg, field};
 }
 
 

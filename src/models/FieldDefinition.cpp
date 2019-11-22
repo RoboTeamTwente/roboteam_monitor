@@ -26,3 +26,8 @@ bool FieldDefinition::is_valid() {
     return !field_numbers.empty();
 }
 
+FieldDefinition::FieldDefinition(const json & data) {
+    field_numbers = data.value("field_numbers", field_numbers);
+    title = QString::fromStdString(data.value("name", title.toStdString()));
+}
+

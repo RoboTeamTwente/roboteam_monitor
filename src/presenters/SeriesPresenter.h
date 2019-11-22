@@ -8,7 +8,6 @@
 #include <roboteam_utils/Timer.h>
 #include <src/presenters/FilterPresenter.h>
 #include <src/views/SeriesView.h>
-#include "src/presenters/SeriesSettingsPresenter.h"
 
 class ChartPresenter;
 class SeriesSettingsPresenter;

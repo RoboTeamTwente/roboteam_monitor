@@ -4,6 +4,8 @@
 #include <src/views/SeriesSettingsDialog.h>
 #include "views/SeriesView.h"
 #include "src/presenters/SeriesPresenter.h"
+#include "src/presenters/SeriesSettingsPresenter.h"
+
 #include <QtCharts/QtCharts>
 
 SeriesView::SeriesView(SeriesPresenter * series_presenter) : QGroupBox("", nullptr), seriesModel(series_presenter) {

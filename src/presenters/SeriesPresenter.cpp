@@ -1,5 +1,6 @@
 #include "SeriesPresenter.h"
-#include <src/presenters/ChartPresenter.h>
+#include "SeriesSettingsPresenter.h"
+#include "ChartPresenter.h"
 #include <src/views/SeriesSettingsDialog.h>
 #include "models/SeriesModel.h"
 

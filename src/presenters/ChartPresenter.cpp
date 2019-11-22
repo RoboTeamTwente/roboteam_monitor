@@ -3,7 +3,12 @@
 #include "ChartPresenter.h"
 #include "SeriesPresenter.h"
 
-ChartPresenter::ChartPresenter(ChartModel *model) : QObject(nullptr), model(model) { }
+ChartPresenter::ChartPresenter(ChartModel *model)
+: QObject(nullptr), model(model) { }
+
+ChartPresenter::ChartPresenter(json json_data) : QObject(nullptr) {
+    model = new ChartModel(this, json_data);
+}
 
 // Add a new series to the list of series
 void ChartPresenter::add_new_series() {
@@ -157,6 +162,10 @@ void ChartPresenter::clear_data() {
 json ChartPresenter::to_json() {
     return model->to_json();
 }
+bool ChartPresenter::is_dark_theme() {
+    return model->darkTheme;
+}
+
 
 
 

@@ -4,6 +4,7 @@
 
 #include <src/presenters/FilterPresenter.h>
 #include <src/presenters/SeriesPresenter.h>
+#include <src/presenters/SeriesSettingsPresenter.h>
 #include <src/utils/Helpers.h>
 #include "FilterView.h"
 #include "AddFilterDialog.h"

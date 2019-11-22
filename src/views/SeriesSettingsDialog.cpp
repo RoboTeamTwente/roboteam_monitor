@@ -5,6 +5,8 @@
  */
 
 #include <src/presenters/SeriesPresenter.h>
+#include <src/presenters/SeriesSettingsPresenter.h>
+
 #include <roboteam_utils/constants.h>
 #include <src/utils/Helpers.h>
 #include <src/views/AddFilterDialog.h>

@@ -11,6 +11,7 @@ using json = nlohmann::json;
 
 class SeriesModel;
 class SeriesPresenter;
+class ChartPresenter;
 class ChartModel {
 
   // Presenter definition
@@ -34,10 +35,11 @@ class ChartModel {
   qreal max_y = 1;
   QValueAxis * xAxis = nullptr;
   QValueAxis * yAxis = nullptr;
-  long time_chart_created;
+  long time_chart_created = 0;
 
  public:
   ChartModel();
+  explicit ChartModel(ChartPresenter * presenter, json data);
   json to_json();
 };
 

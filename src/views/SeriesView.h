@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include "FilterView.h"
 
+class SeriesPresenter;
 class SeriesView : public QGroupBox {
  private:
   SeriesPresenter * seriesModel;

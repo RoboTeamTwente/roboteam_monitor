@@ -11,13 +11,15 @@ class FieldDefinition {
  public:
   FieldDefinition(QString title, std::vector<int> field_numbers);
   FieldDefinition();
+  FieldDefinition(const json & data);
+
   const std::vector<int> &get_field_numbers() const;
   const QString &get_title() const;
   json to_json();
   bool is_valid();
 
  private:
-  const QString title = "";
+  QString title = "";
   std::vector<int> field_numbers;
 };
 

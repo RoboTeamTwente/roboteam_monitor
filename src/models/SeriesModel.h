@@ -21,6 +21,7 @@ class SeriesSettingsPresenter;
 class SeriesModel {
   friend class SeriesPresenter;
  public:
+  SeriesModel(ChartPresenter * parent, json json_data);
   SeriesModel(ChartPresenter * parent, const QString & name = "Series");
   json to_json();
 

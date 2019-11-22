@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QtCharts/QtCharts>
 #include <roboteam_utils/json.hpp>
+#include <src/models/ChartModel.h>
 
 using json = nlohmann::json;
 
@@ -17,6 +18,8 @@ class ChartPresenter : public QObject {
 
  public:
   explicit ChartPresenter(ChartModel *model);
+  explicit ChartPresenter(json json_data);
+
   json to_json();
 
  public slots:
@@ -42,6 +45,7 @@ class ChartPresenter : public QObject {
   std::vector<SeriesPresenter *> get_series_list();
   void apply_data();
   void clear_data();
+  bool is_dark_theme();
 
   QValueAxis * getxAxis();
   QValueAxis * getyAxis();
@@ -59,5 +63,6 @@ class ChartPresenter : public QObject {
   void update_frequency_changed(int update_frequency);
   void set_sliding_window_changed(bool use_sliding_window);
 };
+
 
 #endif //RTT_CHARTPRESENTER_H

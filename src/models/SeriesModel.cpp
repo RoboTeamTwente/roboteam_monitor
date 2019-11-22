@@ -3,6 +3,7 @@
 #include <QtCharts/QtCharts>
 #include <src/utils/Helpers.h>
 #include <src/utils/Constants.h>
+#include <src/presenters/SeriesSettingsPresenter.h>
 
 using namespace google::protobuf;
 
@@ -108,8 +109,27 @@ SeriesModel::~SeriesModel() {
 
 json SeriesModel::to_json() {
     return {
+        {"name", qt_series->name().toStdString()},
         {"settings", settings_presenter->get_model_copy()->to_json()}
     };
+}
+
+SeriesModel::SeriesModel(ChartPresenter *parent, json json_data) : parent(parent) {
+
+    auto json_name = json_data.value("name", "Series");
+    json json_settings = json_data["settings"];
+
+
+    time_since_series_is_created = timer.getCurrentTime().count();
+    qt_series = new QLineSeries();
+    qt_series->setName(QString::fromStdString(json_name));
+    data = new QList<QPointF>();
+
+
+    auto settings = new SeriesSettingsModel(new SeriesPresenter(this));
+    settings_presenter = new SeriesSettingsPresenter(settings);
+    init_subscriber_for_channel_type(proto::ChannelType::GEOMETRY_CHANNEL);
+
 }
 
 

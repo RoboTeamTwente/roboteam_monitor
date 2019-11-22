@@ -5,7 +5,7 @@
 #include <src/utils/Helpers.h>
 #include <QDoubleSpinBox>
 
-ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(parent), presenter(presenter) {
+ChartView::ChartView(ChartPresenter *presenter, QWidget *parent) : QWidget(parent), presenter(presenter) {
     setMinimumWidth(800);
     setMinimumHeight(600);
 
@@ -38,7 +38,6 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     auto g_layout = new QFormLayout();
     group->setLayout(g_layout);
 
-
     auto margin_y_spinbox = new QDoubleSpinBox(this);
     margin_y_spinbox->setFixedWidth(100);
     margin_y_spinbox->setRange(0, 9e99);
@@ -66,12 +65,19 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     connect(sliding_window_margin, SIGNAL(valueChanged(double)), presenter, SLOT(set_sliding_window_width(double)));
     connect(presenter, &ChartPresenter::set_sliding_window_changed, [sliding_window_margin](bool enabled) {
       sliding_window_margin->setEnabled(enabled);
-        if (enabled) {
-            sliding_window_margin->setStyleSheet("background-color: auto;");
-        } else {
-            sliding_window_margin->setStyleSheet("background-color: gray;");
-        }
+      if (enabled) {
+          sliding_window_margin->setStyleSheet("background-color: auto;");
+      } else {
+          sliding_window_margin->setStyleSheet("background-color: gray;");
+      }
     });
+
+    sliding_window_margin->setEnabled(presenter->is_sliding_window());
+    if (presenter->is_sliding_window()) {
+        sliding_window_margin->setStyleSheet("background-color: auto;");
+    } else {
+        sliding_window_margin->setStyleSheet("background-color: gray;");
+    }
 
     auto update_frequency_spin = new QSpinBox(this);
     update_frequency_spin->setFixedWidth(100);
@@ -80,17 +86,18 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     g_layout->addRow(new QLabel("Chart update frequency (Hz)"), update_frequency_spin);
 
     //somehow this breaks with new syntax
-    connect(update_frequency_spin,SIGNAL(valueChanged(int)), presenter, SLOT(set_update_frequency(int)));
+    connect(update_frequency_spin, SIGNAL(valueChanged(int)), presenter, SLOT(set_update_frequency(int)));
 
     // theme toggle checkbox
     auto theme_checkbox = new QCheckBox();
-    theme_checkbox->setChecked(true);
+    theme_checkbox->setChecked(presenter->is_dark_theme());
     g_layout->addRow(new QLabel("Dark theme"), theme_checkbox);
+
     connect(theme_checkbox, &QCheckBox::toggled, presenter, &ChartPresenter::set_theme);
 
     auto reset_boundaries_button = new QPushButton(this);
     reset_boundaries_button->setText("Reset boundaries");
-    g_layout->addRow( reset_boundaries_button);
+    g_layout->addRow(reset_boundaries_button);
     connect(reset_boundaries_button, &QPushButton::clicked, presenter, &ChartPresenter::resetBoundaries);
 
     auto clear_series_button = new QPushButton();
@@ -101,46 +108,39 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     auto save_file_button = new QPushButton();
     save_file_button->setText("Save file");
     g_layout->addRow(save_file_button);
-    connect(save_file_button, &QPushButton::clicked, [presenter]() {
-          QString filename="Data.rtt";
-          QFile file( filename );
-          if ( file.open(QIODevice::ReadWrite) )
-          {
-              QTextStream stream( &file );
-              stream << QString::fromStdString(presenter->to_json().dump(3)) << endl;
-          }
-    });
+    connect(save_file_button, &QPushButton::clicked, [this, presenter]() {
+      auto file_name = QFileDialog::getSaveFileName(this, tr("Create new rtt file"), "", tr("(*.rtt)"));
 
+      QFile file(file_name);
+      if (file.open(QIODevice::ReadWrite)) {
+
+          QTextStream stream(&file);
+          stream << QString::fromStdString(presenter->to_json().dump()) << endl;
+          file.resize(file.pos());
+
+      }
+    });
 
     auto load_from_file_button = new QPushButton();
     load_from_file_button->setText("Load file");
     g_layout->addRow(load_from_file_button);
     connect(load_from_file_button, &QPushButton::clicked, [this, presenter]() {
-       auto fileName = QFileDialog::getOpenFileName(this,
-                                              tr("Open rtt file"), "", tr("(*.rtt)"));
-
-      QString filename="Data.rtt";
-      QFile file( filename );
-      if ( file.open(QIODevice::ReadWrite) )
-      {
-
+      auto file_name = QFileDialog::getOpenFileName(this, tr("Open rtt file"), "", tr("(*.rtt)"));
+      QFile file(file_name);
+      if (file.open(QIODevice::ReadOnly)) {
           QString data_from_file;
-
           QTextStream in(&file);
           while (!in.atEnd()) {
               QString line = in.readLine();
               data_from_file.append(line);
-              data_from_file.append("\n"); // readability
           }
+          json chart_json = json::parse(data_from_file.toStdString());
 
-          QTextStream stream( &file );
-          std::cout << data_from_file.toStdString() << std::endl;
       }
     });
 
-
-
     series_overview_layout->addWidget(group);
+
 
     series_overview_widget->setLayout(series_overview_scroll_layout);
     dialog_splitter->addWidget(series_overview_widget);
@@ -150,10 +150,17 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     auto chart = new QChartView();
     chart->chart()->setMinimumHeight(300);
     dialog_splitter->addWidget(chart);
-    chart->chart()->setTheme(QChart::ChartThemeDark);
     chart->chart()->setBackgroundBrush(QColor(33, 33, 33));
     chart->setRenderHint(QPainter::Antialiasing);
     chart->chart()->createDefaultAxes();
+
+    if (presenter->is_dark_theme()) {
+        chart->chart()->setTheme(QChart::ChartThemeDark);
+        chart->chart()->setBackgroundBrush(QColor(33, 33, 33));
+    } else {
+        chart->chart()->setTheme(QChart::ChartThemeLight);
+        chart->chart()->setBackgroundBrush(QColor(255, 255, 255));
+    }
 
     chart->chart()->addAxis(presenter->getxAxis(), Qt::AlignBottom);
     chart->chart()->addAxis(presenter->getyAxis(), Qt::AlignLeft);
@@ -162,7 +169,7 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     presenter->getyAxis()->setTitleText("Rate");
 
     presenter->getxAxis()->setRange(0, 10);
-    presenter->getyAxis()->setRange(0,10);
+    presenter->getyAxis()->setRange(0, 10);
 
     presenter->getxAxis()->setTickCount(10);
     presenter->getyAxis()->setTickCount(10);
@@ -172,14 +179,13 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     chart->chart()->addAxis(presenter->getxAxis(), Qt::AlignBottom);
     chart->chart()->addAxis(presenter->getyAxis(), Qt::AlignLeft);
 
-
     auto timer = new QTimer(this);
     connect(timer, &QTimer::timeout, presenter, &ChartPresenter::apply_data);
     timer->start(Helpers::frequency_hz_to_millis(presenter->get_update_frequency()));
 
     connect(presenter, &ChartPresenter::update_frequency_changed, [timer](int frequency) {
-       timer->stop();
-       timer->start(Helpers::frequency_hz_to_millis(frequency));
+      timer->stop();
+      timer->start(Helpers::frequency_hz_to_millis(frequency));
     });
 
     //////// VIEW --> MODEL CONNECTIONS //////////
@@ -187,25 +193,29 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
     connect(theme_checkbox, &QCheckBox::toggled, presenter, &ChartPresenter::set_theme);
 
     //////// MODEL --> VIEW CONNECTIONS //////////
-    connect(presenter, &ChartPresenter::seriesAdded, [this, series_overview_layout, chart, presenter](SeriesPresenter * series_presenter) {
-        auto seriesView = new SeriesView(series_presenter);
-        seriesMap.insert(std::make_pair(series_presenter, seriesView));
-        series_overview_layout->addWidget(seriesView);
-        chart->chart()->addSeries(series_presenter->get_qt_series());
+    connect(presenter,
+            &ChartPresenter::seriesAdded,
+            [this, series_overview_layout, chart, presenter](SeriesPresenter *series_presenter) {
+              auto seriesView = new SeriesView(series_presenter);
+              seriesMap.insert(std::make_pair(series_presenter, seriesView));
+              series_overview_layout->addWidget(seriesView);
+              chart->chart()->addSeries(series_presenter->get_qt_series());
 
-      series_presenter->get_qt_series()->attachAxis(series_presenter->getParent()->getxAxis());
-      series_presenter->get_qt_series()->attachAxis(series_presenter->getParent()->getyAxis());
-    });
+              series_presenter->get_qt_series()->attachAxis(series_presenter->getParent()->getxAxis());
+              series_presenter->get_qt_series()->attachAxis(series_presenter->getParent()->getyAxis());
+            });
 
-    connect(presenter, &ChartPresenter::seriesRemoved, [this, series_overview_layout, chart](SeriesPresenter * series_presenter) {
-       if (auto view = seriesMap.at(series_presenter)) {
-           view->hide();
-           series_overview_layout->removeWidget(view);
-           chart->chart()->removeSeries(series_presenter->get_qt_series());
-           // chart->chart()->createDefaultAxes();
-           seriesMap.erase(series_presenter);
-       }
-    });
+    connect(presenter,
+            &ChartPresenter::seriesRemoved,
+            [this, series_overview_layout, chart](SeriesPresenter *series_presenter) {
+              if (auto view = seriesMap.at(series_presenter)) {
+                  view->hide();
+                  series_overview_layout->removeWidget(view);
+                  chart->chart()->removeSeries(series_presenter->get_qt_series());
+                  // chart->chart()->createDefaultAxes();
+                  seriesMap.erase(series_presenter);
+              }
+            });
 
     connect(presenter, &ChartPresenter::themeChanged, [chart](bool darkTheme) {
       if (darkTheme) {
@@ -216,5 +226,18 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget  * parent) : QWidget(par
           chart->chart()->setBackgroundBrush(QColor(255, 255, 255));
       }
     });
+
+
+
+
+    for (auto series_presenter : presenter->get_series_list()) {
+        auto seriesView = new SeriesView(series_presenter);
+        seriesMap.insert(std::make_pair(series_presenter, seriesView));
+        series_overview_layout->addWidget(seriesView);
+        chart->chart()->addSeries(series_presenter->get_qt_series());
+
+        series_presenter->get_qt_series()->attachAxis(series_presenter->getParent()->getxAxis());
+        series_presenter->get_qt_series()->attachAxis(series_presenter->getParent()->getyAxis());
+    }
 
 }

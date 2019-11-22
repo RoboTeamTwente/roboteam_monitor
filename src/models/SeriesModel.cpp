@@ -61,7 +61,7 @@ void SeriesModel::handle_incoming_message(T message) {
     determine_packet_rate();
 
     if (settings_presenter->use_packet_rate()) {
-        QPoint point((now.count() - parent->get_time_chart_created())/1000.0, rate);
+        QPoint point((now.count() - parent->get_time_chart_created()), rate);
         data->push_back(point);
         parent->adjustBoundaries(point.x(), point.y(), 10);
     } else {

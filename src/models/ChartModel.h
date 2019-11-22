@@ -24,6 +24,7 @@ class ChartModel {
   qreal margin_y = 10.0;
   qreal margin_x = 10.0;
   int update_frequency = 5;
+  QString ip_config = "127.0.0.1";
 
   // Relationships
   std::vector<SeriesPresenter *> seriesList;

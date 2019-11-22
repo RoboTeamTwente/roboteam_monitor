@@ -38,6 +38,13 @@ ChartView::ChartView(ChartPresenter *presenter, QWidget *parent) : QWidget(paren
     auto g_layout = new QFormLayout();
     group->setLayout(g_layout);
 
+    auto ip_config = new QLineEdit(this);
+    ip_config->setText(presenter->get_ip_config());
+    g_layout->addRow(new QLabel("IP to listen to"), ip_config);
+    connect(ip_config, &QLineEdit::editingFinished, [presenter, ip_config]() {
+        presenter->update_ip_config(ip_config->text());
+    });
+
     auto margin_y_spinbox = new QDoubleSpinBox(this);
     margin_y_spinbox->setFixedWidth(100);
     margin_y_spinbox->setRange(0, 9e99);

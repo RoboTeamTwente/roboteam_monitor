@@ -13,7 +13,7 @@ WelcomeDialog::WelcomeDialog(MainWindow * main_window) : QDialog(main_window) {
   auto initial_actions_layout = new QVBoxLayout();
 
   auto hello_world_label = new QLabel("RoboTeam Monitor!");
-    hello_world_label->setStyleSheet("color: #cc0000; font-weight: 100; font-size: 24px;");
+    hello_world_label->setStyleSheet("color: #cc0000; font-weight: 600; font-size: 28px;");
   initial_actions_layout->addWidget(hello_world_label);
 
   auto new_graph_button = new QPushButton();

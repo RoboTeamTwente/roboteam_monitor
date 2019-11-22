@@ -11,9 +11,8 @@ FilterModel::FilterModel(SeriesSettingsPresenter * parent) : parent(parent) {}
 
 
 FilterModel::FilterModel(SeriesSettingsPresenter * parent, FieldDefinition * field_definition,
-                         google::protobuf::Message *reference_message,
                          QString value)
-    : field_definition(field_definition), reference_message(reference_message), value(std::move(value)), parent(parent)
+    : field_definition(field_definition), value(std::move(value)), parent(parent)
     {}
 
 
@@ -34,5 +33,11 @@ json FilterModel::to_json() {
         {"value", value.toStdString()}
     };
 }
-
+FilterModel::FilterModel(SeriesSettingsPresenter *parent, json data) : parent(parent){
+    json field_definition_json = data["field_definition"];
+    if (!field_definition_json.is_null()) {
+        field_definition = new FieldDefinition(field_definition_json);
+    }
+    value = QString::fromStdString(data.value("value", value.toStdString()));
+}
 

@@ -33,7 +33,7 @@ ChartPresenter *SeriesPresenter::getParent() {
 
 void SeriesPresenter::start_new_subscription() {
     model->qt_series->clear();
-    model->init_subscriber_for_channel_type(getSettings()->get_channel_type());
+    model->init_subscriber(getSettings()->get_channel_type());
 }
 
 int SeriesPresenter::get_rate() {
@@ -53,7 +53,7 @@ void SeriesPresenter::apply_data() {
 }
 
 SeriesPresenter::~SeriesPresenter() {
-delete model;
+    delete model;
 }
 
 void SeriesPresenter::clear_data() {
@@ -65,4 +65,7 @@ json SeriesPresenter::to_json() {
 }
 int SeriesPresenter::get_filtered_packets_rate() {
     return model->filtered_packets;
+}
+void SeriesPresenter::reboot_subscriber() {
+    model->reboot_subscriber();
 }

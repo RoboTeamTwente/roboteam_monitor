@@ -46,6 +46,8 @@ class ChartPresenter : public QObject {
   void apply_data();
   void clear_data();
   bool is_dark_theme();
+  void update_ip_config(const QString & ip);
+  QString get_ip_config();
 
   QValueAxis * getxAxis();
   QValueAxis * getyAxis();
@@ -62,6 +64,7 @@ class ChartPresenter : public QObject {
   void chartBoundariesChanged();
   void update_frequency_changed(int update_frequency);
   void set_sliding_window_changed(bool use_sliding_window);
+  void ip_config_changed(QString ip_config);
 };
 
 

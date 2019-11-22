@@ -1,5 +1,6 @@
 #include "SeriesSettingsModel.h"
 #include "FilterModel.h"
+#include "presenters/SeriesSettingsPresenter.h"
 
 bool SeriesSettingsModel::operator==(const SeriesSettingsModel &rhs) const {
 
@@ -56,6 +57,19 @@ json SeriesSettingsModel::to_json() {
 
 // Constructor to be used when generating from JSON
 SeriesSettingsModel::SeriesSettingsModel(SeriesPresenter *parent, json data) {
-  //  this->channel_type = data.value("channel_type", channel_type);
+    this->channel_type = (proto::ChannelType) data.value("channel_type", (int)channel_type);
     this->use_packet_rate = data.value("use_packet_rate", use_packet_rate);
+
+    json field_to_show_json = data["field_to_show"];
+    if (!field_to_show_json.is_null()) {
+        field_to_show = new FieldDefinition(field_to_show_json);
+    }
+
+    for (auto const & filter_json : data["filters"]) {
+        auto settings_presenter = new SeriesSettingsPresenter(this);
+
+        auto filter_model = new FilterModel(settings_presenter, filter_json);
+        filters.push_back(new FilterPresenter(filter_model));
+    }
+
 }

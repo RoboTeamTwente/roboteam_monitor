@@ -14,22 +14,22 @@ SeriesModel::SeriesModel(ChartPresenter * parent, const QString & name): parent(
     data = new QList<QPointF>();
     auto settings = new SeriesSettingsModel(new SeriesPresenter(this));
     settings_presenter = new SeriesSettingsPresenter(settings);
-    init_subscriber_for_channel_type(proto::ChannelType::GEOMETRY_CHANNEL);
+    init_subscriber(proto::ChannelType::GEOMETRY_CHANNEL);
 }
 
 
-void SeriesModel::init_subscriber_for_channel_type(const proto::ChannelType & channel_type) {
-    if (!proto_subscriber) {
+void SeriesModel::init_subscriber(const proto::ChannelType & channel_type, const QString & ip_config) {
 
-        proto_subscriber = reinterpret_cast<proto::Subscriber<Message> *>(
-            new proto::Subscriber<proto::RobotCommand>(proto::ROBOT_COMMANDS_PRIMARY_CHANNEL,
-                                                       &SeriesModel::handle_incoming_message,
-                                                       this));
-    }
+        auto sub = new proto::Subscriber<proto::RobotCommand>(proto::ROBOT_COMMANDS_PRIMARY_CHANNEL,
+                                                              &SeriesModel::handle_incoming_message,
+                                                              this, ip_config.toStdString());
 
+        proto_subscriber = reinterpret_cast<proto::Subscriber<Message> *>(sub);
 
 
-    std::cerr << "[SeriesModel:init_subscriber_for_channel_type] temporarily only allowing one type of publisher" << std::endl;
+
+
+    std::cerr << "[SeriesModel:init_subscriber] temporarily only allowing one type of publisher" << std::endl;
 }
 
 
@@ -57,20 +57,23 @@ void SeriesModel::handle_incoming_message(T message) {
     }
 
     // handle rate
-    auto current_time = roboteam_utils::Timer::getCurrentTime();
-    auto now = timer.getCurrentTime();
+    auto now = std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::steady_clock::now().time_since_epoch()
+    );
+
     determine_packet_rate();
+    qreal time = (now.count() - parent->get_time_chart_created())/1000000.0;
+
 
     if (settings_presenter->use_packet_rate()) {
-        QPoint point((now.count() - parent->get_time_chart_created()), rate);
+        QPointF point(time, rate);
         data->push_back(point);
         parent->adjustBoundaries(point.x(), point.y(), 10);
     } else {
         if (settings_presenter->get_field_to_show()) {
             auto value = Helpers::get_numeric_value(&message, settings_presenter->get_field_to_show());
             if (value) {
-                qreal time = (now.count() - parent->get_time_chart_created());
-                QPoint point(time, value.value());
+                QPointF point(time, value.value());
                 parent->adjustBoundaries(point.x(), point.y(), 10);
                 data->push_back(point);
             }
@@ -96,15 +99,7 @@ ChartPresenter *SeriesModel::get_parent() const {
     return parent;
 }
 SeriesModel::~SeriesModel() {
-    /*
-     * Ignore the clang-tidy warning here.
-     * clang-tidy thinks proto_subscriber == nullptr, but it is not.
-     */
-
-    // NOLINTNEXTLINE
-    if (proto_subscriber) {
-        delete proto_subscriber;
-    }
+    destroy_subscriber();
 }
 
 json SeriesModel::to_json() {
@@ -119,17 +114,39 @@ SeriesModel::SeriesModel(ChartPresenter *parent, json json_data) : parent(parent
     auto json_name = json_data.value("name", "Series");
     json json_settings = json_data["settings"];
 
-
     time_since_series_is_created = timer.getCurrentTime().count();
     qt_series = new QLineSeries();
     qt_series->setName(QString::fromStdString(json_name));
     data = new QList<QPointF>();
 
 
-    auto settings = new SeriesSettingsModel(new SeriesPresenter(this));
-    settings_presenter = new SeriesSettingsPresenter(settings);
-    init_subscriber_for_channel_type(proto::ChannelType::GEOMETRY_CHANNEL);
+    auto series_presenter = new SeriesPresenter(this);
+    auto settings = new SeriesSettingsModel(series_presenter);
 
+    if (!json_settings.is_null()) {
+        settings = new SeriesSettingsModel(series_presenter, json_settings);
+    }
+
+    settings_presenter = new SeriesSettingsPresenter(settings);
+    init_subscriber(proto::ChannelType::GEOMETRY_CHANNEL);
+}
+
+void SeriesModel::destroy_subscriber() {
+    /*
+     * Ignore the clang-tidy warning here.
+     * clang-tidy thinks proto_subscriber == nullptr, but it is not.
+     */
+
+    // NOLINTNEXTLINE
+    if (proto_subscriber) {
+        delete proto_subscriber;
+    }
+}
+
+void SeriesModel::reboot_subscriber() {
+    destroy_subscriber();
+    std::cout << "rebooting with ip: " << parent->get_ip_config().toStdString() << std::endl;
+    init_subscriber(settings_presenter->get_channel_type(), parent->get_ip_config());
 }
 
 

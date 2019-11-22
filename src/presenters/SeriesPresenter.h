@@ -29,6 +29,7 @@ class SeriesPresenter : public QObject {
   void applySettings(SeriesSettingsPresenter * new_settings);
   void apply_data();
   void clear_data();
+  void reboot_subscriber();
 
   ChartPresenter * getParent();
   int get_rate();

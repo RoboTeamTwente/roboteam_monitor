@@ -24,6 +24,8 @@ class SeriesModel {
   SeriesModel(ChartPresenter * parent, json json_data);
   SeriesModel(ChartPresenter * parent, const QString & name = "Series");
   json to_json();
+  void destroy_subscriber();
+  void reboot_subscriber();
 
  private:
   // properties
@@ -44,19 +46,13 @@ class SeriesModel {
   int internal_filtered_packets = 0;
   long lastRateUpdateTime;
   long time_since_series_is_created;
-  std::pair<protobuf::Message *, google::protobuf::FieldDescriptor *>
-  getDescriptorFromDefinition(protobuf::Message * msg, FieldDefinition * field_definition);
-
-
 
  private:
-
   SeriesSettingsPresenter * settings_presenter = nullptr;
-  void init_subscriber_for_channel_type(const proto::ChannelType & channel_type);
+  void init_subscriber(const proto::ChannelType & channel_type, const QString & ip_config = "");
 
   template <class T>
   void handle_incoming_message(T message);
-
   void determine_packet_rate();
 };
 

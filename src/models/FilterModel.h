@@ -16,7 +16,6 @@ class FilterModel {
 
   // properties
   FieldDefinition * field_definition = nullptr;
-  google::protobuf::Message * reference_message = nullptr;
   QString value;
 
   // Relations
@@ -26,8 +25,8 @@ class FilterModel {
   FilterModel(SeriesSettingsPresenter * parent);
   FilterModel(SeriesSettingsPresenter * parent,
               FieldDefinition * field_definition,
-              google::protobuf::Message *reference_message,
               QString value);
+  FilterModel(SeriesSettingsPresenter * parent, json data);
 
 
   // methods

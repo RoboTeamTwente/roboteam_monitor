@@ -6,12 +6,18 @@
 #define RTT_MAINWINDOW_H
 
 #include <QMainWindow>
+class QVBoxLayout;
+class QWidget;
 class MainWindow : public QMainWindow {
+ private:
+  QWidget *central_widget;
+  QVBoxLayout * central_layout;
  public:
   explicit MainWindow();
  public slots:
-  void open_new_graph_dialog();
+  void open_chart_from_new_file();
   void open_welcome_dialog();
+  void open_chart_from_existing_file();
 };
 
 #endif //RTT_MAINWINDOW_H

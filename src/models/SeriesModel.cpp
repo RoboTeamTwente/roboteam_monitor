@@ -2,6 +2,7 @@
 #include "SeriesSettingsModel.h"
 #include <QtCharts/QtCharts>
 #include <src/utils/Helpers.h>
+#include <src/utils/Constants.h>
 
 using namespace google::protobuf;
 
@@ -74,8 +75,7 @@ void SeriesModel::handle_incoming_message(T message) {
             }
         }
     }
-    int max_data_size = 2000; // a little over 30 seconds of data with a packet rate of 60Hz
-    while(data->size() > max_data_size) {
+    while(data->size() > MAX_BUFFER_SIZE) {
         data->pop_front();
     }
 }

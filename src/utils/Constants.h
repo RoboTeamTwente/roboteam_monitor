@@ -7,5 +7,6 @@
 
 
 #define FILTER_TREE_VIEW_WIDTH 400
+#define MAX_BUFFER_SIZE 2000
 
 #endif //RTT_CONSTANTS_H

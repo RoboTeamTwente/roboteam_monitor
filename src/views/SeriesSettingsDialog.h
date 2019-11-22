@@ -16,7 +16,6 @@ class SeriesSettingsDialog : public QDialog {
 
  public:
   explicit SeriesSettingsDialog(SeriesSettingsPresenter * presenter, QWidget * parent = nullptr);
-  bool event(QEvent * event);
   int exec();
 
   signals:

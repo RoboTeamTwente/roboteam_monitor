@@ -151,14 +151,15 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
     connect(confirmWidget, &ConfirmationWidget::confirm, this, &QDialog::accept);
     connect(confirmWidget, &ConfirmationWidget::confirm, presenter, &SeriesSettingsPresenter::confirm);
     connect(confirmWidget, &ConfirmationWidget::cancel, this, &QDialog::reject);
-}
 
-/*
- * On 'an event' we check if the model is dirty or not.
- */
-bool SeriesSettingsDialog::event(QEvent *event) {
-    emit user_event_dirty(presenter->is_dirty());
-    return QWidget::event(event);
+
+
+    auto timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, [this, presenter]() {
+        emit user_event_dirty(presenter->is_dirty());
+    });
+    timer->start(200);
+
 }
 
 /*

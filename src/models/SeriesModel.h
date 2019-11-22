@@ -11,6 +11,7 @@
 #include <roboteam_proto/Setting.pb.h>
 #include <QtCharts/QtCharts>
 #include <roboteam_utils/Timer.h>
+#include <deque>
 
 using namespace google;
 
@@ -27,7 +28,7 @@ class SeriesModel {
   // properties
   QXYSeries * qt_series = nullptr;
   proto::Subscriber<google::protobuf::Message> * proto_subscriber = nullptr;
-  QVector<QPointF> * data = nullptr;
+  QList<QPointF> * data = nullptr;
 
   // relationships
   ChartPresenter * parent = nullptr;

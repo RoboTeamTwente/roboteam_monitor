@@ -9,7 +9,7 @@ SeriesModel::SeriesModel(ChartPresenter * parent, const QString & name): parent(
     time_since_series_is_created = timer.getCurrentTime().count();
     qt_series = new QLineSeries();
     qt_series->setName(name);
-    data = new QVector<QPointF>();
+    data = new QList<QPointF>();
     auto settings = new SeriesSettingsModel(new SeriesPresenter(this));
     settings_presenter = new SeriesSettingsPresenter(settings);
     init_subscriber_for_channel_type(proto::ChannelType::GEOMETRY_CHANNEL);
@@ -61,7 +61,7 @@ void SeriesModel::handle_incoming_message(T message) {
 
     if (settings_presenter->use_packet_rate()) {
         QPoint point((now.count() - parent->get_time_chart_created())/1000.0, rate);
-        data->append(point);
+        data->push_back(point);
         parent->adjustBoundaries(point.x(), point.y(), 10);
     } else {
         if (settings_presenter->get_field_to_show()) {
@@ -70,9 +70,13 @@ void SeriesModel::handle_incoming_message(T message) {
                 qreal time = (now.count() - parent->get_time_chart_created());
                 QPoint point(time, value.value());
                 parent->adjustBoundaries(point.x(), point.y(), 10);
-                data->append(point);
+                data->push_back(point);
             }
         }
+    }
+    int max_data_size = 2000; // a little over 30 seconds of data with a packet rate of 60Hz
+    while(data->size() > max_data_size) {
+        data->pop_front();
     }
 }
 void SeriesModel::determine_packet_rate() {

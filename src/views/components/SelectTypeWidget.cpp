@@ -1,12 +1,7 @@
-//
-// Created by Lukas Bos on 11/11/2019.
-//
-
 #include <src/utils/Constants.h>
 #include <src/utils/Helpers.h>
 #include "SelectTypeWidget.h"
 #include <QLineEdit>
-#include <QPushButton>
 #include <QDialog>
 
 SelectTypeWidget::SelectTypeWidget(AddFilterDialog * parent) : QTreeWidget((QWidget *)parent), parent_widget(parent) {

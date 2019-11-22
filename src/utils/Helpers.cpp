@@ -67,6 +67,33 @@ void Helpers::clearLayout(QLayout* layout) {
         }
     }
 }
+
 int Helpers::frequency_hz_to_millis(int frequency) {
-    return (1.0/(double)frequency)*1000;
+    return (1.0/static_cast<int>(frequency))*1000;
+}
+
+/*
+ * Convert a message and field definition to a submessage and field descriptor.
+ * With this format we can easily retrieve a value from a message.
+ */
+std::pair<Message*, FieldDescriptor*> Helpers::getDescriptorFromDefinition(Message * msg, FieldDefinition * field_definition) {
+    if (!field_definition || !msg) return {};
+
+    // these variables get updated in the loop
+    Reflection * reflection = nullptr;
+    FieldDescriptor * field = nullptr;
+    auto desc = msg->GetDescriptor();
+
+    // iterate over the field numbers in the definition to extract the field descriptor and submessage from the message
+    for (int index : field_definition->get_field_numbers()) {
+        field = const_cast<FieldDescriptor *>(desc->field(index));
+        reflection = const_cast<Reflection *>(msg->GetReflection());
+
+        // if the field has a message type then it must be the submessage
+        if (field && field->cpp_type()==FieldDescriptor::CPPTYPE_MESSAGE) {
+            desc = field->message_type();
+            msg = const_cast<Message *>(&reflection->GetMessage(*msg, field));
+        }
+    }
+    return {msg, field};
 }

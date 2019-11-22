@@ -18,11 +18,10 @@ SeriesModel::SeriesModel(ChartPresenter * parent, const QString & name): parent(
 void SeriesModel::init_subscriber_for_channel_type(const proto::ChannelType & channel_type) {
     if (!proto_subscriber) {
 
-        proto_subscriber = reinterpret_cast<proto::Subscriber<google::protobuf::Message> *>
-            (new proto::Subscriber<proto::RobotCommand>(
-                proto::ROBOT_COMMANDS_PRIMARY_CHANNEL,
-                &SeriesModel::handle_incoming_message,
-                this));
+        proto_subscriber = reinterpret_cast<proto::Subscriber<Message> *>(
+            new proto::Subscriber<proto::RobotCommand>(proto::ROBOT_COMMANDS_PRIMARY_CHANNEL,
+                                                       &SeriesModel::handle_incoming_message,
+                                                       this));
     }
 
 
@@ -67,64 +66,60 @@ void SeriesModel::handle_incoming_message(T message) {
     determine_packet_rate();
 
 
+    double value = 0.0;
 
     if (settings_presenter->use_packet_rate()) {
         QPoint point((now.count() - parent->get_time_chart_created())/1000.0, rate);
         data->append(point);
         parent->adjustBoundaries(point.x(), point.y(), 10);
-    }
-
-    double value = 0.0;
-
-    // handle custom fields
-    if (!settings_presenter->use_packet_rate()) {
+    } else {
         if (settings_presenter->get_field_to_show()) {
 
 
-        auto [msg, field] = getDescriptorFromDefinition(&message, settings_presenter->get_field_to_show());
-        auto refl = const_cast<Reflection *>(msg->GetReflection());
+            auto [msg, field] = getDescriptorFromDefinition(&message, settings_presenter->get_field_to_show());
+            auto refl = const_cast<Reflection *>(msg->GetReflection());
 
-        switch(field->cpp_type()) {
-            case FieldDescriptor::CPPTYPE_INT32: {
-                value = refl->GetInt32(*msg, field);
-                break;
-            }
-            case FieldDescriptor::CPPTYPE_UINT32: {
-                value = refl->GetUInt32(*msg, field);
-                break;
-            }
-            case FieldDescriptor::CPPTYPE_INT64: {
-                value = refl->GetInt64(*msg, field);
-                break;
-            }
-            case FieldDescriptor::CPPTYPE_UINT64: {
-                value = refl->GetUInt64(*msg, field);
-                break;
-            }
-            case FieldDescriptor::CPPTYPE_FLOAT: {
-                value = refl->GetFloat(*msg, field);
-                break;
-            }
-            case FieldDescriptor::CPPTYPE_DOUBLE: {
-                value = refl->GetDouble(*msg, field);
-                break;
-            }
-            default: return;
+            switch(field->cpp_type()) {
+                case FieldDescriptor::CPPTYPE_INT32: {
+                    value = refl->GetInt32(*msg, field);
+                    break;
+                }
+                case FieldDescriptor::CPPTYPE_UINT32: {
+                    value = refl->GetUInt32(*msg, field);
+                    break;
+                }
+                case FieldDescriptor::CPPTYPE_INT64: {
+                    value = refl->GetInt64(*msg, field);
+                    break;
+                }
+                case FieldDescriptor::CPPTYPE_UINT64: {
+                    value = refl->GetUInt64(*msg, field);
+                    break;
+                }
+                case FieldDescriptor::CPPTYPE_FLOAT: {
+                    value = refl->GetFloat(*msg, field);
+                    break;
+                }
+                case FieldDescriptor::CPPTYPE_DOUBLE: {
+                    value = refl->GetDouble(*msg, field);
+                    break;
+                }
+                default: return;
 
-        }
+            }
 
-        qreal time = (now.count() - parent->get_time_chart_created());
-        QPoint point(time, value);
-        parent->adjustBoundaries(point.x(), point.y(), 10);
-        data->append(point);
+            qreal time = (now.count() - parent->get_time_chart_created());
+            QPoint point(time, value);
+            parent->adjustBoundaries(point.x(), point.y(), 10);
+            data->append(point);
         }
     }
 }
 void SeriesModel::determine_packet_rate() {
-    if (timer.getCurrentTime().count() <= lastRateUpdateTime + 1000) {
+    if (roboteam_utils::Timer::getCurrentTime().count() <= lastRateUpdateTime + 1000) {
         internal_rate++;
     } else {
-        lastRateUpdateTime = timer.getCurrentTime().count();
+        lastRateUpdateTime = roboteam_utils::Timer::getCurrentTime().count();
         rate = internal_rate;
         internal_rate = 0;
     }
@@ -151,30 +146,6 @@ json SeriesModel::to_json() {
     };
 }
 
-/*
- * Convert a message and field definition to a submessage and field descriptor.
- * With this format we can easily retrieve a value from a message.
- */
-std::pair<Message*, FieldDescriptor*> SeriesModel::getDescriptorFromDefinition(Message * msg, FieldDefinition * field_definition) {
-    if (!field_definition || !msg) return {};
 
-    // these variables get updated in the loop
-    Reflection * reflection = nullptr;
-    FieldDescriptor * field = nullptr;
-    auto desc = msg->GetDescriptor();
-
-    // iterate over the field numbers in the definition to extract the field descriptor and submessage from the message
-    for (int index : field_definition->get_field_numbers()) {
-        field = const_cast<FieldDescriptor *>(desc->field(index));
-        reflection = const_cast<Reflection *>(msg->GetReflection());
-
-        // if the field has a message type then it must be the submessage
-        if (field && field->cpp_type()==FieldDescriptor::CPPTYPE_MESSAGE) {
-            desc = field->message_type();
-            msg = const_cast<Message *>(&reflection->GetMessage(*msg, field));
-        }
-    }
-    return {msg, field};
-}
 
 

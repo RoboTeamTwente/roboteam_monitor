@@ -24,7 +24,6 @@ void SeriesModel::init_subscriber(const proto::ChannelType & channel_type, const
         auto sub = new proto::Subscriber<proto::RobotCommand>(proto::ROBOT_COMMANDS_PRIMARY_CHANNEL,
                                                               &SeriesModel::handle_incoming_message,
                                                               this, ip_config.toStdString());
-
         proto_subscriber = reinterpret_cast<proto::Subscriber<Message> *>(sub);
     }
 

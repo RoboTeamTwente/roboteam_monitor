@@ -20,9 +20,9 @@ class ChartModel {
   // Properties
   bool darkTheme = true;
   bool sliding_window = true;
-  qreal sliding_window_width = 10.0;
+  qreal sliding_window_width = 10000.0;
   qreal margin_y = 10.0;
-  qreal margin_x = 10.0;
+  qreal margin_x = 100.0;
   int update_frequency = 5;
   QString ip_config = "127.0.0.1";
 

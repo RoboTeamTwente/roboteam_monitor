@@ -9,6 +9,8 @@
 
 #include "SubscriptionManager.h"
 
+SubscriptionManager::SubscriptionManager() {
+}
 
 void SubscriptionManager::reconfigure_ip(const QString &ip_config) {
     delete robot_command_subscriber;

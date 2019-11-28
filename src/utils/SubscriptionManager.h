@@ -17,7 +17,7 @@
 class SeriesPresenter;
 class SubscriptionManager {
  public:
-  SubscriptionManager() = default;
+  SubscriptionManager();
   void register_series(SeriesPresenter * series_model);
   void remove_series(SeriesPresenter * series_model);
   void reconfigure_ip(const QString & ip_config);

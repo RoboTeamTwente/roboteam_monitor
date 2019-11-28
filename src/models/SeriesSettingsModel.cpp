@@ -28,10 +28,8 @@ SeriesSettingsModel::SeriesSettingsModel(const SeriesSettingsModel &other) {
     field_to_show = other.field_to_show;
 
     for (auto filter : other.filters) {
-         auto new_filter = new FilterModel(* filter->get_model());
-        auto settings_presenter = new SeriesSettingsPresenter(this);
-
-        filters.push_back(new FilterPresenter(new_filter, settings_presenter));
+        auto new_filter = new FilterModel(* filter->get_model());
+        filters.push_back(new FilterPresenter(new_filter));
     }
 }
 SeriesSettingsModel::SeriesSettingsModel(SeriesPresenter *parent) : parent(parent)
@@ -68,11 +66,10 @@ SeriesSettingsModel::SeriesSettingsModel(SeriesPresenter *parent, json data) {
     }
 
     for (auto const & filter_json : data["filters"]) {
-
-        auto filter_model = new FilterModel(filter_json);
         auto settings_presenter = new SeriesSettingsPresenter(this);
 
-        filters.push_back(new FilterPresenter(filter_model, settings_presenter));
+        auto filter_model = new FilterModel(settings_presenter, filter_json);
+        filters.push_back(new FilterPresenter(filter_model));
     }
 
 }

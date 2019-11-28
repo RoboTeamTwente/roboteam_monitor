@@ -8,6 +8,7 @@
 using json = nlohmann::json;
 
 class SeriesPresenter;
+class SeriesSettingsPresenter;
 class FilterModel {
 
   // Presenter
@@ -17,10 +18,15 @@ class FilterModel {
   FieldDefinition * field_definition = nullptr;
   QString value;
 
+  // Relations
+  SeriesSettingsPresenter * parent;
+
  public:
-  FilterModel() = default;
-  FilterModel(FieldDefinition * field_definition, QString value);
-  FilterModel(json data);
+  FilterModel(SeriesSettingsPresenter * parent);
+  FilterModel(SeriesSettingsPresenter * parent,
+              FieldDefinition * field_definition,
+              QString value);
+  FilterModel(SeriesSettingsPresenter * parent, json data);
 
 
   // methods

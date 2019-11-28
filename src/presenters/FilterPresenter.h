@@ -12,11 +12,13 @@ class FilterPresenter : public QObject {
   Q_OBJECT
  private:
   FilterModel * model;
+  SeriesSettingsPresenter * parent;
+
  public:
   FilterModel *get_model() const;
   json to_json();
  public:
-  explicit FilterPresenter(FilterModel * model);
+  explicit FilterPresenter(FilterModel * model, SeriesSettingsPresenter * parent);
   SeriesSettingsPresenter * getParent();
   void set_value(const QString & value);
   void set_field_definition(FieldDefinition * field_definition);

@@ -26,7 +26,7 @@ std::vector<FilterPresenter *> &SeriesSettingsPresenter::get_filters() {
 // Add a new filter to the list of filters
 void SeriesSettingsPresenter::add_new_filter() {
     auto empty_filter = new FilterModel(this);
-    auto filterPresenter = new FilterPresenter(empty_filter);
+    auto filterPresenter = new FilterPresenter(empty_filter, this);
     get_internal_model()->filters.emplace_back(filterPresenter);
     emit filterAdded(filterPresenter);
 }

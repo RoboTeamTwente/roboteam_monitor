@@ -41,7 +41,8 @@ SeriesSettingsDialog::SeriesSettingsDialog(SeriesSettingsPresenter * presenter, 
     auto current_filters_layout = new QVBoxLayout();
     for (auto filter_presenter : presenter->get_filters()) {
         auto filterView = new FilterView(filter_presenter, this);
-        filterMap.insert(std::make_pair(filter_presenter, filterView));
+        auto pair = std::make_pair(filter_presenter, filterView);
+        filterMap.insert(pair);
         current_filters_layout->addWidget(filterView);
     }
     network_settings_layout->addLayout(current_filters_layout);

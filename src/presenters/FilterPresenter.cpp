@@ -2,10 +2,11 @@
 #include "SeriesPresenter.h"
 #include "../models/FilterModel.h"
 
-FilterPresenter::FilterPresenter(FilterModel * model) : QObject(nullptr), model(model){}
+FilterPresenter::FilterPresenter(FilterModel * model, SeriesSettingsPresenter * parent)
+: QObject(nullptr), model(model), parent(parent){}
 
 SeriesSettingsPresenter *FilterPresenter::getParent() {
-    return model->parent;
+    return parent;
 }
 bool FilterPresenter::operator==(const FilterPresenter &rhs) const {
     return *model == *rhs.model;

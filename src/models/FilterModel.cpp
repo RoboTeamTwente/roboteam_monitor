@@ -6,16 +6,14 @@
 #include <src/utils/Helpers.h>
 #include "FilterModel.h"
 
-// default constructor
-FilterModel::FilterModel(SeriesSettingsPresenter * parent) : parent(parent) {}
 
 // constructor
-FilterModel::FilterModel(SeriesSettingsPresenter * parent, FieldDefinition * field_definition, QString value)
-    : field_definition(field_definition), value(std::move(value)), parent(parent)
+FilterModel::FilterModel(FieldDefinition * field_definition, QString value)
+    : field_definition(field_definition), value(std::move(value))
     {}
 
 // constructor from JSON object
-FilterModel::FilterModel(SeriesSettingsPresenter *parent, json data) : parent(parent){
+FilterModel::FilterModel(json data){
     json field_definition_json = data["field_definition"];
     if (!field_definition_json.is_null()) {
         field_definition = new FieldDefinition(field_definition_json);
@@ -35,5 +33,6 @@ json FilterModel::to_json() {
         {"value", value.toStdString()}
     };
 }
+
 
 

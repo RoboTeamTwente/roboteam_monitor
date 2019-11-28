@@ -5,6 +5,7 @@
 #include <QtCharts/QtCharts>
 #include <roboteam_utils/json.hpp>
 #include <src/models/ChartModel.h>
+#include <src/utils/SubscriptionManager.h>
 
 using json = nlohmann::json;
 
@@ -15,10 +16,12 @@ class ChartPresenter : public QObject {
  Q_OBJECT
  private:
   ChartModel *model;
-
+  SubscriptionManager * subscription_manager;
  public:
-  explicit ChartPresenter(ChartModel *model);
-  explicit ChartPresenter(json json_data);
+  SubscriptionManager *get_subscription_manager() const;
+ public:
+  explicit ChartPresenter(ChartModel *model, SubscriptionManager * subscription_manager);
+  explicit ChartPresenter(json json_data, SubscriptionManager *subscription_manager);
 
   json to_json();
 

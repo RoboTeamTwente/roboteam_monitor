@@ -17,10 +17,28 @@ class SeriesPresenter : public QObject {
  private:
   SeriesModel * model;
 
+
+  // properties
+  QXYSeries * qt_series = nullptr;
+  QList<QPointF> * data = nullptr;
+
+  roboteam_utils::Timer timer;
+  int rate = 0;
+  int filtered_packets = 0;
+  int internal_rate = 0;
+  int internal_filtered_packets = 0;
+  long lastRateUpdateTime;
+  long time_since_series_is_created = 0;
+
+
+  void determine_packet_rate();
+
  public:
   explicit SeriesPresenter(SeriesModel * model);
   ~SeriesPresenter();
   json to_json();
+
+  void handle_incoming_message(google::protobuf::Message * message);
 
   QXYSeries * get_qt_series();
   void set_name(const QString &name);
@@ -30,6 +48,8 @@ class SeriesPresenter : public QObject {
   void apply_data();
   void clear_data();
   void reboot_subscriber();
+
+  bool message_is_filtered(google::protobuf::Message * message);
 
   ChartPresenter * getParent();
   int get_rate();

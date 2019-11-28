@@ -3,9 +3,13 @@
 
 #include <vector>
 #include <roboteam_proto/Channels.h>
-#include "src/presenters/SeriesPresenter.h"
+#include <roboteam_utils/json.hpp>
+#include "FieldDefinition.h"
+
+using json = nlohmann::json;
 
 class FilterPresenter;
+class SeriesPresenter;
 class SeriesSettingsModel {
 
   // Presenter

@@ -40,7 +40,7 @@ void SeriesSettingsPresenter::removeFilter(FilterPresenter *filter_to_remove) {
 
 // Return the currently selected channel type
 proto::ChannelType SeriesSettingsPresenter::get_channel_type() {
-    return get_internal_model()->channel_type;
+    return get_internal_model() ? get_internal_model()->channel_type : proto::UNDEFINED_CHANNEL;
 }
 
 // make a snapshot of the presenter and store it as snapshot
@@ -61,8 +61,8 @@ void SeriesSettingsPresenter::rollBack() {
 
 // Confirm the changes and boot up the new subscriber for the series
 void SeriesSettingsPresenter::confirm() {
-    emit modelChanged();
-    model->parent->start_new_subscription();
+   //  emit modelChanged();
+   // model->parent->start_new_subscription();
 }
 
 // If the model is different from the snapshot (i.e. it has unsaved changes), it is considered 'dirty'.

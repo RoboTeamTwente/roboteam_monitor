@@ -24,36 +24,13 @@ class SeriesModel {
   SeriesModel(ChartPresenter * parent, json json_data);
   SeriesModel(ChartPresenter * parent, const QString & name = "Series");
   json to_json();
-  void destroy_subscriber();
-  void reboot_subscriber();
+  ChartPresenter *get_parent() const;
 
  private:
-  // properties
-  QXYSeries * qt_series = nullptr;
-  proto::Subscriber<google::protobuf::Message> * proto_subscriber = nullptr;
-  QList<QPointF> * data = nullptr;
-
   // relationships
   ChartPresenter * parent = nullptr;
- public:
-  ChartPresenter *get_parent() const;
-  virtual ~SeriesModel();
- private:
-  roboteam_utils::Timer timer;
-  int rate = 0;
-  int filtered_packets = 0;
-  int internal_rate = 0;
-  int internal_filtered_packets = 0;
-  long lastRateUpdateTime;
-  long time_since_series_is_created;
-
- private:
   SeriesSettingsPresenter * settings_presenter = nullptr;
-  void init_subscriber(const proto::ChannelType & channel_type, const QString & ip_config = "");
 
-  template <class T>
-  void handle_incoming_message(T message);
-  void determine_packet_rate();
 };
 
 #endif //RTT_SERIESMODEL_H

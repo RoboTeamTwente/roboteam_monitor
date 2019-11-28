@@ -3,10 +3,11 @@
 #include "ChartPresenter.h"
 #include "SeriesPresenter.h"
 
-ChartPresenter::ChartPresenter(ChartModel *model)
-: QObject(nullptr), model(model) { }
+ChartPresenter::ChartPresenter(ChartModel *model, SubscriptionManager *subscription_manager)
+: QObject(nullptr), model(model), subscription_manager(subscription_manager) { }
 
-ChartPresenter::ChartPresenter(json json_data) : QObject(nullptr) {
+ChartPresenter::ChartPresenter(json json_data, SubscriptionManager *subscription_manager)
+: QObject(nullptr), subscription_manager(subscription_manager){
     model = new ChartModel(this, json_data);
 }
 
@@ -176,6 +177,9 @@ void ChartPresenter::update_ip_config(const QString & ip) {
 }
 QString ChartPresenter::get_ip_config() {
     return model->ip_config;
+}
+SubscriptionManager *ChartPresenter::get_subscription_manager() const {
+    return subscription_manager;
 }
 
 

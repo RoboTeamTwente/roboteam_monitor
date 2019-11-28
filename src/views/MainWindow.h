@@ -8,10 +8,13 @@
 #include <QMainWindow>
 class QVBoxLayout;
 class QWidget;
+class SubscriptionManager;
 class MainWindow : public QMainWindow {
  private:
   QWidget *central_widget;
   QVBoxLayout * central_layout;
+  SubscriptionManager * subscription_manager;
+
  public:
   explicit MainWindow();
  public slots:

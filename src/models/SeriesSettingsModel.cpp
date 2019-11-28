@@ -49,7 +49,7 @@ json SeriesSettingsModel::to_json() {
 
     return {
         {"filters", filter_jsons},
-        {"channel_type", proto::GEOMETRY_CHANNEL},
+        {"channel_type", (int) channel_type},
         {"use_packet_rate", use_packet_rate},
         {"field_to_show", field_to_show_json},
     };

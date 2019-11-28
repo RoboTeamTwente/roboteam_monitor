@@ -4,12 +4,16 @@
 
 #include <QVBoxLayout>
 #include <src/utils/Helpers.h>
+#include <src/utils/SubscriptionManager.h>
 #include "MainWindow.h"
 #include "ChartView.h"
 
 MainWindow::MainWindow() : QMainWindow() {
     auto menu = new MenuBar(this);
     this->setMenuBar(menu);
+
+    subscription_manager = new SubscriptionManager();
+
     central_widget = new QWidget();
     central_layout = new QVBoxLayout();
     central_widget->setLayout(central_layout);
@@ -32,7 +36,7 @@ void MainWindow::open_chart_from_existing_file() {
         }
         chart_json = json::parse(data_from_file.toStdString());
     }
-    auto chart_presenter = new ChartPresenter(chart_json); // this creates a new model
+    auto chart_presenter = new ChartPresenter(chart_json, subscription_manager); // this creates a new model
     auto chart_view = new ChartView(chart_presenter);
     central_layout->addWidget(chart_view);
 }
@@ -41,7 +45,7 @@ void MainWindow::open_chart_from_new_file() {
     Helpers::clearLayout(central_layout);
 
     auto chart_model = new ChartModel();
-    auto chart_presenter = new ChartPresenter(chart_model); // this creates a new model
+    auto chart_presenter = new ChartPresenter(chart_model, subscription_manager); // this creates a new model
     auto chart_view = new ChartView(chart_presenter);
     central_layout->addWidget(chart_view);
 }

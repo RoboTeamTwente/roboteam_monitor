@@ -63,7 +63,7 @@ set(MODELS
         src/models/FieldDefinition.cpp)
 
 set(UTILS
-        src/utils/Helpers.cpp)
+        src/utils/Helpers.cpp src/utils/SubscriptionManager.cpp src/utils/SubscriptionManager.h)
 
 # Add an executable
 add_executable(roboteam_monitor

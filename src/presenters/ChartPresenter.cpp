@@ -58,21 +58,22 @@ void ChartPresenter::adjustBoundaries(const qreal & x, const qreal & y, const qr
      * This saves a lot of CPU
      *
      */
-    if (x < min_x) {
+    if (x < min_x || !has_proper_boundaries) {
         min_x = x - model->margin_x;
     }
     
-    if (x > max_x) {
+    if (x > max_x || !has_proper_boundaries) {
         max_x = x + model->margin_x;
     }
 
-    if (y < min_y) {
+    if (y < min_y || !has_proper_boundaries) {
         min_y = y  - model->margin_y;
     }
 
-    if (y > max_y) {
+    if (y > max_y || !has_proper_boundaries) {
         max_y = y  + model->margin_y;
     }
+    has_proper_boundaries = true;
 }
 
 qreal ChartPresenter::get_min_x() {
@@ -150,6 +151,7 @@ void ChartPresenter::resetBoundaries() {
     max_x = 0;
     min_y = 1;
     max_y = 0;
+    has_proper_boundaries = false;
 }
 void ChartPresenter::apply_data() {
 

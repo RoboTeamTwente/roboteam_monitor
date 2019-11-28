@@ -26,6 +26,7 @@ class ChartPresenter : public QObject {
   QValueAxis * xAxis = nullptr;
   QValueAxis * yAxis = nullptr;
   long time_chart_created = 0;
+  bool has_proper_boundaries = false;
 
  public:
   SubscriptionManager *get_subscription_manager() const;

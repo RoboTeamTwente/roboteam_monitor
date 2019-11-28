@@ -35,7 +35,6 @@ find_package(Qt5Widgets REQUIRED)
 set(VIEWS
         src/views/WelcomeDialog.cpp
         src/views/components/MenuBar.cpp
-        src/views/NewGraphDialog.cpp
         src/views/MainWindow.cpp
         src/views/components/SelectTypeWidget.cpp
         src/views/AddFilterDialog.cpp

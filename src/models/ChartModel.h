@@ -17,7 +17,7 @@ class ChartModel {
   // Presenter definition
   friend class ChartPresenter;
 
-  // Properties 130.89.139.223
+  // Properties
   bool darkTheme = true;
   bool sliding_window = true;
   qreal sliding_window_width = 10000.0;
@@ -28,15 +28,6 @@ class ChartModel {
 
   // Relationships
   std::vector<SeriesPresenter *> seriesList;
-
-  // Variables for use during execution
-  qreal min_x = 0;
-  qreal min_y = 0;
-  qreal max_x = 1;
-  qreal max_y = 1;
-  QValueAxis * xAxis = nullptr;
-  QValueAxis * yAxis = nullptr;
-  long time_chart_created = 0;
 
  public:
   ChartModel();

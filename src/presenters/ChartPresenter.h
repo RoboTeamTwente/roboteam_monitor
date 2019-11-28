@@ -17,6 +17,16 @@ class ChartPresenter : public QObject {
  private:
   ChartModel *model;
   SubscriptionManager * subscription_manager;
+  void init();
+
+  qreal min_x = 0;
+  qreal min_y = 0;
+  qreal max_x = 1;
+  qreal max_y = 1;
+  QValueAxis * xAxis = nullptr;
+  QValueAxis * yAxis = nullptr;
+  long time_chart_created = 0;
+
  public:
   SubscriptionManager *get_subscription_manager() const;
  public:

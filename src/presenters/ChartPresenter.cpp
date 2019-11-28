@@ -4,12 +4,28 @@
 #include "SeriesPresenter.h"
 
 ChartPresenter::ChartPresenter(ChartModel *model, SubscriptionManager *subscription_manager)
-: QObject(nullptr), model(model), subscription_manager(subscription_manager) { }
+: QObject(nullptr), model(model), subscription_manager(subscription_manager) {
+init();
+}
 
 ChartPresenter::ChartPresenter(json json_data, SubscriptionManager *subscription_manager)
 : QObject(nullptr), subscription_manager(subscription_manager){
     model = new ChartModel(this, json_data);
+    init();
 }
+
+void ChartPresenter::init() {
+    xAxis = new QValueAxis();
+    yAxis = new QValueAxis();
+
+    auto now = std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::steady_clock::now().time_since_epoch()
+    );
+    time_chart_created = now.count();
+}
+
+
+
 
 // Add a new series to the list of series
 void ChartPresenter::add_new_series() {
@@ -42,56 +58,55 @@ void ChartPresenter::adjustBoundaries(const qreal & x, const qreal & y, const qr
      * This saves a lot of CPU
      *
      */
-    if (x < model->min_x) {
-        model->min_x = x - model->margin_x;
+    if (x < min_x) {
+        min_x = x - model->margin_x;
     }
     
-    if (x > model->max_x) {
-        model->max_x = x + model->margin_x;
+    if (x > max_x) {
+        max_x = x + model->margin_x;
     }
 
-    if (y < model->min_y) {
-        model->min_y = y  - model->margin_y;
+    if (y < min_y) {
+        min_y = y  - model->margin_y;
     }
 
-    if (y > model->max_y) {
-        model->max_y = y  + model->margin_y;
+    if (y > max_y) {
+        max_y = y  + model->margin_y;
     }
 }
 
 qreal ChartPresenter::get_min_x() {
-    return model->min_x;
+    return min_x;
 }
 
 qreal ChartPresenter::get_min_y() {
-    return model->min_y;
+    return min_y;
 }
 
 qreal ChartPresenter::get_max_x() {
-    return model->max_x;
+    return max_x;
 }
 
 qreal ChartPresenter::get_max_y() {
-    return model->max_y;
+    return max_y;
 }
 
 QValueAxis *ChartPresenter::getxAxis() {
-    return model->xAxis;
+    return xAxis;
 }
 
 QValueAxis *ChartPresenter::getyAxis() {
-    return model->yAxis;
+    return yAxis;
 }
 void ChartPresenter::setxAxis(QValueAxis * axis) {
-    model->xAxis = axis;
+    xAxis = axis;
 }
 void ChartPresenter::setyAxis(QValueAxis * axis) {
-    model->yAxis = axis;
-
+    yAxis = axis;
 }
 
 long ChartPresenter::get_time_chart_created() {
-    return model->time_chart_created;
+    return time_chart_created;
 }
 
 std::vector<SeriesPresenter *> ChartPresenter::get_series_list() {
@@ -131,10 +146,10 @@ void ChartPresenter::set_update_frequency(int update_frequency) {
 }
 
 void ChartPresenter::resetBoundaries() {
-    model->min_x = 1;
-    model->max_x = 0;
-    model->min_y = 1;
-    model->max_y = 0;
+    min_x = 1;
+    max_x = 0;
+    min_y = 1;
+    max_y = 0;
 }
 void ChartPresenter::apply_data() {
 
@@ -181,7 +196,6 @@ QString ChartPresenter::get_ip_config() {
 SubscriptionManager *ChartPresenter::get_subscription_manager() const {
     return subscription_manager;
 }
-
 
 
 

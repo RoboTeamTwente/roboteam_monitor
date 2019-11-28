@@ -2,24 +2,9 @@
 #include "SeriesModel.h"
 
 ChartModel::ChartModel() {
-    xAxis = new QValueAxis();
-    yAxis = new QValueAxis();
-
-    auto now = std::chrono::duration_cast<std::chrono::nanoseconds>(
-        std::chrono::steady_clock::now().time_since_epoch()
-    );
-    time_chart_created = now.count();
 }
 
 ChartModel::ChartModel(ChartPresenter * presenter, json data) {
-    xAxis = new QValueAxis();
-    yAxis = new QValueAxis();
-
-    auto now = std::chrono::duration_cast<std::chrono::nanoseconds>(
-        std::chrono::steady_clock::now().time_since_epoch()
-    );
-    time_chart_created = now.count();
-
     darkTheme = data.value("dark_theme", darkTheme);
     sliding_window = data.value("sliding_window", sliding_window);
     sliding_window_width = data.value("sliding_window_width", sliding_window_width);

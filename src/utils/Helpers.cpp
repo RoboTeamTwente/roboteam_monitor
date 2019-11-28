@@ -8,6 +8,7 @@
 #include <roboteam_proto/Channels.h>
 #include <QWidget>
 #include <optional>
+#include <roboteam_utils/Vector2.h>
 
 const google::protobuf::Descriptor * Helpers::get_descriptor_for_topic(const QString &topic_name) {
     auto channel_type = getChannelTypeByName(topic_name);
@@ -103,6 +104,13 @@ std::optional<double> Helpers::get_numeric_value(Message *message, FieldDefiniti
     if (!message || !field_definition) return std::nullopt;
     auto [msg, field] = getDescriptorFromDefinition(message, field_definition);
     auto refl = const_cast<Reflection *>(msg->GetReflection());
+
+    // return the absolute velocity in case of a vector
+    if (Helpers::get_actual_typename(field) == "Vector2f") {
+        proto::Vector2f * proto_vec = dynamic_cast<proto::Vector2f *>(msg);
+        rtt::Vector2 vec = rtt::Vector2(*proto_vec);
+        return vec.length();
+    }
 
     switch(field->cpp_type()) {
         case FieldDescriptor::CPPTYPE_INT32: return refl->GetInt32(*msg, field);

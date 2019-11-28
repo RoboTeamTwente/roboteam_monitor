@@ -10,8 +10,6 @@
 #include "SubscriptionManager.h"
 
 SubscriptionManager::SubscriptionManager() {
-    auto ip = "127.0.0.1";
-    setup_subscriptions(ip);
 }
 
 void SubscriptionManager::reconfigure_ip(const QString &ip_config) {

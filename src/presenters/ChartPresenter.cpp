@@ -22,6 +22,7 @@ void ChartPresenter::init() {
         std::chrono::steady_clock::now().time_since_epoch()
     );
     time_chart_created = now.count();
+    subscription_manager->setup_subscriptions(model->ip_config);
 }
 
 

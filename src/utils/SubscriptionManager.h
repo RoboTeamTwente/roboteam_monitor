@@ -21,6 +21,7 @@ class SubscriptionManager {
   void register_series(SeriesPresenter * series_model);
   void remove_series(SeriesPresenter * series_model);
   void reconfigure_ip(const QString & ip_config);
+  void setup_subscriptions(const QString & ip_config);
 
  private:
     std::set<SeriesPresenter *> series;
@@ -35,7 +36,6 @@ class SubscriptionManager {
     proto::Subscriber<proto::SSL_GeometryData> * geometry_subscriber = nullptr;
     void handle_geom_msg(proto::SSL_GeometryData &);
 
-    void setup_subscriptions(const QString & ip_config);
 
     template <class T>
     void propagate_msg(T msg, proto::ChannelType channel_type);

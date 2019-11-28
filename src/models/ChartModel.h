@@ -23,14 +23,14 @@ class ChartModel {
   qreal sliding_window_width = 10000.0;
   qreal margin_y = 10.0;
   qreal margin_x = 100.0;
-  int update_frequency = 5;
-  QString ip_config = "130.89.139.223";
+  int update_frequency = 4;
+  QString ip_config = "127.0.0.1";
 
   // Relationships
   std::vector<SeriesPresenter *> seriesList;
 
  public:
-  ChartModel();
+  ChartModel() = default;
   explicit ChartModel(ChartPresenter * presenter, json data);
   json to_json();
 };

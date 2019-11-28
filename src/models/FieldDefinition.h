@@ -10,13 +10,15 @@ using json = nlohmann::json;
 class FieldDefinition {
  public:
   FieldDefinition(QString title, std::vector<int> field_numbers);
-  FieldDefinition();
+  FieldDefinition() = default;
   FieldDefinition(const json & data);
 
   const std::vector<int> &get_field_numbers() const;
   const QString &get_title() const;
   json to_json();
   bool is_valid();
+  bool operator==(const FieldDefinition &rhs) const;
+  bool operator!=(const FieldDefinition &rhs) const;
 
  private:
   QString title = "";

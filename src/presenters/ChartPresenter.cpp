@@ -185,12 +185,7 @@ bool ChartPresenter::is_dark_theme() {
 }
 void ChartPresenter::update_ip_config(const QString & ip) {
     model->ip_config = ip;
-
-    for (auto series : get_series_list()) {
-        series->reboot_subscriber();
-    }
-
-    emit ip_config_changed(ip);
+    subscription_manager->reconfigure_ip(ip);
 }
 QString ChartPresenter::get_ip_config() {
     return model->ip_config;

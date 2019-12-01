@@ -30,10 +30,12 @@ bool FilterModel::operator==(const FilterModel &other) {
 
 // Generate a JSON object that represents this model.
 json FilterModel::to_json() {
-    return {
-        {"field_definition", field_definition->to_json()},
-        {"value", value.toStdString()}
-    };
+
+}
+
+FilterModel::FilterModel(const FilterModel &model, SeriesSettingsPresenter *parent) : parent(parent) {
+    value = model.value;
+    field_definition = model.field_definition->get_copy();
 }
 
 

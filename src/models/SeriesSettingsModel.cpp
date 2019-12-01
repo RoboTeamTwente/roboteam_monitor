@@ -19,7 +19,7 @@ bool SeriesSettingsModel::operator!=(const SeriesSettingsModel &rhs) const {
     return !(rhs==*this);
 }
 
-SeriesSettingsModel::SeriesSettingsModel(const SeriesSettingsModel &other) {
+SeriesSettingsModel::SeriesSettingsModel(const SeriesSettingsModel &other, SeriesSettingsPresenter * presenter) {
     std::cout << "[SeriesSettingsModel] Making a copy..." << std::endl;
     channel_type = other.channel_type;
     use_packet_rate = other.use_packet_rate;
@@ -28,7 +28,7 @@ SeriesSettingsModel::SeriesSettingsModel(const SeriesSettingsModel &other) {
     field_to_show = other.field_to_show;
 
     for (auto filter : other.filters) {
-        auto new_filter = new FilterModel(* filter->get_model());
+        auto new_filter = new FilterModel(* filter->get_model(), presenter);
         filters.push_back(new FilterPresenter(new_filter));
     }
 }

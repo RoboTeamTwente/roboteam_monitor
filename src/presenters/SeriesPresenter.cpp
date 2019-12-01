@@ -44,15 +44,16 @@ ChartPresenter *SeriesPresenter::getParent() {
 
 void SeriesPresenter::start_new_subscription() {
     qt_series->clear();
-//    init_subscriber(getSettings()->get_channel_type());
 }
 
 int SeriesPresenter::get_rate() {
     return rate;
 }
 SeriesSettingsPresenter *SeriesPresenter::get_settings_copy() {
-    return new SeriesSettingsPresenter(getSettings()->get_model_copy());
+    auto model = getSettings()->get_model_copy();
+    return new SeriesSettingsPresenter(model);
 }
+
 void SeriesPresenter::applySettings(SeriesSettingsPresenter *new_settings) {
     model->settings_presenter = new_settings;
 }

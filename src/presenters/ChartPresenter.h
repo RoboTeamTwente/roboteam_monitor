@@ -31,7 +31,7 @@ class ChartPresenter : public QObject {
  public:
   SubscriptionManager *get_subscription_manager() const;
  public:
-  explicit ChartPresenter(ChartModel *model, SubscriptionManager * subscription_manager);
+  explicit ChartPresenter(SubscriptionManager * subscription_manager);
   explicit ChartPresenter(json json_data, SubscriptionManager *subscription_manager);
 
   json to_json();
@@ -75,10 +75,8 @@ class ChartPresenter : public QObject {
   void seriesAdded(SeriesPresenter *series);
   void seriesRemoved(SeriesPresenter *series);
   void themeChanged(bool darkTheme);
-  void chartBoundariesChanged();
   void update_frequency_changed(int update_frequency);
   void set_sliding_window_changed(bool use_sliding_window);
-  void ip_config_changed(QString ip_config);
 };
 
 

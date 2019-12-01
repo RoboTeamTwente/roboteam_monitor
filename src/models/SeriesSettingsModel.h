@@ -10,6 +10,7 @@ using json = nlohmann::json;
 
 class FilterPresenter;
 class SeriesPresenter;
+class SeriesSettingsPresenter;
 class SeriesSettingsModel {
 
   // Presenter
@@ -31,7 +32,7 @@ class SeriesSettingsModel {
  public:
   explicit SeriesSettingsModel(SeriesPresenter * parent);
   explicit SeriesSettingsModel(SeriesPresenter * parent, json data);
-  explicit SeriesSettingsModel(const SeriesSettingsModel &other);
+  explicit SeriesSettingsModel(const SeriesSettingsModel &other, SeriesSettingsPresenter * presenter);
 };
 
 #endif //RTT_SERIESSETTINGSMODEL_H

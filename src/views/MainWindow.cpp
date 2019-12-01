@@ -44,8 +44,7 @@ void MainWindow::open_chart_from_existing_file() {
 void MainWindow::open_chart_from_new_file() {
     Helpers::clearLayout(central_layout);
 
-    auto chart_model = new ChartModel();
-    auto chart_presenter = new ChartPresenter(chart_model, subscription_manager); // this creates a new model
+    auto chart_presenter = new ChartPresenter(subscription_manager); // this creates a new model
     auto chart_view = new ChartView(chart_presenter);
     central_layout->addWidget(chart_view);
 }

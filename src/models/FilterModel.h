@@ -22,6 +22,7 @@ class FilterModel {
   SeriesSettingsPresenter * parent;
 
  public:
+  FilterModel(const FilterModel & model, SeriesSettingsPresenter * parent);
   FilterModel(SeriesSettingsPresenter * parent);
   FilterModel(SeriesSettingsPresenter * parent,
               FieldDefinition * field_definition,

@@ -107,8 +107,8 @@ SeriesSettingsModel *SeriesSettingsPresenter::get_internal_model() {
     return model;
 }
 
-SeriesSettingsModel *SeriesSettingsPresenter::get_model_copy() const {
-    return new SeriesSettingsModel(*model);
+SeriesSettingsModel *SeriesSettingsPresenter::get_model_copy() {
+    return new SeriesSettingsModel(*model, this);
 }
 
 

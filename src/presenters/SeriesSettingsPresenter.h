@@ -10,9 +10,9 @@ class SeriesSettingsModel;
 class SeriesSettingsPresenter : public QObject {
  Q_OBJECT
  private:
-  SeriesSettingsModel * model;
+  SeriesSettingsModel * model = nullptr;
  public:
-  SeriesSettingsModel *get_model_copy() const;
+  SeriesSettingsModel *get_model_copy();
  private:
   SeriesSettingsModel * snapshot = nullptr;
   SeriesSettingsModel * get_internal_model();

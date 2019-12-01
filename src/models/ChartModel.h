@@ -31,8 +31,6 @@ class ChartModel {
 
  public:
   ChartModel() = default;
-  explicit ChartModel(ChartPresenter * presenter, json data);
-  json to_json();
 };
 
 #endif //RTT_CHARTMODEL_H

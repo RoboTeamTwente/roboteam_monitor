@@ -3,16 +3,54 @@
 #include "ChartPresenter.h"
 #include "SeriesPresenter.h"
 
-ChartPresenter::ChartPresenter(ChartModel *model, SubscriptionManager *subscription_manager)
-: QObject(nullptr), model(model), subscription_manager(subscription_manager) {
-init();
-}
-
-ChartPresenter::ChartPresenter(json json_data, SubscriptionManager *subscription_manager)
-: QObject(nullptr), subscription_manager(subscription_manager){
-    model = new ChartModel(this, json_data);
+ChartPresenter::ChartPresenter(SubscriptionManager *subscription_manager)
+: QObject(nullptr), subscription_manager(subscription_manager) {
+    model = new ChartModel();
     init();
 }
+
+ChartPresenter::ChartPresenter(json data, SubscriptionManager *subscription_manager)
+: QObject(nullptr), subscription_manager(subscription_manager){
+    model = new ChartModel();
+
+    // properties
+    model->darkTheme = data.value("dark_theme", model->darkTheme);
+    model->sliding_window = data.value("sliding_window", model->sliding_window);
+    model->sliding_window_width = data.value("sliding_window_width", model->sliding_window_width);
+    model->margin_y = data.value("margin_y", model->margin_y);
+    model->margin_x = data.value("margin_x", model->margin_x);
+    model->ip_config = QString::fromStdString(data.value("ip_config", model->ip_config.toStdString()));
+    model->update_frequency = data.value("update_frequency", model->update_frequency);
+
+    // child objects
+    for (auto const & series_json : data["series_list"]) {
+        auto series_model = new SeriesModel(this, series_json);
+        auto series_presenter = new SeriesPresenter(series_model);
+        model->seriesList.push_back(series_presenter);
+    }
+    init();
+}
+
+json ChartPresenter::to_json() {
+    std::vector<json> series_jsons;
+    series_jsons.reserve(model->seriesList.size());
+
+    for (auto series_presenter : model->seriesList) {
+        series_jsons.push_back(series_presenter->to_json());
+    }
+
+    return {
+        {"dark_theme", model->darkTheme},
+        {"sliding_window", model->sliding_window},
+        {"sliding_window_width", model->sliding_window_width},
+        {"margin_y", model->margin_y},
+        {"margin_x", model->margin_x},
+        {"update_frequency", model->update_frequency},
+        {"series_list", series_jsons},
+        {"ip_config", model->ip_config.toStdString()}
+    };
+}
+
 
 void ChartPresenter::init() {
     xAxis = new QValueAxis();
@@ -178,9 +216,6 @@ void ChartPresenter::clear_data() {
     }
 }
 
-json ChartPresenter::to_json() {
-    return model->to_json();
-}
 bool ChartPresenter::is_dark_theme() {
     return model->darkTheme;
 }

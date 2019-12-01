@@ -11,7 +11,8 @@ class FieldDefinition {
  public:
   FieldDefinition(QString title, std::vector<int> field_numbers);
   FieldDefinition() = default;
-  FieldDefinition(const json & data);
+  explicit FieldDefinition(const json & data);
+  FieldDefinition * get_copy();
 
   const std::vector<int> &get_field_numbers() const;
   const QString &get_title() const;

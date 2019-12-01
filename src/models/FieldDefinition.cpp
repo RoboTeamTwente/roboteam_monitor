@@ -40,3 +40,7 @@ bool FieldDefinition::operator==(const FieldDefinition &rhs) const {
 bool FieldDefinition::operator!=(const FieldDefinition &rhs) const {
     return !(rhs==*this);
 }
+
+FieldDefinition * FieldDefinition::get_copy() {
+    return new FieldDefinition(title, field_numbers);;
+}

@@ -7,6 +7,7 @@ FilterPresenter::FilterPresenter(FilterModel * model) : QObject(nullptr), model(
 SeriesSettingsPresenter *FilterPresenter::getParent() {
     return model->parent;
 }
+
 bool FilterPresenter::operator==(const FilterPresenter &rhs) const {
     return *model == *rhs.model;
 }
@@ -32,7 +33,11 @@ FieldDefinition *FilterPresenter::get_field_definition() {
 bool FilterPresenter::is_valid() {
     return !model->value.isEmpty() && model->field_definition && model->field_definition->is_valid();
 }
+
 json FilterPresenter::to_json() {
-    return model->to_json();
+    return {
+        {"field_definition", model->field_definition->to_json()},
+        {"value", model->value.toStdString()}
+    };
 }
 

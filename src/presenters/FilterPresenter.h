@@ -15,7 +15,6 @@ class FilterPresenter : public QObject {
  public:
   FilterModel *get_model() const;
   json to_json();
- public:
   explicit FilterPresenter(FilterModel * model);
   SeriesSettingsPresenter * getParent();
   void set_value(const QString & value);

@@ -1,22 +1,12 @@
-//
-// Created by Lukas Bos on 27/11/2019.
-//
-
 #include <src/presenters/SeriesPresenter.h>
 #include <src/presenters/SeriesSettingsPresenter.h>
 #include <roboteam_proto/Subscriber.h>
-
-
 #include "SubscriptionManager.h"
-
-SubscriptionManager::SubscriptionManager() {
-}
 
 void SubscriptionManager::reconfigure_ip(const QString &ip_config) {
     delete robot_command_subscriber;
     delete world_subscriber;
     delete geometry_subscriber;
-
     setup_subscriptions(ip_config);
 }
 
@@ -56,8 +46,8 @@ std::set<SeriesPresenter *> SubscriptionManager::get_series_for_channel(proto::C
 
 template<class T>
 void SubscriptionManager::propagate_msg(T msg, proto::ChannelType channel_type) {
-    for (auto series : get_series_for_channel(channel_type)) {
-        series->handle_incoming_message(&msg);
+    for (auto s : get_series_for_channel(channel_type)) {
+        s->handle_incoming_message(&msg);
     }
 }
 

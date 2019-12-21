@@ -107,8 +107,8 @@ std::optional<double> Helpers::get_numeric_value(Message *message, FieldDefiniti
 
     // return the absolute velocity in case of a vector
     if (Helpers::get_actual_typename(field) == "Vector2f") {
-        proto::Vector2f * proto_vec = dynamic_cast<proto::Vector2f *>(msg);
-        rtt::Vector2 vec = rtt::Vector2(*proto_vec);
+        auto proto_vec = dynamic_cast<proto::Vector2f *>(msg);
+        auto vec = rtt::Vector2(*proto_vec);
         return vec.length();
     }
 
@@ -119,6 +119,6 @@ std::optional<double> Helpers::get_numeric_value(Message *message, FieldDefiniti
         case FieldDescriptor::CPPTYPE_UINT64: return refl->GetUInt64(*msg, field);
         case FieldDescriptor::CPPTYPE_FLOAT: return refl->GetFloat(*msg, field);
         case FieldDescriptor::CPPTYPE_DOUBLE: return refl->GetDouble(*msg, field);
+        default: return std::nullopt;
     }
-    return std::nullopt;
 }

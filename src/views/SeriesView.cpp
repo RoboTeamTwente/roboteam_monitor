@@ -87,9 +87,9 @@ SeriesView::SeriesView(SeriesPresenter * series_presenter) : QGroupBox("", nullp
             series_presenter->applySettings(copy);
         });
 
-    connect(series_dialog, &QDialog::rejected, [series_presenter]() {
+      connect(series_dialog, &QDialog::rejected, [series_presenter]() {
 
-    });
+      });
       series_dialog->exec();
     });
     connect(delete_series_button, &QPushButton::clicked, [series_presenter]() {

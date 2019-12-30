@@ -78,36 +78,35 @@ int Helpers::frequency_hz_to_millis(int frequency) {
  * Convert a message and field definition to a submessage and field descriptor.
  * With this format we can easily retrieve a value from a message.
  */
-std::pair<Message*, FieldDescriptor*> Helpers::getDescriptorFromDefinition(Message * msg, FieldDefinition * field_definition) {
+std::pair<const Message*, const FieldDescriptor*> Helpers::getDescriptorFromDefinition(const Message * msg, FieldDefinition * field_definition) {
     if (!field_definition || !msg) return {};
 
     // these variables get updated in the loop
-    Reflection * reflection = nullptr;
-    FieldDescriptor * field = nullptr;
+    const FieldDescriptor * field = nullptr;
     auto desc = msg->GetDescriptor();
 
     // iterate over the field numbers in the definition to extract the field descriptor and submessage from the message
     for (int index : field_definition->get_field_numbers()) {
-        field = const_cast<FieldDescriptor *>(desc->field(index));
-        reflection = const_cast<Reflection *>(msg->GetReflection());
+        field =desc->field(index);
+        const Reflection * reflection = msg->GetReflection();
 
         // if the field has a message type then it must be the submessage
         if (field && field->cpp_type()==FieldDescriptor::CPPTYPE_MESSAGE) {
             desc = field->message_type();
-            msg = const_cast<Message *>(&reflection->GetMessage(*msg, field));
+            msg = &reflection->GetMessage(*msg, field);
         }
     }
     return {msg, field};
 }
 
-std::optional<double> Helpers::get_numeric_value(Message *message, FieldDefinition *field_definition) {
+std::optional<double> Helpers::get_numeric_value(const Message *message, FieldDefinition *field_definition) {
     if (!message || !field_definition) return std::nullopt;
     auto [msg, field] = getDescriptorFromDefinition(message, field_definition);
     auto refl = msg->GetReflection();
 
     // return the absolute velocity in case of a vector
     if (Helpers::get_actual_typename(field) == "Vector2f") {
-        auto proto_vec = dynamic_cast<proto::Vector2f *>(msg);
+        auto proto_vec = dynamic_cast<const proto::Vector2f *>(msg);
         auto vec = rtt::Vector2(*proto_vec);
         return vec.length();
     }

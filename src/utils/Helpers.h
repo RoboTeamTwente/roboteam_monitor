@@ -22,8 +22,8 @@ class Helpers {
   static QString get_actual_typename(const FieldDescriptor * field_descriptor);
   static void clearLayout(QLayout* layout);
   static int frequency_hz_to_millis(int frequency);
-  static std::pair<Message*, FieldDescriptor*> getDescriptorFromDefinition(Message * msg, FieldDefinition * field_definition);
-  static std::optional<double> get_numeric_value(Message * msg, FieldDefinition * field_definition);
+  static std::pair<const Message*, const FieldDescriptor*> getDescriptorFromDefinition(const Message * msg, FieldDefinition * field_definition);
+  static std::optional<double> get_numeric_value(const Message * msg, FieldDefinition * field_definition);
   };
 
 

@@ -103,7 +103,7 @@ std::pair<Message*, FieldDescriptor*> Helpers::getDescriptorFromDefinition(Messa
 std::optional<double> Helpers::get_numeric_value(Message *message, FieldDefinition *field_definition) {
     if (!message || !field_definition) return std::nullopt;
     auto [msg, field] = getDescriptorFromDefinition(message, field_definition);
-    auto refl = const_cast<Reflection *>(msg->GetReflection());
+    auto refl = msg->GetReflection();
 
     // return the absolute velocity in case of a vector
     if (Helpers::get_actual_typename(field) == "Vector2f") {

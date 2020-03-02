@@ -1,7 +1,3 @@
-//
-// Created by Lukas Bos on 18/10/2019.
-//
-
 #include <QApplication>
 #include <QStyleFactory>
 #include "src/views/components/MenuBar.h"
